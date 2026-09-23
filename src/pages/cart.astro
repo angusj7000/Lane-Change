@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../config/site';
+---
+<Base title="Bag">
+  <div class="page">
+    <PageHead eyebrow="Lane Change" title="Your Bag" />
+    <section class="wrap bag" data-bag>
+      <ul class="bag__lines" data-bag-lines></ul>
+      <aside class="bag__summary">
+        <p class="eyebrow">Order Summary</p>
+        <div class="row"><span class="micro">Subtotal</span><span class="micro" data-cart-subtotal>$0 AUD</span></div>
+        <div class="row"><span class="micro">Shipping</span><span class="micro muted" data-bag-ship>Calculated at checkout</span></div>
+        <p class="micro muted">Free AU shipping over ${site.freeShippingThreshold}. Duties for international orders shown at checkout.</p>
+        <a class="btn btn--solid btn--block" href="/checkout">Checkout <Icon name="arrow" /></a>
+        <a class="btn btn--block" href="/shop">Keep Shopping</a>
+      </aside>
+      <div class="empty-state" data-bag-empty hidden>
+        <p class="title">Nothing here yet</p>
+        <p class="muted">New roads always. Start with the core range.</p>
+        <a class="btn" href="/collections/core-washed">Shop Core Washed <Icon name="arrow" /></a>
+      </div>
+    </section>
+  </div>
+</Base>
+<script>
+  import { cartApi, lineHTML, bindLineControls } from '../scripts/store';
+  import { site } from '../config/site';
+  const lines = document.querySelector<HTMLElement>('[data-bag-lines]')!;
+  const bag = document.querySelector<HTMLElement>('[data-bag]')!;
+  const empty = document.querySelector<HTMLElement>('[data-bag-empty]')!;
+  const ship = document.querySelector<HTMLElement>('[data-bag-ship]')!;
+  const render = () => {
+    const l = cartApi.lines();
+    lines.innerHTML = l.map(lineHTML).join('');
+    bag.classList.toggle('is-empty', !l.length);
+    empty.hidden = !!l.length;
+    ship.textContent = cartApi.subtotal() >= site.freeShippingThreshold ? 'Free (AU)' : 'Calculated at checkout';
+  };
+  bindLineControls(lines);
+  document.addEventListener('lc:cart', render);
+  render();
+</script>
+<style>
+  .bag { display: grid; grid-template-columns: 1fr 380px; gap: clamp(28px, 5vw, 80px); padding-block: 24px 120px; align-items: start; }
+  .bag__summary { position: sticky; top: calc(var(--header-h) + 24px); display: grid; gap: 16px; padding: 28px; border: 1px solid var(--line); }
+  .row { display: flex; justify-content: space-between; }
+  .bag.is-empty .bag__lines, .bag.is-empty .bag__summary { display: none; }
+  .bag :global(.cart-line) { grid-template-columns: 120px 1fr auto; }
+  .bag :global(.cart-line__img img) { width: 120px; height: 150px; }
+  @media (max-width: 900px) {
+    .bag { grid-template-columns: 1fr; }
+    .bag__summary { position: static; }
+    .bag :global(.cart-line) { grid-template-columns: 84px 1fr auto; }
+    .bag :global(.cart-line__img img) { width: 84px; height: 105px; }
+  }
+</style>

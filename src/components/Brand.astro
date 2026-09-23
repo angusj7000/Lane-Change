@@ -11,7 +11,7 @@ interface Props {
   label?: string;
 }
 const { mark, class: cls, label } = Astro.props;
-const a11y = label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': 'true' };
+const a11y = label ? { role: 'img' as const, 'aria-label': label } : { 'aria-hidden': 'true' as const };
 ---
 {mark === 'wordmark' && <Wordmark class:list={['brand-wordmark', cls]} {...a11y} />}
 {mark === 'monogram' && <Monogram class:list={['brand-monogram', cls]} {...a11y} />}

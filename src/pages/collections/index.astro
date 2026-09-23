@@ -1,0 +1,40 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Photo from '../../components/Photo.astro';
+import Icon from '../../components/Icon.astro';
+import { collections, inCollection } from '../../data/products';
+---
+<Base title="Collections">
+  <div class="page">
+    <PageHead title="Collections" lede="Different lanes. Same vision. Each drop is a chapter of the same story." />
+    <section class="cols">
+      {collections.map((c, i) => (
+        <a class="col has-arrow" href={`/collections/${c.slug}`}>
+          <div class="col__media media reveal-img" style={`--d:${i * 0.1}s`}>
+            <Photo src={c.image} alt="" sizes="(max-width: 900px) 100vw, 50vw" />
+          </div>
+          <div class="col__copy">
+            <p class="micro">{c.season}</p>
+            <h2 class="title col__title">{c.title} <Icon name="arrow" /></h2>
+            <p class="micro muted">{inCollection(c.slug).length} pieces</p>
+          </div>
+        </a>
+      ))}
+    </section>
+  </div>
+</Base>
+<style>
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); }
+  .col { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; background: var(--black); }
+  .col:first-child { grid-column: 1 / -1; aspect-ratio: 21 / 8; }
+  .col__media { position: absolute; inset: 0; }
+  .col__media :global(img) { transition: transform 1.4s var(--ease-out); filter: brightness(0.75); }
+  .col:hover .col__media :global(img) { transform: scale(1.04); }
+  .col__copy { position: absolute; left: var(--gutter); bottom: clamp(20px, 3vw, 40px); display: grid; gap: 10px; }
+  .col__title { display: flex; gap: 18px; align-items: center; font-size: clamp(32px, 4vw, 60px); letter-spacing: 0.12em; }
+  @media (max-width: 800px) {
+    .cols { grid-template-columns: 1fr; }
+    .col, .col:first-child { aspect-ratio: 4 / 3; }
+  }
+</style>

@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Account">
+  <div class="page">
+    <PageHead eyebrow="Account" title="Sign In" />
+    <section class="wrap section acct">
+      <form class="acct__form" data-account>
+        <label class="lbl micro" for="a-email">Email</label>
+        <input class="field" id="a-email" type="email" autocomplete="email" required />
+        <label class="lbl micro" for="a-pass">Password</label>
+        <input class="field" id="a-pass" type="password" autocomplete="current-password" required />
+        <button class="btn btn--solid btn--block" type="submit">Sign In <Icon name="arrow" /></button>
+        <p class="micro muted" role="status"></p>
+      </form>
+      <div class="acct__new">
+        <p class="title">New to the lane?</p>
+        <p class="muted">Track orders, save your sizes and get early access to drops.</p>
+        <a class="btn" href="/wishlist">View Wishlist <Icon name="arrow" /></a>
+      </div>
+    </section>
+  </div>
+</Base>
+<script>
+  const f = document.querySelector<HTMLFormElement>('[data-account]');
+  f?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    f.querySelector('[role=status]')!.textContent = 'Customer accounts open at launch.';
+  });
+</script>
+<style>
+  .acct { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 8vw, 140px); }
+  .acct__form { display: grid; gap: 10px; max-width: 440px; }
+  .acct__form .btn { margin-top: 16px; }
+  .acct__new { display: grid; gap: 16px; align-content: start; justify-items: start; padding-left: clamp(0px, 4vw, 64px); border-left: 1px solid var(--line); }
+  .acct__new .title { font-size: 32px; }
+  @media (max-width: 800px) { .acct { grid-template-columns: 1fr; } .acct__new { border-left: 0; padding-left: 0; } }
+</style>

@@ -305,3 +305,38 @@ label.lbl { display: block; margin-bottom: 8px; }
 @media (max-width: 700px) {
   .section-bar .eyebrow--wide { letter-spacing: var(--track-md); }
 }
+
+/* ---------- cart lines (drawer + bag page, rendered client-side) ---------- */
+.cart-line {
+  display: grid;
+  grid-template-columns: 84px 1fr auto;
+  gap: 16px;
+  padding-block: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.cart-line__img img { width: 84px; height: 105px; object-fit: cover; background: #0d0d0d; }
+.cart-line__name {
+  font-family: var(--font-display); font-weight: 500; text-transform: uppercase;
+  font-size: 18px; letter-spacing: 0.12em;
+}
+.cart-line__info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.cart-line__end { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; }
+.qty {
+  display: inline-flex; align-items: center; margin-top: auto;
+  border: 1px solid var(--line-strong); width: max-content;
+}
+.qty button { width: 34px; height: 34px; display: grid; place-items: center; }
+.qty button:disabled { opacity: 0.3; cursor: not-allowed; }
+.qty span { min-width: 22px; text-align: center; font-size: 12px; }
+
+/* ---------- product grids on listing pages ---------- */
+.grid-products {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(28px, 3vw, 48px) clamp(14px, 2vw, 28px);
+}
+@media (max-width: 1100px) { .grid-products { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 700px) { .grid-products { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 12px; } }
+
+.empty-state { padding-block: 64px; display: grid; gap: 16px; justify-items: start; }
+.empty-state .title { font-size: clamp(28px, 4vw, 44px); }

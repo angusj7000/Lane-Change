@@ -1,0 +1,401 @@
+---
+import { getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Photo from '../../components/Photo.astro';
+import Icon from '../../components/Icon.astro';
+import Brand from '../../components/Brand.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import {
+  products, colourwaysOf, formatPrice, viewLabels, viewOrder, type Product,
+} from '../../data/products';
+import { img } from '../../data/images';
+import { site } from '../../config/site';
+
+export function getStaticPaths() {
+  return products.map((product) => ({ params: { slug: product.slug }, props: { product } }));
+}
+
+interface Props { product: Product }
+const { product: p } = Astro.props;
+
+const views = viewOrder
+  .filter((v) => v in p.gallery)
+  .map((v) => ({ key: v, label: viewLabels[v], image: p.gallery[v] ?? null }))
+  // photographed views first; views still awaiting a shoot sit at the end
+  .sort((a, b) => Number(!a.image) - Number(!b.image));
+const colourways = colourwaysOf(p);
+const related = products.filter((x) => x.slug !== p.slug && x.status !== 'coming-soon').slice(0, 4);
+const available = p.status !== 'coming-soon';
+const firstImage = p.gallery.front ?? p.gallery.back ?? 'hero-campaign';
+const ldImage = await getImage({ src: img(firstImage), width: 1000, format: 'jpg' });
+
+const altFor = (view: string) =>
+  view === 'fit'
+    ? `Model wearing the Lane Change oversized washed tee from behind, showing the boxy fit and dropped shoulders${p.colour.name === 'Washed Black' ? '' : ' (shown in Washed Black)'}.`
+    : `${p.name} in ${p.colour.name} — ${view} view.`;
+
+const features = ['Oversized fit', 'Heavyweight cotton', 'Washed finish', 'Dropped shoulders'];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: `Lane Change ${p.name} — ${p.colour.name}`,
+  brand: { '@type': 'Brand', name: 'Lane Change' },
+  description: p.description.join(' '),
+  color: p.colour.name,
+  image: new URL(ldImage.src, Astro.site).href,
+  offers: {
+    '@type': 'Offer',
+    priceCurrency: site.currency,
+    price: p.price,
+    availability: available ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
+    url: new URL(`/products/${p.slug}`, Astro.site).href,
+  },
+};
+---
+<Base title={`${p.name} — ${p.colour.name}`} description={`${p.blurb} ${formatPrice(p.price)}.`} ogImage={firstImage} jsonLd={jsonLd}>
+  <div class="page">
+    <section class="pdp">
+      <!-- gallery -->
+      <div class="pdp__gallery" aria-label="Product images">
+        <div class="gallery__track" data-gallery-track tabindex="0" aria-label="Swipe for more views">
+          {views.map((v, i) => (
+            <figure class="shot" data-view={v.label}>
+              <div class:list={['shot__media', 'media', { 'shot__media--pending': !v.image }]}>
+                {v.image ? (
+                  <Photo
+                    src={v.image}
+                    alt={altFor(v.key)}
+                    sizes="(max-width: 900px) 100vw, 34vw"
+                    widths={[480, 720, 960, 1200]}
+                    eager={i < 2}
+                    position={v.key === 'fit' ? '50% 20%' : undefined}
+                  />
+                ) : (
+                  <div class="pending">
+                    <Brand mark="monogram" class="pending__mark" />
+                    <p class="micro muted">{v.label} view — campaign shoot pending</p>
+                  </div>
+                )}
+              </div>
+              <figcaption class="micro shot__label"><span>{String(i + 1).padStart(2, '0')}</span> {v.label}</figcaption>
+            </figure>
+          ))}
+        </div>
+        <div class="gallery__nav only-mobile" aria-hidden="true">
+          <span class="micro" data-gallery-count>01 / {String(views.length).padStart(2, '0')}</span>
+          <span class="micro" data-gallery-label>{views[0]?.label}</span>
+        </div>
+      </div>
+
+      <!-- info -->
+      <div class="pdp__info">
+        <div class="info__sticky">
+          <nav class="micro muted crumbs" aria-label="Breadcrumb">
+            <a class="u-link" href="/shop">Shop</a> / <a class="u-link" href={`/collections/${p.category}`}>{p.category}</a>
+          </nav>
+
+          <p class="eyebrow eyebrow--wide info__brand"><Brand mark="monogram" class="info__mono" /> Lane Change</p>
+          <h1 class="display info__name">{p.name}</h1>
+          <p class="info__price title">{formatPrice(p.price)}</p>
+          {p.badge && <p class="micro info__badge">{p.badge}</p>}
+          <p class="info__blurb muted">{p.blurb}</p>
+
+          <form class="buy" data-buy={p.slug} novalidate>
+            <fieldset class="opt">
+              <legend class="opt__legend micro">Colour <span class="muted">— {p.colour.name}</span></legend>
+              <div class="swatches">
+                {colourways.map((c) => (
+                  <a
+                    href={`/products/${c.slug}`}
+                    class:list={['swatch', { 'is-current': c.slug === p.slug }]}
+                    style={`--sw:${c.colour.swatch}`}
+                    aria-label={c.colour.name}
+                    aria-current={c.slug === p.slug ? 'true' : undefined}
+                    title={c.colour.name}
+                  ></a>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset class="opt">
+              <legend class="opt__legend micro">
+                Size <span class="muted" data-size-label>— Select</span>
+                <button type="button" class="micro u-link size-guide-btn" data-size-guide>Size guide</button>
+              </legend>
+              <div class="sizes" style={`--n:${p.sizes.length}`}>
+                {p.sizes.map((s) => (
+                  <label class:list={['size', { 'is-out': !s.available }]}>
+                    <input type="radio" name="size" value={s.label} disabled={!s.available} class="sr-only" />
+                    <span>{s.label}</span>
+                    {!s.available && <span class="sr-only">(sold out)</span>}
+                  </label>
+                ))}
+              </div>
+              <p class="micro buy__msg" role="alert" data-buy-msg></p>
+            </fieldset>
+
+            {available ? (
+              <button class="btn btn--solid btn--block buy__add" type="submit">Add To Cart <Icon name="arrow" /></button>
+            ) : (
+              <button class="btn btn--block" type="button" disabled>Coming Soon</button>
+            )}
+            <button class="btn btn--block buy__wish" type="button" data-wish={p.slug} aria-pressed="false">
+              <Icon name="heart" size={16} /> <span>Save to wishlist</span>
+            </button>
+          </form>
+
+          <ul class="features">
+            {features.map((f) => <li class="micro">{f}</li>)}
+          </ul>
+
+          <div class="accordions">
+            <details open>
+              <summary class="eyebrow">Description <Icon name="plus" size={14} /></summary>
+              <div class="acc__body">{p.description.map((d) => <p>{d}</p>)}</div>
+            </details>
+            <details>
+              <summary class="eyebrow">Fit <Icon name="plus" size={14} /></summary>
+              <ul class="acc__body">{p.fit.map((d) => <li>{d}</li>)}</ul>
+            </details>
+            <details>
+              <summary class="eyebrow">Fabric <Icon name="plus" size={14} /></summary>
+              <ul class="acc__body">{p.fabric.map((d) => <li>{d}</li>)}</ul>
+            </details>
+            <details>
+              <summary class="eyebrow">Care <Icon name="plus" size={14} /></summary>
+              <ul class="acc__body">{p.care.map((d) => <li>{d}</li>)}</ul>
+            </details>
+          </div>
+
+          <p class="micro muted ship-note">
+            Free AU shipping over ${site.freeShippingThreshold}. Ships worldwide from Australia.<br />
+            30-day returns on unworn pieces.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- editorial band -->
+    <section class="band">
+      <Brand mark="star" class="band__star" />
+      <p class="serif-mark band__mark">Designed To Win</p>
+      <p class="eyebrow eyebrow--wide">{site.line}</p>
+    </section>
+
+    <section class="section wrap">
+      <div class="section-bar">
+        <h2 class="eyebrow eyebrow--wide">Complete The Lane</h2>
+        <a class="link-arrow" href="/shop">Shop All <Icon name="arrow" /></a>
+      </div>
+      <div class="related">
+        {related.map((r, i) => <ProductCard product={r} index={i} sizes="(max-width: 700px) 50vw, 25vw" />)}
+      </div>
+    </section>
+  </div>
+
+  <dialog class="guide" data-guide aria-labelledby="guide-title">
+    <div class="guide__head">
+      <h2 id="guide-title" class="eyebrow">Size Guide — {p.category === 'tees' ? 'Oversized Tee' : 'Hoodie'}</h2>
+      <button type="button" aria-label="Close size guide" data-guide-close><Icon name="close" /></button>
+    </div>
+    <p class="muted micro">Garment measurements in cm, laid flat. Boxy fit — size down for a closer drape.</p>
+    <table class="micro">
+      <thead><tr><th>Size</th><th>Chest</th><th>Length</th><th>Shoulder</th><th>Sleeve</th></tr></thead>
+      <tbody>
+        {[['XS', 58, 68, 56, 22], ['S', 60, 70, 58, 23], ['M', 62, 72, 60, 24], ['L', 64, 74, 62, 25], ['XL', 66, 76, 64, 26], ['XXL', 68, 78, 66, 27]].map((r) => (
+          <tr>{r.map((c) => <td>{c}</td>)}</tr>
+        ))}
+      </tbody>
+    </table>
+  </dialog>
+</Base>
+
+<script>
+  import { cartApi, openCart } from '../../scripts/store';
+
+  // size selection + add to cart
+  const form = document.querySelector<HTMLFormElement>('[data-buy]');
+  const msg = document.querySelector<HTMLElement>('[data-buy-msg]');
+  const sizeLabel = document.querySelector<HTMLElement>('[data-size-label]');
+  form?.addEventListener('change', (e) => {
+    const t = e.target as HTMLInputElement;
+    if (t.name === 'size') {
+      if (sizeLabel) sizeLabel.textContent = `— ${t.value}`;
+      if (msg) msg.textContent = '';
+    }
+  });
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const size = new FormData(form).get('size');
+    if (!size) {
+      if (msg) msg.textContent = 'Select a size to continue.';
+      form.querySelector<HTMLInputElement>('input[name=size]:not(:disabled)')?.focus();
+      return;
+    }
+    cartApi.add(form.dataset.buy!, String(size));
+    openCart();
+  });
+
+  // mobile gallery counter
+  const track = document.querySelector<HTMLElement>('[data-gallery-track]');
+  const count = document.querySelector<HTMLElement>('[data-gallery-count]');
+  const label = document.querySelector<HTMLElement>('[data-gallery-label]');
+  if (track && count && label) {
+    const shots = Array.from(track.children) as HTMLElement[];
+    const pad = (n: number) => String(n).padStart(2, '0');
+    track.addEventListener('scroll', () => {
+      const i = Math.round(track.scrollLeft / track.clientWidth);
+      count.textContent = `${pad(i + 1)} / ${pad(shots.length)}`;
+      label.textContent = shots[i]?.dataset.view ?? '';
+    }, { passive: true });
+  }
+
+  // size guide
+  const guide = document.querySelector<HTMLDialogElement>('[data-guide]');
+  document.querySelector('[data-size-guide]')?.addEventListener('click', () => guide?.showModal());
+  guide?.querySelector('[data-guide-close]')?.addEventListener('click', () => guide.close());
+  guide?.addEventListener('click', (e) => e.target === guide && guide.close());
+</script>
+
+<style>
+  .pdp {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(360px, 0.8fr);
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* gallery: 2-up editorial grid on desktop */
+  .gallery__track {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+  }
+  .shot { position: relative; background: #0d0d0d; }
+  .shot__media { aspect-ratio: 4 / 5; background: #0d0d0d; }
+  .shot__label {
+    position: absolute; left: 16px; bottom: 14px;
+    display: flex; gap: 12px; letter-spacing: var(--track-md);
+  }
+  .shot__label span { color: var(--smoke); }
+  .pending {
+    position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 18px;
+    text-align: center; padding: 24px;
+    border: 1px dashed var(--line);
+  }
+  .pending :global(.pending__mark) { width: 64px; color: var(--charcoal); }
+
+  .pdp__info { border-left: 1px solid var(--line); }
+  .info__sticky {
+    position: sticky; top: var(--header-h);
+    padding: clamp(28px, 3vw, 52px) clamp(20px, 3vw, 56px) 48px;
+  }
+  .crumbs { margin-bottom: 36px; }
+  .info__brand { display: flex; align-items: center; gap: 12px; }
+  .info__brand :global(.info__mono) { width: 16px; height: auto; }
+  .info__name { font-size: clamp(40px, 4vw, 64px); margin-top: 16px; letter-spacing: 0.05em; }
+  .info__price { font-size: 22px; letter-spacing: 0.16em; margin-top: 14px; }
+  .info__badge { display: inline-block; margin-top: 12px; padding: 4px 8px; border: 1px solid var(--line-strong); }
+  .info__blurb { margin-top: 18px; font-size: 13px; max-width: 44ch; }
+
+  .buy { margin-top: 30px; display: grid; gap: 12px; }
+  .opt { border: 0; padding: 0; margin: 0 0 18px; min-width: 0; }
+  .opt__legend { display: flex; width: 100%; align-items: center; gap: 6px; margin-bottom: 14px; padding: 0; }
+  .size-guide-btn { margin-left: auto; }
+
+  .swatches { display: flex; gap: 12px; }
+  .swatch {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--sw);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+    outline: 1px solid transparent; outline-offset: 4px;
+    transition: outline-color 0.3s var(--ease);
+  }
+  .swatch:hover { outline-color: var(--line-strong); }
+  .swatch.is-current { outline-color: var(--bone); }
+
+  .sizes { display: grid; grid-template-columns: repeat(var(--n, 6), minmax(0, 1fr)); border: 1px solid var(--line-strong); }
+  .size { position: relative; cursor: pointer; }
+  .size + .size { border-left: 1px solid var(--line-strong); }
+  .size span:first-of-type {
+    display: grid; place-items: center; height: 48px;
+    font-size: 12px; letter-spacing: var(--track-xs);
+    transition: background-color 0.25s var(--ease), color 0.25s var(--ease);
+  }
+  .size:hover span:first-of-type { background: var(--washed); }
+  .size input:checked + span { background: var(--bone); color: var(--black); }
+  .size input:focus-visible + span { outline: 1px solid var(--bone); outline-offset: -4px; }
+  .size.is-out { cursor: not-allowed; color: var(--concrete); }
+  .size.is-out span:first-of-type {
+    background: linear-gradient(to top right, transparent calc(50% - 0.5px), var(--line-strong) 50%, transparent calc(50% + 0.5px));
+  }
+  .buy__msg { min-height: 1.7em; margin-top: 10px; color: var(--signal); }
+  .buy__wish :global(svg) { transition: fill 0.3s; }
+  .buy__wish.is-on :global(svg) { fill: currentColor; }
+
+  .features {
+    display: grid; grid-template-columns: 1fr 1fr;
+    margin-top: 28px; border-top: 1px solid var(--line); border-left: 1px solid var(--line);
+  }
+  .features li { padding: 14px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); letter-spacing: var(--track-md); }
+
+  .accordions { margin-top: 28px; border-top: 1px solid var(--line); }
+  details { border-bottom: 1px solid var(--line); }
+  summary {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 0; cursor: pointer; list-style: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary :global(svg) { transition: transform 0.35s var(--ease); }
+  details[open] summary :global(svg) { transform: rotate(45deg); }
+  .acc__body { padding-bottom: 20px; display: grid; gap: 10px; font-size: 13px; color: var(--smoke); }
+  ul.acc__body li { padding-left: 16px; position: relative; }
+  ul.acc__body li::before { content: '—'; position: absolute; left: 0; }
+  .ship-note { margin-top: 24px; line-height: 1.9; }
+
+  .band {
+    display: flex; flex-direction: column; align-items: center; gap: 18px;
+    padding-block: clamp(64px, 9vw, 140px);
+    border-bottom: 1px solid var(--line);
+    text-align: center;
+  }
+  .band :global(.band__star) { width: 26px; color: var(--bone); }
+  .band__mark { font-size: clamp(26px, 3.4vw, 50px); margin-right: -0.55em; }
+
+  .related { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(14px, 2vw, 28px); }
+
+  .guide {
+    width: min(620px, calc(100% - 32px)); padding: 28px;
+    background: var(--ink); color: var(--bone); border: 1px solid var(--line-strong);
+  }
+  .guide::backdrop { background: rgba(0, 0, 0, 0.7); }
+  .guide__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .guide__head button { width: 44px; height: 44px; display: grid; place-items: center; margin-right: -12px; }
+  .guide table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  .guide th, .guide td { text-align: left; padding: 12px 8px; border-bottom: 1px solid var(--line); }
+  .guide th { color: var(--smoke); font-weight: 400; }
+
+  .only-mobile { display: none; }
+
+  @media (max-width: 1100px) {
+    .pdp { grid-template-columns: minmax(0, 1.2fr) minmax(320px, 1fr); }
+    .gallery__track { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 900px) {
+    .pdp { grid-template-columns: 1fr; }
+    .pdp__info { border-left: 0; }
+    .info__sticky { position: static; }
+    .gallery__track {
+      display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+      scrollbar-width: none; gap: 0; background: none;
+    }
+    .gallery__track::-webkit-scrollbar { display: none; }
+    .shot { flex: 0 0 100%; scroll-snap-align: start; }
+    .shot__label { display: none; }
+    .only-mobile { display: flex; }
+    .gallery__nav { justify-content: space-between; padding: 14px var(--gutter); border-bottom: 1px solid var(--line); }
+    .related { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 32px; }
+    .band__mark { font-size: clamp(20px, 6.4vw, 30px); letter-spacing: 0.3em; margin-right: -0.3em; padding-inline: var(--gutter); line-height: 1.4; }
+  }
+</style>

@@ -1,0 +1,12 @@
+---
+interface Props { eyebrow?: string; title: string; lede?: string }
+const { eyebrow = 'International Street Sports', title, lede } = Astro.props;
+---
+<header class="page-head">
+  <div class="wrap">
+    <p class="eyebrow eyebrow--wide reveal">{eyebrow}</p>
+    <h1 class="display reveal" style="--d:.08s">{title}</h1>
+    {lede && <p class="lede reveal" style="--d:.16s">{lede}</p>}
+    <slot />
+  </div>
+</header>

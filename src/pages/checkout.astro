@@ -1,0 +1,119 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Brand from '../components/Brand.astro';
+// Checkout UI for review. Payment is not connected: wire the form to Shopify
+// Checkout / Stripe before launch (see README → "Going live").
+---
+<Base title="Checkout" description="Secure checkout — Lane Change.">
+  <div class="page">
+    <div class="wrap co">
+      <form class="co__form" data-checkout novalidate>
+        <p class="eyebrow eyebrow--wide">Checkout</p>
+        <fieldset>
+          <legend class="title">Contact</legend>
+          <label class="lbl micro" for="co-email">Email</label>
+          <input class="field" id="co-email" type="email" autocomplete="email" required />
+          <label class="check micro"><input type="checkbox" checked /> Join the lane — drop alerts by email</label>
+        </fieldset>
+        <fieldset>
+          <legend class="title">Delivery</legend>
+          <div class="two">
+            <div><label class="lbl micro" for="co-first">First name</label><input class="field" id="co-first" autocomplete="given-name" required /></div>
+            <div><label class="lbl micro" for="co-last">Last name</label><input class="field" id="co-last" autocomplete="family-name" required /></div>
+          </div>
+          <label class="lbl micro" for="co-address">Address</label>
+          <input class="field" id="co-address" autocomplete="address-line1" required />
+          <div class="three">
+            <div><label class="lbl micro" for="co-city">Suburb / City</label><input class="field" id="co-city" autocomplete="address-level2" required /></div>
+            <div><label class="lbl micro" for="co-state">State</label>
+              <select class="field" id="co-state" autocomplete="address-level1">
+                {['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT', 'International'].map((s) => <option>{s}</option>)}
+              </select>
+            </div>
+            <div><label class="lbl micro" for="co-post">Postcode</label><input class="field" id="co-post" autocomplete="postal-code" inputmode="numeric" required /></div>
+          </div>
+          <label class="lbl micro" for="co-country">Country</label>
+          <select class="field" id="co-country" autocomplete="country-name">
+            {['Australia', 'New Zealand', 'United States', 'United Kingdom', 'Japan', 'Canada', 'Other'].map((c) => <option>{c}</option>)}
+          </select>
+        </fieldset>
+        <fieldset>
+          <legend class="title">Payment</legend>
+          <div class="pay-note micro">
+            <Brand mark="star" class="pay-star" />
+            Payments open at launch. Card, Apple Pay, Google Pay, Afterpay and PayPal will appear here.
+          </div>
+        </fieldset>
+        <button class="btn btn--solid btn--block" type="submit">Place Order <Icon name="arrow" /></button>
+        <p class="micro co__msg" role="status" data-checkout-msg></p>
+      </form>
+
+      <aside class="co__summary">
+        <p class="eyebrow">Order Summary</p>
+        <ul data-co-lines></ul>
+        <div class="row"><span class="micro">Subtotal</span><span class="micro" data-cart-subtotal>$0 AUD</span></div>
+        <div class="row"><span class="micro">Shipping</span><span class="micro" data-co-ship>—</span></div>
+        <div class="row total"><span class="eyebrow">Total</span><span class="eyebrow" data-co-total>$0 AUD</span></div>
+        <p class="micro muted">Prices in AUD, GST included.</p>
+      </aside>
+    </div>
+  </div>
+</Base>
+<script>
+  import { cartApi, bySlug, money } from '../scripts/store';
+  import { site } from '../config/site';
+  const list = document.querySelector<HTMLElement>('[data-co-lines]')!;
+  const render = () => {
+    list.innerHTML = cartApi.lines().map((l) => {
+      const p = bySlug.get(l.slug)!;
+      return `<li class="co-line"><img src="${p.thumb}" alt="" width="64" height="80" /><div><p class="micro">${p.name} ×${l.qty}</p><p class="micro muted">${p.colour} / ${l.size}</p></div><p class="micro">${money(p.price * l.qty)}</p></li>`;
+    }).join('') || '<li class="micro muted">Your bag is empty.</li>';
+    const sub = cartApi.subtotal();
+    const ship = sub === 0 || sub >= site.freeShippingThreshold ? 0 : 12;
+    document.querySelector('[data-co-ship]')!.textContent = ship ? money(ship) : sub ? 'Free' : '—';
+    document.querySelector('[data-co-total]')!.textContent = money(sub + ship);
+  };
+  document.addEventListener('lc:cart', render);
+  render();
+  const form = document.querySelector<HTMLFormElement>('[data-checkout]')!;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const msg = form.querySelector('[data-checkout-msg]')!;
+    const invalid = Array.from(form.querySelectorAll<HTMLInputElement>('[required]')).filter((i) => !i.value.trim());
+    form.querySelectorAll('[aria-invalid]').forEach((i) => i.removeAttribute('aria-invalid'));
+    if (invalid.length) {
+      invalid.forEach((i) => i.setAttribute('aria-invalid', 'true'));
+      invalid[0].focus();
+      msg.textContent = 'Complete the highlighted fields.';
+      return;
+    }
+    msg.textContent = 'Checkout opens at launch — your bag is saved.';
+  });
+</script>
+<style>
+  .co { display: grid; grid-template-columns: 1fr 420px; gap: clamp(28px, 6vw, 96px); padding-block: 48px 120px; align-items: start; }
+  .co__form { display: grid; gap: 36px; }
+  fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; min-width: 0; }
+  legend { font-size: 26px; letter-spacing: 0.14em; margin-bottom: 14px; padding: 0; }
+  .lbl { margin: 8px 0 0; }
+  .two, .three { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .three { grid-template-columns: 1.4fr 1fr 1fr; }
+  select.field { background: var(--black); }
+  .field[aria-invalid='true'] { border-color: var(--signal); }
+  .check { display: flex; gap: 10px; align-items: center; margin-top: 6px; }
+  .pay-note { display: flex; gap: 14px; align-items: center; padding: 20px; border: 1px dashed var(--line-strong); color: var(--smoke); }
+  .pay-note :global(.pay-star) { width: 14px; flex: none; color: var(--bone); }
+  .co__msg { min-height: 1.7em; color: var(--smoke); }
+  .co__summary { position: sticky; top: calc(var(--header-h) + 24px); display: grid; gap: 16px; padding: 28px; background: var(--ink); border: 1px solid var(--line); }
+  .co__summary :global(.co-line) { display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: center; padding-block: 10px; border-bottom: 1px solid var(--line); }
+  .co__summary :global(.co-line img) { width: 64px; height: 80px; object-fit: cover; background: #0d0d0d; }
+  .row { display: flex; justify-content: space-between; }
+  .total { padding-top: 14px; border-top: 1px solid var(--line); }
+  @media (max-width: 900px) {
+    .co { grid-template-columns: 1fr; }
+    .co__summary { position: static; order: -1; }
+    .three { grid-template-columns: 1fr 1fr; }
+    .three > :first-child { grid-column: 1 / -1; }
+  }
+</style>

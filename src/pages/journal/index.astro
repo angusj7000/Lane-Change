@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Photo from '../../components/Photo.astro';
+import { posts } from '../../data/journal';
+const fmt = (d: string) => new Date(d).toLocaleDateString('en-AU', { day: '2-digit', month: 'short', year: 'numeric' });
+---
+<Base title="Journal" description="Lane Change Journal — campaigns, product stories and the culture behind International Street Sports.">
+  <div class="page">
+    <PageHead eyebrow="Journal" title="New Roads Always" lede="Campaigns, product notes and the people behind the culture." />
+    <section class="wrap section posts">
+      {posts.map((p, i) => (
+        <a class:list={['post', { 'post--lead': i === 0 }]} href={`/journal/${p.slug}`}>
+          <div class="post__media media reveal-img"><Photo src={p.image} alt="" sizes={i === 0 ? '(max-width: 900px) 100vw, 66vw' : '(max-width: 900px) 100vw, 33vw'} /></div>
+          <div class="post__meta micro muted"><span>{p.tag}</span><time datetime={p.date}>{fmt(p.date)}</time></div>
+          <h2 class="title post__title">{p.title}</h2>
+          <p class="muted post__ex">{p.excerpt}</p>
+        </a>
+      ))}
+    </section>
+  </div>
+</Base>
+<style>
+  .posts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px clamp(16px, 2vw, 32px); }
+  .post { display: grid; gap: 14px; align-content: start; }
+  .post--lead { grid-column: span 2; grid-row: span 2; }
+  .post__media { aspect-ratio: 4 / 3; }
+  .post--lead .post__media { aspect-ratio: 16 / 10; }
+  .post__media :global(img) { transition: transform 1.4s var(--ease-out); }
+  .post:hover .post__media :global(img) { transform: scale(1.04); }
+  .post__meta { display: flex; justify-content: space-between; }
+  .post__title { font-size: clamp(24px, 2.2vw, 34px); letter-spacing: 0.1em; }
+  .post--lead .post__title { font-size: clamp(32px, 3.4vw, 54px); }
+  .post__ex { font-size: 13px; max-width: 52ch; }
+  @media (max-width: 900px) { .posts { grid-template-columns: 1fr; } .post--lead { grid-column: auto; grid-row: auto; } }
+</style>

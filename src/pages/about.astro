@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+import Photo from '../components/Photo.astro';
+import Brand from '../components/Brand.astro';
+import Icon from '../components/Icon.astro';
+
+const pillars = [
+  { n: '01', t: 'Street', c: 'Car parks, courts, skate spots, late-night meets. The places the culture actually happens.' },
+  { n: '02', t: 'Sports', c: 'Training, discipline, repetition. The gym mindset applied to everything.' },
+  { n: '03', t: 'Automotive', c: 'The setting, never the subject. Engines in the background, people in front.' },
+  { n: '04', t: 'Worldwide', c: 'Australian born, global minded. Built here, worn anywhere.' },
+];
+---
+<Base title="Our Story" description="Lane Change — Australian born, global minded. The story behind International Street Sports." header="overlay" ogImage="category-story">
+  <section class="about-hero">
+    <div class="about-hero__media media"><Photo src="category-story" alt="Concrete overpass curving over an empty road beneath a grey sky." sizes="100vw" widths={[720, 1080, 1440, 1920]} eager /></div>
+    <div class="wrap about-hero__copy">
+      <p class="eyebrow eyebrow--wide reveal">Our Story</p>
+      <h1 class="display reveal" style="--d:.08s">Australian Born.<br />Global Minded.</h1>
+    </div>
+  </section>
+
+  <section class="wrap manifesto">
+    <p class="micro muted reveal">Est. 2025 — AUS — Worldwide</p>
+    <p class="manifesto__lead title reveal" style="--d:.08s">
+      Lane Change is not a car brand. It's a culture brand for people who move differently — on the road, on the street, in the gym.
+    </p>
+    <div class="manifesto__cols reveal" style="--d:.16s">
+      <p>We started in the places everyone ends up: car parks after close, empty roads before sunrise, gyms at 5am. Different people, different disciplines — same drive to get better every day.</p>
+      <p>We call it International Street Sports. Heavyweight, washed, oversized clothing designed to be worn into that life, from Australia out to the world. Different lanes. Same vision.</p>
+    </div>
+  </section>
+
+  <section class="pillars">
+    {pillars.map((p, i) => (
+      <div class="pillar reveal" style={`--d:${i * 0.08}s`}>
+        <p class="micro muted">{p.n}</p>
+        <h2 class="title">{p.t}</h2>
+        <p class="muted">{p.c}</p>
+      </div>
+    ))}
+  </section>
+
+  <section class="split">
+    <div class="split__media media reveal-img"><Photo src="hero-campaign-mobile" alt="Model from behind in the Lane Change flagship tee." sizes="(max-width: 900px) 100vw, 50vw" /></div>
+    <div class="split__copy">
+      <Brand mark="monogram" class="split__mono" />
+      <p class="serif-mark split__mark">Designed To Win</p>
+      <p class="muted">Every graphic carries the same codes: the gothic Lane Change wordmark, the LC monogram and the compass star — a reminder there's more than one road to where you're going.</p>
+      <a class="btn" href="/collections/core-washed">Shop Core Washed <Icon name="arrow" /></a>
+    </div>
+  </section>
+</Base>
+<style>
+  .about-hero { position: relative; height: 88svh; min-height: 520px; display: flex; align-items: flex-end; overflow: hidden; }
+  .about-hero__media { position: absolute; inset: 0; }
+  .about-hero__media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(8,8,8,.9), rgba(8,8,8,.1) 60%, rgba(8,8,8,.4)); }
+  .about-hero__copy { position: relative; padding-bottom: clamp(40px, 7vw, 96px); }
+  .about-hero__copy .display { font-size: clamp(48px, 8vw, 128px); margin-top: 18px; }
+
+  .manifesto { padding-block: clamp(64px, 10vw, 160px); display: grid; gap: 36px; }
+  .manifesto__lead { font-size: clamp(28px, 3.6vw, 56px); line-height: 1.08; max-width: 22ch; letter-spacing: 0.06em; }
+  .manifesto__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 980px; color: var(--smoke); }
+
+  .pillars { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-block: 1px solid var(--line); }
+  .pillar { padding: clamp(28px, 3vw, 48px) var(--gutter); display: grid; gap: 14px; align-content: start; }
+  .pillar + .pillar { border-left: 1px solid var(--line); }
+  .pillar .title { font-size: 34px; letter-spacing: 0.14em; }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; min-height: 80vh; }
+  .split__media { min-height: 520px; }
+  .split__copy { display: grid; align-content: center; justify-items: start; gap: 24px; padding: clamp(40px, 6vw, 100px); }
+  .split__copy :global(.split__mono) { width: 56px; color: var(--bone); }
+  .split__mark { font-size: clamp(24px, 2.6vw, 40px); }
+  .split__copy .muted { max-width: 44ch; }
+
+  @media (max-width: 900px) {
+    .manifesto__cols, .split { grid-template-columns: 1fr; }
+    .pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .pillar .title { font-size: 26px; }
+    .pillar:nth-child(3) { border-left: 0; }
+    .pillar:nth-child(n + 3) { border-top: 1px solid var(--line); }
+  }
+</style>

@@ -1,0 +1,57 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../config/site';
+---
+<Base title="Contact">
+  <div class="page">
+    <PageHead eyebrow="Contact" title="Get In Touch" lede="Orders, sizing, wholesale, collaborations. We reply within two business days (AEST)." />
+    <section class="wrap section contact">
+      <form class="cform" data-contact novalidate>
+        <div><label class="lbl micro" for="c-name">Name</label><input class="field" id="c-name" name="name" autocomplete="name" required /></div>
+        <div><label class="lbl micro" for="c-email">Email</label><input class="field" id="c-email" name="email" type="email" autocomplete="email" required /></div>
+        <div><label class="lbl micro" for="c-topic">Topic</label>
+          <select class="field" id="c-topic" name="topic">
+            <option>Order enquiry</option><option>Sizing</option><option>Returns</option><option>Collaboration</option><option>Wholesale</option><option>Other</option>
+          </select>
+        </div>
+        <div><label class="lbl micro" for="c-msg">Message</label><textarea class="field" id="c-msg" name="message" required></textarea></div>
+        <button class="btn btn--solid" type="submit">Send Message <Icon name="arrow" /></button>
+        <p class="micro muted" role="status" data-contact-msg></p>
+      </form>
+      <aside class="cinfo">
+        <div><p class="micro muted">Email</p><a class="u-link" href="mailto:hello@lanechange.com.au">hello@lanechange.com.au</a></div>
+        <div><p class="micro muted">Collabs</p><a class="u-link" href="mailto:collabs@lanechange.com.au">collabs@lanechange.com.au</a></div>
+        <div><p class="micro muted">Social</p>
+          <a class="u-link" href={site.social.instagram} target="_blank" rel="noopener noreferrer">Instagram</a><br />
+          <a class="u-link" href={site.social.tiktok} target="_blank" rel="noopener noreferrer">TikTok</a><br />
+          <a class="u-link" href={site.social.youtube} target="_blank" rel="noopener noreferrer">YouTube</a>
+        </div>
+        <div><p class="micro muted">Based</p><p>{site.origin}</p></div>
+      </aside>
+    </section>
+  </div>
+</Base>
+<script>
+  const f = document.querySelector<HTMLFormElement>('[data-contact]')!;
+  f.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const msg = f.querySelector('[data-contact-msg]')!;
+    const bad = Array.from(f.querySelectorAll<HTMLInputElement>('[required]')).filter((i) => !i.checkValidity() || !i.value.trim());
+    f.querySelectorAll('[aria-invalid]').forEach((i) => i.removeAttribute('aria-invalid'));
+    if (bad.length) { bad.forEach((i) => i.setAttribute('aria-invalid', 'true')); bad[0].focus(); msg.textContent = 'Complete the highlighted fields.'; return; }
+    f.reset();
+    msg.textContent = 'Message received. We will be in touch.';
+  });
+</script>
+<style>
+  .contact { display: grid; grid-template-columns: 1.4fr 1fr; gap: clamp(32px, 8vw, 140px); }
+  .cform { display: grid; gap: 18px; max-width: 640px; justify-items: start; }
+  .cform > div { width: 100%; }
+  select.field { background: var(--black); }
+  .field[aria-invalid='true'] { border-color: var(--signal); }
+  .cinfo { display: grid; gap: 28px; align-content: start; text-transform: uppercase; letter-spacing: var(--track-xs); font-size: 12px; }
+  .cinfo .micro { margin-bottom: 8px; }
+  @media (max-width: 800px) { .contact { grid-template-columns: 1fr; } }
+</style>

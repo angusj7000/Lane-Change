@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import Photo from '../../components/Photo.astro';
+import Listing from '../../components/Listing.astro';
+import { collections, inCollection } from '../../data/products';
+
+export function getStaticPaths() {
+  return collections.map((c) => ({ params: { slug: c.slug }, props: { c } }));
+}
+const { c } = Astro.props;
+const items = inCollection(c.slug);
+---
+<Base title={c.title} description={`${c.title} — ${c.intro}`} header="overlay" ogImage={c.image}>
+  <section class="banner">
+    <div class="banner__media media">
+      <Photo src={c.image} alt="" sizes="100vw" widths={[720, 1080, 1440, 1920]} eager position="60% 35%" />
+    </div>
+    <div class="banner__copy wrap">
+      <p class="eyebrow eyebrow--wide reveal">International Street Sports</p>
+      <h1 class="display banner__title reveal" style="--d:.08s">{c.title}</h1>
+      <p class="micro reveal" style="--d:.16s">{c.season}</p>
+      <p class="banner__intro reveal" style="--d:.24s">{c.intro}</p>
+    </div>
+  </section>
+  <Listing items={items} />
+</Base>
+<style>
+  .banner { position: relative; height: clamp(440px, 64vh, 720px); display: flex; align-items: flex-end; overflow: hidden; }
+  .banner__media { position: absolute; inset: 0; }
+  .banner__media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(8,8,8,.85), rgba(8,8,8,.15) 60%, rgba(8,8,8,.35)); }
+  .banner__copy { position: relative; padding-bottom: clamp(32px, 5vw, 64px); display: grid; gap: 14px; }
+  .banner__title { font-size: clamp(56px, 10vw, 150px); letter-spacing: 0.06em; }
+  .banner__intro { max-width: 48ch; color: var(--bone); font-size: 13px; }
+</style>

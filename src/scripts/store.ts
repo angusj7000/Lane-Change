@@ -82,9 +82,17 @@ function bindLineControls(root: HTMLElement) {
     const { slug = '', size = '' } = li.dataset;
     const line = cart.find((l) => l.slug === slug && l.size === size);
     if (!line) return;
-    if (t.closest('[data-remove]')) cartApi.set(slug, size, 0);
+    if (t.closest('[data-remove]')) {
+      cartApi.set(slug, size, 0);
+      root.closest<HTMLElement>('[role=dialog]')?.querySelector<HTMLElement>('[data-cart-close]')?.focus();
+    }
     const q = t.closest<HTMLElement>('[data-qty]');
-    if (q) cartApi.set(slug, size, line.qty + Number(q.dataset.qty));
+    if (q) {
+      cartApi.set(slug, size, line.qty + Number(q.dataset.qty));
+      // lines re-render; put focus back on the same control so keyboard users stay in place
+      const sel = `.cart-line[data-slug="${CSS.escape(slug)}"][data-size="${CSS.escape(size)}"] [data-qty="${q.dataset.qty}"]`;
+      (root.querySelector<HTMLElement>(sel) ?? root.closest<HTMLElement>('[role=dialog]')?.querySelector<HTMLElement>('[data-cart-close]'))?.focus();
+    }
   });
 }
 
@@ -138,7 +146,7 @@ function closeCart() {
 document.querySelectorAll('[data-cart-open]').forEach((b) => b.addEventListener('click', openCart));
 document.querySelectorAll('[data-cart-close]').forEach((b) => b.addEventListener('click', closeCart));
 scrim?.addEventListener('click', closeCart);
-drawer?.addEventListener('keydown', (e) => e.key === 'Escape' && closeCart());
+document.addEventListener('keydown', (e) => e.key === 'Escape' && closeCart());
 if (itemsEl) bindLineControls(itemsEl);
 export { bindLineControls, bySlug, catalog };
 
@@ -205,7 +213,7 @@ function closeSearch() {
 }
 document.querySelectorAll('[data-search-open]').forEach((b) => b.addEventListener('click', openSearch));
 search?.querySelectorAll('[data-search-close]').forEach((b) => b.addEventListener('click', closeSearch));
-search?.addEventListener('keydown', (e) => e.key === 'Escape' && closeSearch());
+document.addEventListener('keydown', (e) => e.key === 'Escape' && closeSearch());
 sInput?.addEventListener('input', () => {
   if (!sResults) return;
   const q = sInput.value;

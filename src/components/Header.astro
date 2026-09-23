@@ -167,6 +167,10 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     .bar__right { gap: 0; margin-right: -10px; }
     .bag__count { display: none; }
     .bag { position: relative; }
+    .bag.has-items::after {
+      content: ''; position: absolute; top: 11px; right: 10px;
+      width: 6px; height: 6px; border-radius: 50%; background: var(--bone);
+    }
   }
 
   /* ----- mobile menu ----- */
@@ -190,6 +194,6 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
   }
   .mobile-menu__nav .display { font-size: clamp(40px, 12vw, 64px); letter-spacing: 0.04em; }
   .mobile-menu__sub { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 10px; color: var(--smoke); }
-  .mobile-menu__foot { display: flex; gap: 22px; justify-content: space-between; padding-top: 28px; }
+  .mobile-menu__foot { display: flex; flex-wrap: wrap; gap: 12px 22px; justify-content: space-between; padding-top: 28px; }
   @keyframes menu-in { to { opacity: 1; transform: none; } }
 </style>

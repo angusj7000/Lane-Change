@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Listing from '../components/Listing.astro';
+import { products } from '../data/products';
+---
+<Base title="Shop" description="Shop Lane Change — oversized washed tees and heavyweight hoodies. International Street Sports.">
+  <div class="page">
+    <PageHead title="Shop All" lede="Heavyweight. Washed. Oversized. Every piece built for the street, the gym and the long drive home." />
+    <Listing items={products} />
+  </div>
+</Base>

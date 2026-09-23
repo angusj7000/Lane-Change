@@ -1,0 +1,88 @@
+---
+// Product listing with category filter + sort, used by /shop and collections.
+import ProductCard from './ProductCard.astro';
+import type { Product } from '../data/products';
+
+interface Props { items: Product[]; filters?: boolean }
+const { items, filters = true } = Astro.props;
+const cats = [...new Set(items.map((p) => p.category))];
+---
+<section class="listing wrap">
+  <div class="listing__bar">
+    <p class="micro muted"><span data-count>{items.length}</span> products</p>
+    {filters && cats.length > 1 && (
+      <div class="filters" role="group" aria-label="Filter by category">
+        <button class="micro u-link" type="button" aria-pressed="true" data-filter="all">All</button>
+        {cats.map((c) => <button class="micro u-link" type="button" aria-pressed="false" data-filter={c}>{c}</button>)}
+      </div>
+    )}
+    <label class="sort micro">
+      <span class="muted">Sort</span>
+      <select data-sort>
+        <option value="featured">Featured</option>
+        <option value="price-asc">Price, low — high</option>
+        <option value="price-desc">Price, high — low</option>
+        <option value="name">A — Z</option>
+      </select>
+    </label>
+  </div>
+  <div class="grid-products" data-listing>
+    {items.map((p, i) => (
+      <div data-item data-cat={p.category} data-price={p.price} data-name={p.name} data-i={i}>
+        <ProductCard product={p} index={i} sizes="(max-width: 700px) 50vw, (max-width: 1100px) 33vw, 25vw" />
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  const grid = document.querySelector<HTMLElement>('[data-listing]');
+  const items = Array.from(document.querySelectorAll<HTMLElement>('[data-item]'));
+  const count = document.querySelector('[data-count]');
+  document.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((b) =>
+    b.addEventListener('click', () => {
+      document.querySelectorAll('[data-filter]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      let n = 0;
+      items.forEach((it) => {
+        const show = b.dataset.filter === 'all' || it.dataset.cat === b.dataset.filter;
+        it.hidden = !show;
+        if (show) n++;
+      });
+      if (count) count.textContent = String(n);
+    }),
+  );
+  document.querySelector<HTMLSelectElement>('[data-sort]')?.addEventListener('change', (e) => {
+    const v = (e.target as HTMLSelectElement).value;
+    const sorted = [...items].sort((a, b) => {
+      if (v === 'price-asc') return +a.dataset.price! - +b.dataset.price!;
+      if (v === 'price-desc') return +b.dataset.price! - +a.dataset.price!;
+      if (v === 'name') return a.dataset.name!.localeCompare(b.dataset.name!);
+      return +a.dataset.i! - +b.dataset.i!;
+    });
+    sorted.forEach((it) => grid?.appendChild(it));
+  });
+</script>
+
+<style>
+  .listing { padding-block: 28px clamp(64px, 8vw, 120px); }
+  .listing__bar {
+    display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+    padding-bottom: 20px; margin-bottom: 32px; border-bottom: 1px solid var(--line);
+  }
+  .filters { display: flex; gap: 22px; margin-left: auto; }
+  .filters [aria-pressed='true'] { background-size: 100% 1px; }
+  .sort { display: flex; align-items: center; gap: 10px; }
+  .filters + .sort { margin-left: 24px; }
+  .listing__bar > p + .sort { margin-left: auto; }
+  .sort select {
+    background: transparent; border: 0; border-bottom: 1px solid var(--line-strong);
+    padding: 6px 4px; font-size: 10px; letter-spacing: var(--track-sm); text-transform: uppercase;
+    border-radius: 0;
+  }
+  .sort option { background: var(--ink); }
+  [data-item][hidden] { display: none; }
+  @media (max-width: 700px) {
+    .filters { margin-left: 0; order: 3; width: 100%; }
+    .filters + .sort { margin-left: auto; }
+  }
+</style>

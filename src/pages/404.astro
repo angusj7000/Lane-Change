@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import Brand from '../components/Brand.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Wrong Turn">
+  <section class="nf">
+    <Brand mark="star" class="nf__star" />
+    <p class="eyebrow eyebrow--wide">404 — Wrong Turn</p>
+    <h1 class="display">Change Lanes.</h1>
+    <p class="muted">This road doesn't go anywhere. Let's get you back on track.</p>
+    <a class="btn btn--solid" href="/">Back Home <Icon name="arrow" /></a>
+  </section>
+</Base>
+<style>
+  .nf { min-height: 90svh; display: grid; place-content: center; justify-items: center; gap: 20px; text-align: center; padding: var(--header-h) var(--gutter) 64px; }
+  .nf :global(.nf__star) { width: 28px; color: var(--bone); }
+  .nf .display { font-size: clamp(56px, 11vw, 160px); }
+</style>

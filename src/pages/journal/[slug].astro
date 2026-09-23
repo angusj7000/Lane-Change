@@ -1,0 +1,40 @@
+---
+import Base from '../../layouts/Base.astro';
+import Photo from '../../components/Photo.astro';
+import Brand from '../../components/Brand.astro';
+import Icon from '../../components/Icon.astro';
+import { posts } from '../../data/journal';
+
+export function getStaticPaths() {
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+const { post } = Astro.props;
+const fmt = new Date(post.date).toLocaleDateString('en-AU', { day: '2-digit', month: 'long', year: 'numeric' });
+---
+<Base title={post.title} description={post.excerpt} header="overlay" ogImage={post.image}>
+  <article>
+    <header class="art-hero">
+      <div class="art-hero__media media"><Photo src={post.image} alt="" sizes="100vw" widths={[720, 1080, 1440, 1920]} eager /></div>
+      <div class="wrap art-hero__copy">
+        <p class="micro"><span>{post.tag}</span> — <time datetime={post.date}>{fmt}</time></p>
+        <h1 class="display">{post.title}</h1>
+      </div>
+    </header>
+    <div class="wrap body">
+      <p class="lead title">{post.excerpt}</p>
+      {post.body.map((para) => <p>{para}</p>)}
+      <Brand mark="star" class="end-star" />
+      <a class="link-arrow" href="/journal">Back to Journal <Icon name="arrow" /></a>
+    </div>
+  </article>
+</Base>
+<style>
+  .art-hero { position: relative; height: 76svh; min-height: 480px; display: flex; align-items: flex-end; overflow: hidden; }
+  .art-hero__media { position: absolute; inset: 0; }
+  .art-hero__media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(8,8,8,.9), rgba(8,8,8,.15) 60%, rgba(8,8,8,.4)); }
+  .art-hero__copy { position: relative; padding-bottom: clamp(36px, 6vw, 80px); display: grid; gap: 18px; }
+  .art-hero__copy .display { font-size: clamp(44px, 7vw, 110px); max-width: 14ch; }
+  .body { max-width: 760px; padding-block: clamp(56px, 8vw, 120px); display: grid; gap: 24px; color: var(--smoke); font-size: 15px; line-height: 1.85; }
+  .lead { color: var(--bone); font-size: clamp(24px, 2.6vw, 34px); letter-spacing: 0.06em; line-height: 1.2; }
+  .body :global(.end-star) { width: 18px; color: var(--bone); margin-block: 24px; }
+</style>

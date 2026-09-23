@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+---
+<Base title="Search">
+  <div class="page">
+    <PageHead eyebrow="Search" title="Find Your Lane">
+      <form class="sform" action="/search" method="get" role="search">
+        <label class="sr-only" for="q">Search products</label>
+        <input class="field" id="q" name="q" type="search" placeholder="Search tees, hoodies, colours" data-q />
+      </form>
+    </PageHead>
+    <section class="wrap section">
+      <p class="micro muted" data-summary aria-live="polite"></p>
+      <ul class="grid-products results" data-results></ul>
+    </section>
+  </div>
+</Base>
+<script>
+  import { searchCatalog, resultHTML, catalog } from '../scripts/store';
+  const input = document.querySelector<HTMLInputElement>('[data-q]')!;
+  const out = document.querySelector<HTMLElement>('[data-results]')!;
+  const summary = document.querySelector<HTMLElement>('[data-summary]')!;
+  const run = () => {
+    const q = input.value.trim();
+    const res = q ? searchCatalog(q) : catalog;
+    summary.textContent = q ? `${res.length} result${res.length === 1 ? '' : 's'} for “${q}”` : 'All products';
+    out.innerHTML = res.map(resultHTML).join('');
+    const url = new URL(location.href);
+    q ? url.searchParams.set('q', q) : url.searchParams.delete('q');
+    history.replaceState(null, '', url);
+  };
+  input.value = new URLSearchParams(location.search).get('q') ?? '';
+  input.addEventListener('input', run);
+  run();
+</script>
+<style>
+  .sform { margin-top: 28px; max-width: 560px; }
+  .results { margin-top: 28px; }
+  .results :global(a) { display: grid; gap: 8px; text-align: center; }
+  .results :global(img) { width: 100%; aspect-ratio: 1; object-fit: cover; background: #0d0d0d; }
+</style>

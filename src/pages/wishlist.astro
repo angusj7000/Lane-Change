@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Wishlist">
+  <div class="page">
+    <PageHead eyebrow="Saved" title="Wishlist" lede="Pieces you've marked for later. Saved on this device." />
+    <section class="wrap section">
+      <ul class="grid-products" data-wish-grid></ul>
+      <div class="empty-state" data-wish-empty hidden>
+        <p class="title">Nothing saved yet</p>
+        <p class="muted">Tap the heart on any piece to keep it here.</p>
+        <a class="btn" href="/shop">Shop All <Icon name="arrow" /></a>
+      </div>
+    </section>
+  </div>
+</Base>
+<script>
+  import { wishApi, bySlug, resultHTML } from '../scripts/store';
+  const grid = document.querySelector<HTMLElement>('[data-wish-grid]')!;
+  const empty = document.querySelector<HTMLElement>('[data-wish-empty]')!;
+  const render = () => {
+    const items = wishApi.list().map((s) => bySlug.get(s)).filter((p) => p !== undefined);
+    grid.innerHTML = items.map((p) => resultHTML(p).replace('</a></li>', `</a><button class="micro muted u-link wish-remove" type="button" data-wish="${p.slug}" aria-pressed="true">Remove</button></li>`)).join('');
+    empty.hidden = items.length > 0;
+  };
+  document.addEventListener('lc:wish', render);
+  render();
+</script>
+<style>
+  [data-wish-grid] :global(li) { display: grid; gap: 10px; }
+  [data-wish-grid] :global(a) { display: grid; gap: 8px; text-align: center; }
+  [data-wish-grid] :global(img) { width: 100%; aspect-ratio: 1; object-fit: cover; background: #0d0d0d; }
+  [data-wish-grid] :global(.wish-remove) { justify-self: center; }
+</style>
