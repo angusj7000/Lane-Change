@@ -1,0 +1,31 @@
+{% render 'page-head', title: section.settings.title, lede: section.settings.lede %}
+<section class="cols">
+  {%- for collection in collections -%}
+    {%- if collection.handle == 'frontpage' -%}{%- continue -%}{%- endif -%}
+    <a class="col has-arrow" href="{{ collection.url }}">
+      <div class="col__media media reveal-img" style="--d: {{ forloop.index0 | modulo: 3 | times: 0.1 }}s">
+        {%- assign cimg = collection.image | default: collection.featured_image -%}
+        {%- if cimg -%}
+          {{ cimg | image_url: width: 1600 | image_tag: widths: '720, 1080, 1600', sizes: '(max-width: 800px) 100vw, 50vw', loading: 'lazy', alt: '' }}
+        {%- else -%}
+          <img src="{{ 'category-story.jpg' | asset_url }}" alt="" loading="lazy" width="1600" height="815">
+        {%- endif -%}
+      </div>
+      <div class="col__copy">
+        <h2 class="title col__title">{{ collection.title }} {% render 'icon', name: 'arrow' %}</h2>
+        <p class="micro muted">{{ 'collections.products_count' | t: count: collection.products_count }}</p>
+      </div>
+    </a>
+  {%- endfor -%}
+</section>
+
+{% schema %}
+{
+  "name": "Collections list",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Collections" },
+    { "type": "text", "id": "lede", "label": "Intro", "default": "Different lanes. Same vision. Each drop is a chapter of the same story." }
+  ]
+}
+{% endschema %}

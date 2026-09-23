@@ -1,0 +1,17 @@
+<section class="band">
+  {% render 'logo-star', class: 'band__star' %}
+  <p class="serif-mark band__mark">{{ section.settings.title }}</p>
+  {%- if section.settings.subtitle != blank -%}<p class="eyebrow eyebrow--wide">{{ section.settings.subtitle }}</p>{%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Text band",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Designed To Win" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "International Street Sports" }
+  ],
+  "presets": [{ "name": "Text band" }]
+}
+{% endschema %}

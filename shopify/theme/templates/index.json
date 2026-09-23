@@ -1,0 +1,45 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "eyebrow": "International Street Sports",
+        "heading_1": "Different Lanes.",
+        "heading_2": "Same",
+        "heading_2_accent": "Vision.",
+        "text": "<p>Built for bigger moves. Australian born.<br/>Global minded. Street sports culture, redefined.</p>",
+        "button_1_label": "Shop Now",
+        "button_1_link": "/collections/all",
+        "button_2_label": "View Collection",
+        "button_2_link": "/collections/core-washed",
+        "side_list": "Street\nSports\nLifestyle\nProgress\nDaily",
+        "overlay": 0,
+        "focal": "62% 30%"
+      }
+    },
+    "categories": {
+      "type": "category-strip",
+      "blocks": {
+        "tees": { "type": "panel", "settings": { "title": "Tees", "text": "Everyday essentials.\nBuilt different.", "fallback": "category-tees", "link": "/collections/tees", "show_star": true } },
+        "hoodies": { "type": "panel", "settings": { "title": "Hoodies", "text": "Bigger moves.\nColder days.", "fallback": "category-hoodies", "link": "/collections/hoodies" } },
+        "story": { "type": "panel", "settings": { "title": "Our Story", "text": "Australian born.\nGlobal minded.", "fallback": "category-story", "link": "/pages/about" } }
+      },
+      "block_order": ["tees", "hoodies", "story"],
+      "settings": { "label": "Shop by category" }
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": { "heading": "Featured Collection", "collection": "core-washed", "limit": 5, "columns": 5, "show_more_tile": true }
+    },
+    "statement": {
+      "type": "brand-statement",
+      "settings": {
+        "title": "Lane Change",
+        "subtitle": "International Street Sports",
+        "left_text": "Same\nDirection|Different\nLanes",
+        "right_text": "Drive\nProgress\nDaily"
+      }
+    }
+  },
+  "order": ["hero", "categories", "featured", "statement"]
+}

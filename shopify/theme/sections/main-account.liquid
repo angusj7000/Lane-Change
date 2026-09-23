@@ -1,0 +1,36 @@
+{%- assign t_title = 'customer.account' | t -%}
+{% render 'page-head', eyebrow: customer.name, title: t_title %}
+<section class="wrap section acct">
+  <div>
+    <p class="eyebrow">{{ 'customer.orders' | t }}</p>
+    {%- paginate customer.orders by 20 -%}
+      {%- if customer.orders.size > 0 -%}
+        <table class="orders micro">
+          <thead><tr><th>{{ 'customer.order' | t }}</th><th>{{ 'customer.date' | t }}</th><th>{{ 'customer.payment_status' | t }}</th><th>{{ 'customer.fulfillment_status' | t }}</th><th>{{ 'customer.total' | t }}</th></tr></thead>
+          <tbody>
+            {%- for order in customer.orders -%}
+              <tr>
+                <td><a class="u-link" href="{{ order.customer_url }}">{{ order.name }}</a></td>
+                <td>{{ order.created_at | date: '%d %b %Y' }}</td>
+                <td>{{ order.financial_status_label }}</td>
+                <td>{{ order.fulfillment_status_label }}</td>
+                <td>{% render 'price', amount: order.total_price %}</td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+      {%- else -%}
+        <p class="muted">{{ 'customer.no_orders' | t }}</p>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+  <div class="acct__new">
+    <p class="eyebrow">{{ 'customer.default_address' | t }}</p>
+    <div class="muted">{{ customer.default_address | format_address }}</div>
+    <a class="btn" href="{{ routes.account_addresses_url }}">{{ 'customer.view_addresses' | t }} ({{ customer.addresses_count }})</a>
+    <a class="micro u-link" href="{{ routes.account_logout_url }}">{{ 'customer.logout' | t }}</a>
+  </div>
+</section>
+{% schema %}
+{ "name": "Customer account", "tag": "div", "settings": [] }
+{% endschema %}

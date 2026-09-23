@@ -1,0 +1,42 @@
+{%- layout none -%}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ 'gift_card.title' | t }} — {{ shop.name }}</title>
+    <style>
+      @font-face { font-family: 'Barlow Condensed'; font-weight: 600; font-display: swap; src: url({{ 'barlow-condensed-latin-600-normal.woff2' | asset_url }}) format('woff2'); }
+      @font-face { font-family: 'IBM Plex Mono'; font-weight: 400; font-display: swap; src: url({{ 'ibm-plex-mono-latin-400-normal.woff2' | asset_url }}) format('woff2'); }
+    </style>
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'vendor/qrcode.js' | shopify_asset_url }}" defer></script>
+    {{ content_for_header }}
+  </head>
+  <body class="template-gift-card">
+    <main class="nf">
+      {% render 'logo-wordmark', class: 'pw__logo' %}
+      <p class="eyebrow eyebrow--wide">{{ 'gift_card.title' | t }}</p>
+      {%- assign gc_balance = gift_card.balance -%}
+      <h1 class="display">{% render 'price', amount: gc_balance %}</h1>
+      {%- if gift_card.expired -%}<p class="micro buy__msg">{{ 'gift_card.expired' | t }}</p>{%- endif -%}
+      {%- unless gift_card.enabled -%}<p class="micro buy__msg">{{ 'gift_card.disabled' | t }}</p>{%- endunless -%}
+      {%- if gift_card.expires_on -%}{%- assign gc_exp = gift_card.expires_on | date: '%d %b %Y' -%}<p class="micro muted">{{ 'gift_card.expires_on' | t: date: gc_exp }}</p>{%- endif -%}
+      <p class="micro">{{ 'gift_card.code' | t }}</p>
+      <p class="title">{{ gift_card.code | format_code }}</p>
+      <div id="QrCode" data-identifier="{{ gift_card.qr_identifier }}"></div>
+      <p class="micro muted">{{ 'gift_card.use' | t: shop: shop.name }}</p>
+      <div class="hero__cta">
+        <a class="btn btn--solid" href="{{ shop.url }}">{{ 'gift_card.shop' | t }}</a>
+        <button class="btn" onclick="window.print()">{{ 'gift_card.print' | t }}</button>
+      </div>
+      {%- if gift_card.pass_url -%}<a href="{{ gift_card.pass_url }}"><img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" width="120" height="40" alt="Add to Apple Wallet" loading="lazy"></a>{%- endif -%}
+    </main>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var el = document.getElementById('QrCode');
+        if (window.QRCode && el) new QRCode(el, { text: el.dataset.identifier, width: 120, height: 120 });
+      });
+    </script>
+  </body>
+</html>

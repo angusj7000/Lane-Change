@@ -1,0 +1,268 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign family_tag = ''
+  assign badge = ''
+  for tag in product.tags
+    if tag contains 'family:'
+      assign family_tag = tag
+    elsif tag contains 'badge:'
+      assign badge = tag | remove_first: 'badge:'
+    endif
+  endfor
+
+  assign ptype = product.type | downcase
+  if ptype contains 'hoodie' or ptype contains 'crew'
+    assign features = settings.features_hoodies
+  elsif ptype contains 'cap' or ptype contains 'hat' or ptype contains 'accessor'
+    assign features = settings.features_accessories
+  else
+    assign features = settings.features_tees
+  endif
+  assign features = features | split: ','
+
+  assign colour_option = nil
+  for option in product.options_with_values
+    assign oname = option.name | downcase
+    if oname == 'color' or oname == 'colour'
+      assign colour_option = option
+    endif
+  endfor
+
+  assign desc_parts = product.description | split: '<h6>'
+  assign view_names = 'Front,Back,Side,Detail,Fabric,Fit' | split: ','
+  assign coming_soon = false
+  if product.tags contains 'coming-soon'
+    assign coming_soon = true
+  endif
+-%}
+
+<div class="product-page">
+  <section class="pdp" data-product-section data-section-id="{{ section.id }}">
+    <div class="pdp__gallery" aria-label="Product images">
+      <div class="gallery__track" data-gallery-track tabindex="0">
+        {%- for media in product.media -%}
+          {%- liquid
+            assign label = view_names[forloop.index0] | default: 'View'
+            if media.alt contains '—'
+              assign label = media.alt | split: '—' | last | strip
+            endif
+            assign loading = 'lazy'
+            if forloop.index <= 2
+              assign loading = 'eager'
+            endif
+          -%}
+          <figure class="shot" data-view="{{ label | escape }}">
+            <div class="shot__media media">
+              {%- assign media_alt = media.alt | default: product.title -%}
+              {{ media | image_url: width: 1400 | image_tag: widths: '480, 720, 960, 1200, 1400', sizes: '(max-width: 900px) 100vw, 34vw', loading: loading, alt: media_alt }}
+            </div>
+            <figcaption class="micro shot__label"><span>{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span> {{ label }}</figcaption>
+          </figure>
+        {%- else -%}
+          <figure class="shot"><div class="shot__media media">{{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}</div></figure>
+        {%- endfor -%}
+      </div>
+      {%- if product.media.size > 1 -%}
+        <div class="gallery__nav only-mobile" aria-hidden="true">
+          <span class="micro" data-gallery-count>01 / {% if product.media.size < 10 %}0{% endif %}{{ product.media.size }}</span>
+          <span class="micro" data-gallery-label></span>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="pdp__info">
+      <div class="info__sticky">
+        <nav class="micro muted crumbs" aria-label="{{ 'accessibility.breadcrumb' | t }}">
+          <a class="u-link" href="{{ routes.all_products_collection_url }}">Shop</a>
+          {%- if collection -%} / <a class="u-link" href="{{ collection.url }}">{{ collection.title }}</a>
+          {%- elsif product.collections.size > 0 -%} / <a class="u-link" href="{{ product.collections.first.url }}">{{ product.collections.first.title }}</a>{%- endif -%}
+        </nav>
+
+        <p class="eyebrow eyebrow--wide info__brand">{% render 'logo-monogram', class: 'info__mono' %} {{ product.vendor }}</p>
+        <h1 class="display info__name">{{ product.title }}</h1>
+        <p class="info__price title" data-price>
+          {%- render 'price', amount: current_variant.price -%}
+          {%- if current_variant.compare_at_price > current_variant.price %} <s class="muted">{% render 'price', amount: current_variant.compare_at_price %}</s>{% endif -%}
+        </p>
+        {%- if badge != '' -%}<p class="micro info__badge">{{ badge }}</p>{%- endif -%}
+
+        {%- form 'product', product, class: 'buy', data-product-form: '', novalidate: 'novalidate' -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+
+          {%- if colour_option or family_tag != '' -%}
+            {%- assign colour_name = colour_option.selected_value -%}
+            <fieldset class="opt">
+              <legend class="opt__legend micro">{{ 'products.product.colour' | t }} <span class="muted">— {{ colour_name | default: product.title }}</span></legend>
+              <div class="swatches">
+                {%- if family_tag != '' -%}
+                  {%- for p in collections.all.products -%}
+                    {%- if p.tags contains family_tag -%}
+                      {%- liquid
+                        assign sw = '#333'
+                        for tag in p.tags
+                          if tag contains 'swatch:'
+                            assign sw = tag | remove_first: 'swatch:'
+                          endif
+                        endfor
+                        if sw contains '/'
+                          assign sw_parts = sw | split: '/'
+                          assign sw = 'linear-gradient(90deg,' | append: sw_parts[0] | append: ' 50%,' | append: sw_parts[1] | append: ' 50%)'
+                        endif
+                        assign p_colour = p.title
+                        for opt in p.options_with_values
+                          assign on = opt.name | downcase
+                          if on == 'color' or on == 'colour'
+                            assign p_colour = opt.values | first
+                          endif
+                        endfor
+                      -%}
+                      <a href="{{ p.url }}" class="swatch{% if p.id == product.id %} is-current{% endif %}" style="--sw: {{ sw }}" aria-label="{{ p_colour | escape }}" title="{{ p_colour | escape }}"{% if p.id == product.id %} aria-current="true"{% endif %}></a>
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endif -%}
+              </div>
+            </fieldset>
+          {%- endif -%}
+
+          {%- unless product.has_only_default_variant -%}
+            {%- for option in product.options_with_values -%}
+              {%- assign oname = option.name | downcase -%}
+              {%- if oname == 'color' or oname == 'colour' -%}
+                <input type="hidden" value="{{ option.selected_value | escape }}" data-option-index="{{ forloop.index0 }}" data-option-fixed>
+                {%- continue -%}
+              {%- endif -%}
+              {%- assign option_index = forloop.index0 -%}
+              {%- assign single = false -%}
+              {%- if option.values.size == 1 -%}{%- assign single = true -%}{%- endif -%}
+              <fieldset class="opt" data-option-group="{{ forloop.index0 }}">
+                <legend class="opt__legend micro">
+                  {{ option.name }} <span class="muted" data-option-label>— {% if single %}{{ option.values.first }}{% else %}{{ 'products.product.select' | t }}{% endif %}</span>
+                  {%- if oname == 'size' and single == false -%}
+                    <button type="button" class="micro u-link size-guide-btn" data-size-guide>{{ 'products.product.size_guide' | t }}</button>
+                  {%- endif -%}
+                </legend>
+                <div class="sizes" style="--n: {{ option.values.size }}">
+                  {%- for value in option.values -%}
+                    {%- liquid
+                      assign value_available = false
+                      for v in product.variants
+                        if v.options contains value and v.available
+                          assign value_available = true
+                          break
+                        endif
+                      endfor
+                    -%}
+                    <label class="size{% unless value_available %} is-out{% endunless %}">
+                      <input type="radio" class="sr-only" form="noop-{{ section.id }}" name="option-{{ option_index }}" value="{{ value | escape }}" data-option-index="{{ option_index }}"{% unless value_available %} disabled{% endunless %}{% if single and value_available %} checked{% endif %}>
+                      <span>{{ value }}</span>
+                      {%- unless value_available -%}<span class="sr-only">({{ 'products.product.sold_out' | t }})</span>{%- endunless -%}
+                    </label>
+                  {%- endfor -%}
+                </div>
+              </fieldset>
+            {%- endfor -%}
+          {%- endunless -%}
+          <p class="micro buy__msg" role="alert" data-buy-msg></p>
+
+          {%- if product.available -%}
+            <button class="btn btn--solid btn--block buy__add" type="submit" name="add" data-add-button>{{ 'products.product.add_to_cart' | t }} {% render 'icon', name: 'arrow' %}</button>
+          {%- else -%}
+            <button class="btn btn--block" type="button" disabled>{% if coming_soon %}{{ 'products.product.coming_soon' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</button>
+          {%- endif -%}
+          {%- if settings.wishlist_enabled -%}
+            <button class="btn btn--block buy__wish" type="button" data-wish="{{ product.handle }}" aria-pressed="false">
+              {% render 'icon', name: 'heart', px: 16 %} <span>{{ 'products.product.save_to_wishlist' | t }}</span>
+            </button>
+          {%- endif -%}
+          {{ form | payment_terms }}
+        {%- endform -%}
+
+        {%- if section.settings.show_features and features.size > 0 -%}
+          <ul class="features">
+            {%- for f in features -%}<li class="micro">{{ f | strip }}</li>{%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        <div class="accordions">
+          <details open>
+            <summary class="eyebrow">{{ 'products.product.description' | t }} {% render 'icon', name: 'plus', px: 14 %}</summary>
+            <div class="acc__body rte">{{ desc_parts.first }}</div>
+          </details>
+          {%- if desc_parts.size > 1 -%}
+            {%- for part in desc_parts offset: 1 -%}
+              {%- assign acc_title = part | split: '</h6>' | first | strip_html | strip -%}
+              {%- assign acc_body = part | split: '</h6>' | last -%}
+              <details>
+                <summary class="eyebrow">{{ acc_title }} {% render 'icon', name: 'plus', px: 14 %}</summary>
+                <div class="acc__body rte">{{ acc_body }}</div>
+              </details>
+            {%- endfor -%}
+          {%- else -%}
+            {%- for block in section.blocks -%}
+              <details {{ block.shopify_attributes }}>
+                <summary class="eyebrow">{{ block.settings.title }} {% render 'icon', name: 'plus', px: 14 %}</summary>
+                <div class="acc__body rte">{{ block.settings.content }}</div>
+              </details>
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+
+        {%- if settings.free_shipping_threshold > 0 -%}
+          {%- assign threshold_cents = settings.free_shipping_threshold | times: 100 -%}
+          {%- capture threshold -%}{% render 'price', amount: threshold_cents %}{%- endcapture -%}
+          <p class="micro muted ship-note">{{ 'products.product.shipping_note' | t: amount: threshold }}<br>{{ 'products.product.returns_note' | t }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+
+  <dialog class="guide" data-guide aria-labelledby="guide-title-{{ section.id }}">
+    <div class="guide__head">
+      <h2 id="guide-title-{{ section.id }}" class="eyebrow">{{ 'products.product.size_guide' | t }} — {{ product.type }}</h2>
+      <button type="button" aria-label="{{ 'general.close' | t }}" data-guide-close>{% render 'icon', name: 'close' %}</button>
+    </div>
+    <div class="guide__body rte micro">
+      {%- if section.settings.size_guide_page != blank -%}
+        {{ section.settings.size_guide_page.content }}
+      {%- else -%}
+        <p class="muted">Garment measurements in cm, laid flat. Boxy fit — size down for a closer drape.</p>
+        <table>
+          <thead><tr><th>Size</th><th>Chest</th><th>Length</th><th>Shoulder</th><th>Sleeve</th></tr></thead>
+          <tbody>
+            <tr><td>XS</td><td>58</td><td>68</td><td>56</td><td>22</td></tr>
+            <tr><td>S</td><td>60</td><td>70</td><td>58</td><td>23</td></tr>
+            <tr><td>M</td><td>62</td><td>72</td><td>60</td><td>24</td></tr>
+            <tr><td>L</td><td>64</td><td>74</td><td>62</td><td>25</td></tr>
+            <tr><td>XL</td><td>66</td><td>76</td><td>64</td><td>26</td></tr>
+            <tr><td>XXL</td><td>68</td><td>78</td><td>66</td><td>27</td></tr>
+          </tbody>
+        </table>
+      {%- endif -%}
+    </div>
+  </dialog>
+
+  <script type="application/json" data-product-json>{{ product | json }}</script>
+  <script type="application/ld+json">{{ product | structured_data }}</script>
+</div>
+
+{% schema %}
+{
+  "name": "Product",
+  "tag": "div",
+  "settings": [
+    { "type": "checkbox", "id": "show_features", "label": "Show feature grid", "default": true, "info": "Feature text is set per product type in Theme settings → Products." },
+    { "type": "page", "id": "size_guide_page", "label": "Size guide page", "info": "Optional. Leave empty to use the built-in oversized tee chart." }
+  ],
+  "blocks": [
+    {
+      "type": "accordion",
+      "name": "Fallback accordion",
+      "settings": [
+        { "type": "paragraph", "content": "Shown only when the product description has no Heading 6 sections. Add “Fit”, “Fabric” and “Care” as Heading 6 in a product description to give each product its own." },
+        { "type": "text", "id": "title", "label": "Title", "default": "Care" },
+        { "type": "richtext", "id": "content", "label": "Content", "default": "<p>Cold wash inside out. Hang dry. Do not iron the print.</p>" }
+      ]
+    }
+  ]
+}
+{% endschema %}

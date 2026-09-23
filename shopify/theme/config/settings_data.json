@@ -1,0 +1,16 @@
+{
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "brand_line": "International Street Sports",
+      "brand_origin": "AUS — Worldwide",
+      "brand_est": "Est. 2025",
+      "show_grain": true,
+      "cart_type": "drawer",
+      "free_shipping_threshold": 150,
+      "show_currency_code": true,
+      "wishlist_enabled": true,
+      "card_hover_image": true
+    }
+  }
+}

@@ -1,0 +1,11 @@
+<section class="nf">
+  {% render 'logo-star', class: 'nf__star' %}
+  <p class="eyebrow eyebrow--wide">{{ '404.eyebrow' | t }}</p>
+  <h1 class="display">{{ '404.title' | t }}</h1>
+  <p class="muted">{{ '404.text' | t }}</p>
+  <a class="btn btn--solid" href="{{ routes.root_url }}">{{ 'general.back_home' | t }} {% render 'icon', name: 'arrow' %}</a>
+</section>
+
+{% schema %}
+{ "name": "404", "tag": "div", "settings": [] }
+{% endschema %}

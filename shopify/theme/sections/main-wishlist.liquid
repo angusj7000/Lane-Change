@@ -1,0 +1,15 @@
+{%- assign wl_title = 'wishlist.title' | t -%}
+{%- assign wl_lede = 'wishlist.lede' | t -%}
+{% render 'page-head', eyebrow: 'Saved', title: wl_title, lede: wl_lede %}
+<section class="wrap section">
+  <ul class="grid-products" data-wish-grid></ul>
+  <div class="empty-state" data-wish-empty hidden>
+    <p class="title">{{ 'wishlist.empty' | t }}</p>
+    <p class="muted">{{ 'wishlist.empty_text' | t }}</p>
+    <a class="btn" href="{{ routes.all_products_collection_url }}">{{ 'general.shop_all' | t }} {% render 'icon', name: 'arrow' %}</a>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Wishlist", "tag": "div", "settings": [] }
+{% endschema %}

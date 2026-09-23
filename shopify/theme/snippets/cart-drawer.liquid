@@ -1,0 +1,27 @@
+<div class="drawer-scrim" data-cart-scrim hidden></div>
+<aside class="drawer{% if cart.item_count == 0 %} is-empty{% endif %}" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden data-cart-drawer>
+  <div class="drawer__head">
+    <h2 id="cart-title" class="eyebrow">{{ 'general.bag' | t }} <span data-cart-count-inline>({{ cart.item_count }})</span></h2>
+    <button class="drawer__close" type="button" aria-label="{{ 'general.close' | t }}" data-cart-close>{% render 'icon', name: 'close' %}</button>
+  </div>
+  {%- if settings.free_shipping_threshold > 0 -%}
+    <div class="drawer__ship micro" data-ship-progress>
+      <span data-ship-text></span>
+      <span class="ship-bar"><span data-ship-bar></span></span>
+    </div>
+  {%- endif -%}
+  <ul class="drawer__items" data-cart-items></ul>
+  <div class="drawer__empty">
+    <p class="title">{{ 'cart.empty' | t }}</p>
+    <p class="muted">{{ 'cart.empty_text' | t }}</p>
+    <a class="btn" href="{{ routes.all_products_collection_url }}">{{ 'general.shop_all' | t }} {% render 'icon', name: 'arrow' %}</a>
+  </div>
+  <div class="drawer__foot">
+    <div class="drawer__row"><span class="eyebrow">{{ 'cart.subtotal' | t }}</span><span class="eyebrow" data-cart-subtotal>{% render 'price', amount: cart.total_price %}</span></div>
+    <p class="micro muted">{{ 'cart.taxes_note' | t }}</p>
+    <form action="{{ routes.cart_url }}" method="post">
+      <button class="btn btn--solid btn--block" type="submit" name="checkout">{{ 'cart.checkout' | t }} {% render 'icon', name: 'arrow' %}</button>
+    </form>
+    <a class="btn btn--block" href="{{ routes.cart_url }}">{{ 'cart.view_bag' | t }}</a>
+  </div>
+</aside>

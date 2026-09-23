@@ -1,0 +1,8 @@
+{%- comment -%} Usage: {% render 'page-head', eyebrow: '…', title: '…', lede: '…' %} {%- endcomment -%}
+<header class="page-head">
+  <div class="wrap">
+    <p class="eyebrow eyebrow--wide reveal">{{ eyebrow | default: settings.brand_line }}</p>
+    <h1 class="display reveal" style="--d:.08s">{{ title }}</h1>
+    {%- if lede != blank -%}<div class="lede reveal" style="--d:.16s">{{ lede }}</div>{%- endif -%}
+  </div>
+</header>

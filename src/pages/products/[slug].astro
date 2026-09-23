@@ -24,7 +24,6 @@ const views = viewOrder
   // photographed views first; views still awaiting a shoot sit at the end
   .sort((a, b) => Number(!a.image) - Number(!b.image));
 const colourways = colourwaysOf(p);
-const related = products.filter((x) => x.slug !== p.slug && x.status !== 'coming-soon').slice(0, 4);
 const available = p.status !== 'coming-soon';
 const firstImage = p.gallery.front ?? p.gallery.back ?? 'hero-campaign';
 const ldImage = await getImage({ src: img(firstImage), width: 1000, format: 'jpg' });
@@ -34,7 +33,17 @@ const altFor = (view: string) =>
     ? `Model wearing the Lane Change oversized washed tee from behind, showing the boxy fit and dropped shoulders${p.colour.name === 'Washed Black' ? '' : ' (shown in Washed Black)'}.`
     : `${p.name} in ${p.colour.name} — ${view} view.`;
 
-const features = ['Oversized fit', 'Heavyweight cotton', 'Washed finish', 'Dropped shoulders'];
+const featureSets = {
+  tees: ['Oversized fit', 'Heavyweight cotton', 'Washed finish', 'Dropped shoulders'],
+  hoodies: ['Oversized fit', '450gsm fleece', 'Washed finish', 'Dropped shoulders'],
+  accessories: ['Washed cotton twill', '3D embroidery', 'Adjustable strap', 'One size'],
+} as const;
+const features = featureSets[p.category];
+const oneSize = p.sizes.length === 1;
+const related = [
+  ...products.filter((x) => x.slug !== p.slug && x.category === p.category),
+  ...products.filter((x) => x.slug !== p.slug && x.category !== p.category),
+].filter((x) => x.status !== 'coming-soon').slice(0, 4);
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -120,13 +129,13 @@ const jsonLd = {
 
             <fieldset class="opt">
               <legend class="opt__legend micro">
-                Size <span class="muted" data-size-label>— Select</span>
-                <button type="button" class="micro u-link size-guide-btn" data-size-guide>Size guide</button>
+                Size <span class="muted" data-size-label>— {oneSize ? p.sizes[0].label : 'Select'}</span>
+                {!oneSize && <button type="button" class="micro u-link size-guide-btn" data-size-guide>Size guide</button>}
               </legend>
               <div class="sizes" style={`--n:${p.sizes.length}`}>
                 {p.sizes.map((s) => (
                   <label class:list={['size', { 'is-out': !s.available }]}>
-                    <input type="radio" name="size" value={s.label} disabled={!s.available} class="sr-only" />
+                    <input type="radio" name="size" value={s.label} disabled={!s.available} checked={oneSize && s.available} class="sr-only" />
                     <span>{s.label}</span>
                     {!s.available && <span class="sr-only">(sold out)</span>}
                   </label>
@@ -275,8 +284,9 @@ const jsonLd = {
   .shot { position: relative; background: #0d0d0d; }
   .shot__media { aspect-ratio: 4 / 5; background: #0d0d0d; }
   .shot__label {
-    position: absolute; left: 16px; bottom: 14px;
+    position: absolute; left: 12px; bottom: 12px;
     display: flex; gap: 12px; letter-spacing: var(--track-md);
+    padding: 5px 9px; background: rgba(10, 10, 10, 0.62); color: var(--bone);
   }
   .shot__label span { color: var(--smoke); }
   .pending {

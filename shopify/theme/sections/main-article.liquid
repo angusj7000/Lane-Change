@@ -1,0 +1,24 @@
+<article>
+  <header class="art-hero">
+    <div class="art-hero__media media">
+      {%- if article.image -%}
+        {{ article.image | image_url: width: 2400 | image_tag: widths: '720, 1080, 1440, 1920, 2400', sizes: '100vw', loading: 'eager', alt: article.title }}
+      {%- else -%}
+        <img src="{{ 'category-story.jpg' | asset_url }}" alt="" width="1600" height="815">
+      {%- endif -%}
+    </div>
+    <div class="wrap art-hero__copy">
+      <p class="micro">{{ article.tags.first | default: blog.title }} — <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%d %B %Y' }}</time></p>
+      <h1 class="display">{{ article.title }}</h1>
+    </div>
+  </header>
+  <div class="wrap body rte">
+    {{ article.content }}
+    {% render 'logo-star', class: 'end-star' %}
+    <a class="link-arrow" href="{{ blog.url }}">{{ 'blog.back' | t }} {% render 'icon', name: 'arrow' %}</a>
+  </div>
+</article>
+
+{% schema %}
+{ "name": "Article", "tag": "div", "settings": [] }
+{% endschema %}

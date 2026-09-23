@@ -1,0 +1,25 @@
+<section class="section wrap recs" data-recommendations data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.limit }}&intent=related">
+  {%- if recommendations.performed and recommendations.products_count > 0 -%}
+    <div class="section-bar">
+      <h2 class="eyebrow eyebrow--wide">{{ section.settings.heading }}</h2>
+      <a class="link-arrow" href="{{ routes.all_products_collection_url }}">{{ 'general.shop_all' | t }} {% render 'icon', name: 'arrow' %}</a>
+    </div>
+    <div class="related">
+      {%- for rec in recommendations.products -%}
+        {% render 'product-card', product: rec, index: forloop.index0, sizes: '(max-width: 700px) 50vw, 25vw' %}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Product recommendations",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Complete The Lane" },
+    { "type": "range", "id": "limit", "label": "Products", "min": 2, "max": 8, "step": 1, "default": 4 }
+  ],
+  "presets": [{ "name": "Product recommendations" }]
+}
+{% endschema %}

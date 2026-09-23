@@ -1,0 +1,43 @@
+{%- capture search_form -%}
+  <form class="sform" action="{{ routes.search_url }}" method="get" role="search">
+    <label class="sr-only" for="search-page-input">{{ 'general.search' | t }}</label>
+    <input class="field" id="search-page-input" name="q" type="search" value="{{ search.terms | escape }}" placeholder="{{ 'search.placeholder' | t }}">
+    <input type="hidden" name="type" value="product">
+  </form>
+{%- endcapture -%}
+<header class="page-head">
+  <div class="wrap">
+    <p class="eyebrow eyebrow--wide">{{ 'general.search' | t }}</p>
+    <h1 class="display">{{ 'search.title' | t }}</h1>
+    {{ search_form }}
+  </div>
+</header>
+<section class="wrap section">
+  {%- paginate search.results by 24 -%}
+    {%- if search.performed -%}
+      <p class="micro muted">
+        {%- if search.results_count > 0 -%}{{ 'search.results' | t: count: search.results_count, terms: search.terms }}{%- else -%}{{ 'search.no_results' | t: terms: search.terms }}{%- endif -%}
+      </p>
+      <div class="grid-products results">
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}
+            {% render 'product-card', product: item, index: forloop.index0, sizes: '(max-width: 700px) 50vw, 25vw' %}
+          {%- else -%}
+            <a class="result-text" href="{{ item.url }}"><span class="micro muted">{{ item.object_type }}</span><span class="title">{{ item.title }}</span></a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      {%- if paginate.pages > 1 -%}
+        <nav class="pagination micro" aria-label="Pagination">
+          {%- if paginate.previous -%}<a class="u-link" href="{{ paginate.previous.url }}">{{ 'general.previous' | t }}</a>{%- endif -%}
+          <span class="muted">{{ paginate.current_page }} / {{ paginate.pages }}</span>
+          {%- if paginate.next -%}<a class="u-link" href="{{ paginate.next.url }}">{{ 'general.next' | t }}</a>{%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endif -%}
+  {%- endpaginate -%}
+</section>
+
+{% schema %}
+{ "name": "Search", "tag": "div", "settings": [] }
+{% endschema %}

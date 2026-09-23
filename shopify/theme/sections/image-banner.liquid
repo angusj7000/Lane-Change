@@ -1,0 +1,29 @@
+<section class="about-hero">
+  <div class="about-hero__media media">
+    {%- if section.settings.image -%}
+      {{ section.settings.image | image_url: width: 2400 | image_tag: widths: '720, 1080, 1440, 1920, 2400', sizes: '100vw', loading: 'eager', alt: section.settings.image.alt }}
+    {%- else -%}
+      <img src="{{ section.settings.fallback | append: '.jpg' | asset_url }}" alt="" width="1600" height="900">
+    {%- endif -%}
+  </div>
+  <div class="wrap about-hero__copy">
+    <p class="eyebrow eyebrow--wide reveal">{{ section.settings.eyebrow }}</p>
+    <h1 class="display reveal" style="--d:.08s">{{ section.settings.heading | newline_to_br }}</h1>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image banner",
+  "tag": "div",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "select", "id": "fallback", "label": "Placeholder image", "default": "category-story", "options": [
+      { "value": "category-story", "label": "Overpass" }, { "value": "hero-campaign", "label": "Campaign" }, { "value": "brand-statement", "label": "Highway" }
+    ] },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our Story" },
+    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Australian Born.\nGlobal Minded." }
+  ],
+  "presets": [{ "name": "Image banner" }]
+}
+{% endschema %}

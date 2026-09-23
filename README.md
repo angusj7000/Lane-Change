@@ -15,10 +15,19 @@ npm run check     # type-check
 
 Deploy `dist/` to any static host (Netlify, Vercel, Cloudflare Pages, S3).
 
+## Shopify
+
+The store also ships as a ready-to-upload **Shopify theme** plus a **product import CSV**.
+See [`shopify/README.md`](shopify/README.md) for the setup steps.
+
+```bash
+npm run shopify   # products.csv + theme zip + Theme Check
+```
+
 ## Structure
 
 ```
-design/reference/homepage-mockup.png   approved homepage design, the primary visual reference
+design/reference/      homepage mockup (primary reference), brand board, logo sheet, on-model shots
 src/
   assets/brand/        wordmark.svg, monogram.svg (LC), star.svg (compass star)
   assets/images/       all photography, optimised at build (AVIF/WebP, responsive sizes)
@@ -32,13 +41,15 @@ src/
   scripts/ui.ts        header, menus, scroll reveals, newsletter
   scripts/store.ts     bag, wishlist and search (localStorage)
   styles/global.css    design tokens, type system, buttons, motion
-tools/                 scripts that generate the placeholder imagery and logo vectors
+shopify/               Shopify theme (theme/), upload zip, products.csv and the setup guide
+tools/                 imagery + logo pipelines, Shopify CSV export, theme build and Theme Check
 ```
 
 ## Replacing placeholder photography
 
-All current imagery is cut from the approved mockup (`tools/extract_mockup_assets.py`), and the
-product views are generated from it (`tools/build_product_images.py`). To go live, overwrite a
+All current imagery comes from the supplied design files in `design/reference/`:
+the homepage mockup (`tools/extract_mockup_assets.py`, `tools/build_product_images.py`), plus the
+brand board and on-model shots for the extended range (`tools/build_new_products.py`). To go live, overwrite a
 file in `src/assets/images/` with real photography. Keep the same filename and you won't need
 to change any code. Large originals are fine, since Astro resizes and compresses them at build.
 
@@ -54,7 +65,8 @@ To add a view that's still pending (for example the **SIDE** view), add
 `products/<colour>-side.jpg` and set `side: 'products/<colour>-side'` in `src/data/products.ts`.
 Until then, the gallery shows a branded "shoot pending" tile.
 
-Logo files in `src/assets/brand/` are traced from the mockup. When the designer supplies final
+Logo files in `src/assets/brand/` are traced from the supplied artwork (wordmark from the homepage
+mockup, LC monogram from the logo sheet). When the designer supplies final
 vector artwork, replace them using the same filenames. Every placement uses `currentColor`.
 
 ## Going live checklist

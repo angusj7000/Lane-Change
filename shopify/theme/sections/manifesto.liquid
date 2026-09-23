@@ -1,0 +1,22 @@
+<section class="wrap manifesto">
+  <p class="micro muted reveal">{{ section.settings.eyebrow }}</p>
+  <p class="manifesto__lead title reveal" style="--d:.08s">{{ section.settings.lead }}</p>
+  <div class="manifesto__cols reveal" style="--d:.16s">
+    <div class="rte">{{ section.settings.col_1 }}</div>
+    <div class="rte">{{ section.settings.col_2 }}</div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Manifesto",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Est. 2025 — AUS — Worldwide" },
+    { "type": "textarea", "id": "lead", "label": "Lead statement", "default": "Lane Change is not a car brand. It's a culture brand for people who move differently — on the road, on the street, in the gym." },
+    { "type": "richtext", "id": "col_1", "label": "Column 1", "default": "<p>We started in the places everyone ends up: car parks after close, empty roads before sunrise, gyms at 5am. Different people, different disciplines — same drive to get better every day.</p>" },
+    { "type": "richtext", "id": "col_2", "label": "Column 2", "default": "<p>We call it International Street Sports. Heavyweight, washed, oversized clothing designed to be worn into that life, from Australia out to the world. Different lanes. Same vision.</p>" }
+  ],
+  "presets": [{ "name": "Manifesto" }]
+}
+{% endschema %}

@@ -1,0 +1,63 @@
+{%- assign menu = section.settings.menu -%}
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div class="footer__brand reveal">
+      <a href="{{ routes.root_url }}" class="footer__logo" aria-label="{{ shop.name }}">{% render 'logo-wordmark' %}</a>
+      <p class="eyebrow eyebrow--wide">{{ settings.brand_line }}</p>
+      <p class="micro muted footer__est">{{ settings.brand_est }}<br>{{ settings.brand_origin }}</p>
+    </div>
+
+    <nav class="footer__col reveal" style="--d:.08s" aria-label="Footer">
+      <p class="micro muted col-title">{{ section.settings.menu_title }}</p>
+      <ul>
+        {%- for link in menu.links -%}<li><a class="u-link" href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}
+      </ul>
+    </nav>
+
+    <div class="footer__col reveal" style="--d:.16s">
+      <p class="micro muted col-title">{{ section.settings.social_title }}</p>
+      <ul>
+        {%- if settings.social_instagram != blank -%}<li><a class="social" href="{{ settings.social_instagram }}" target="_blank" rel="noopener">{% render 'icon', name: 'instagram', px: 16 %} <span class="u-link">Instagram</span></a></li>{%- endif -%}
+        {%- if settings.social_tiktok != blank -%}<li><a class="social" href="{{ settings.social_tiktok }}" target="_blank" rel="noopener">{% render 'icon', name: 'tiktok', px: 16 %} <span class="u-link">TikTok</span></a></li>{%- endif -%}
+        {%- if settings.social_youtube != blank -%}<li><a class="social" href="{{ settings.social_youtube }}" target="_blank" rel="noopener">{% render 'icon', name: 'youtube', px: 16 %} <span class="u-link">YouTube</span></a></li>{%- endif -%}
+      </ul>
+    </div>
+
+    <div class="footer__news reveal" style="--d:.24s">
+      <h2 class="title news__title">{{ section.settings.newsletter_heading }}</h2>
+      <div class="muted news__copy">{{ section.settings.newsletter_text }}</div>
+      {%- form 'customer', class: 'news__form', id: 'footer-newsletter' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <label class="sr-only" for="news-email">{{ 'newsletter.email' | t }}</label>
+        <input class="field" id="news-email" name="contact[email]" type="email" autocomplete="email" placeholder="{{ 'newsletter.email' | t }}" required>
+        <button class="btn btn--solid" type="submit">{{ 'newsletter.subscribe' | t }} {% render 'icon', name: 'arrow' %}</button>
+        <p class="micro news__msg" role="status">
+          {%- if form.posted_successfully? -%}{{ 'newsletter.success' | t }}{%- elsif form.errors -%}{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}{%- endif -%}
+        </p>
+      {%- endform -%}
+    </div>
+  </div>
+
+  <div class="wrap footer__base">
+    <p class="micro">{{ section.settings.copyright }}</p>
+    <p class="micro muted only-wide">{{ section.settings.center_text }}</p>
+    <p class="micro">{{ settings.brand_origin }}</p>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "enabled_on": { "groups": ["footer"] },
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" },
+    { "type": "text", "id": "menu_title", "label": "Menu heading", "default": "Navigate" },
+    { "type": "text", "id": "social_title", "label": "Social heading", "default": "Follow" },
+    { "type": "text", "id": "newsletter_heading", "label": "Newsletter heading", "default": "Join The Lane" },
+    { "type": "richtext", "id": "newsletter_text", "label": "Newsletter text", "default": "<p>Drops, campaign releases and events before anyone else. No spam — just new roads.</p>" },
+    { "type": "text", "id": "center_text", "label": "Bottom centre text", "default": "Designed to win" },
+    { "type": "text", "id": "copyright", "label": "Copyright line", "default": "© 2025 Lane Change" }
+  ]
+}
+{% endschema %}

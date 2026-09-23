@@ -1,0 +1,38 @@
+{%- assign t_title = 'customer.login' | t -%}
+{%- assign t_eyebrow = 'customer.account' | t -%}
+{% render 'page-head', eyebrow: t_eyebrow, title: t_title %}
+<section class="wrap section acct">
+  <div>
+    <div id="login-panel">
+      {%- form 'customer_login', class: 'acct__form' -%}
+        {%- if form.errors -%}<p class="micro buy__msg" role="alert">{{ form.errors | default_errors }}</p>{%- endif -%}
+        <label class="lbl micro" for="login-email">{{ 'customer.email' | t }}</label>
+        <input class="field" id="login-email" type="email" name="customer[email]" autocomplete="email" required>
+        {%- if form.password_needed -%}
+          <label class="lbl micro" for="login-pass">{{ 'customer.password' | t }}</label>
+          <input class="field" id="login-pass" type="password" name="customer[password]" autocomplete="current-password" required>
+        {%- endif -%}
+        <button class="btn btn--solid btn--block" type="submit">{{ 'customer.login' | t }} {% render 'icon', name: 'arrow' %}</button>
+        <a class="micro muted u-link" href="#recover">{{ 'customer.forgot' | t }}</a>
+      {%- endform -%}
+    </div>
+    <div id="recover" class="recover">
+      <p class="title">{{ 'customer.recover' | t }}</p>
+      <p class="micro muted">{{ 'customer.recover_text' | t }}</p>
+      {%- form 'recover_customer_password', class: 'acct__form' -%}
+        {%- if form.posted_successfully? -%}<p class="micro" role="status">{{ 'customer.recover_success' | t }}</p>{%- endif -%}
+        <label class="lbl micro" for="recover-email">{{ 'customer.email' | t }}</label>
+        <input class="field" id="recover-email" type="email" name="email" autocomplete="email" required>
+        <button class="btn btn--block" type="submit">{{ 'customer.recover' | t }}</button>
+      {%- endform -%}
+    </div>
+  </div>
+  <div class="acct__new">
+    <p class="title">{{ 'customer.new_customer' | t }}</p>
+    <p class="muted">{{ 'customer.new_customer_text' | t }}</p>
+    <a class="btn" href="{{ routes.account_register_url }}">{{ 'customer.register' | t }} {% render 'icon', name: 'arrow' %}</a>
+  </div>
+</section>
+{% schema %}
+{ "name": "Customer login", "tag": "div", "settings": [] }
+{% endschema %}

@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "fit": { "type": "accordion", "settings": { "title": "Fit", "content": "<p>Oversized, boxy fit with dropped shoulders. Take your usual size for the intended drape.</p>" } },
+        "fabric": { "type": "accordion", "settings": { "title": "Fabric", "content": "<p>Heavyweight cotton, garment dyed and washed.</p>" } },
+        "care": { "type": "accordion", "settings": { "title": "Care", "content": "<p>Cold wash inside out. Hang dry. Do not iron the print.</p>" } }
+      },
+      "block_order": ["fit", "fabric", "care"],
+      "settings": { "show_features": true }
+    },
+    "band": { "type": "text-band", "settings": { "title": "Designed To Win", "subtitle": "International Street Sports" } },
+    "recommendations": { "type": "product-recommendations", "settings": { "heading": "Complete The Lane", "limit": 4 } }
+  },
+  "order": ["main", "band", "recommendations"]
+}

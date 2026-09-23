@@ -1,0 +1,53 @@
+{%- assign cart_title = 'cart.title' | t -%}
+{% render 'page-head', eyebrow: shop.name, title: cart_title %}
+<section class="wrap bag-page{% if cart.item_count == 0 %} is-empty{% endif %}">
+  {%- if cart.item_count > 0 -%}
+    <form class="bag__form" action="{{ routes.cart_url }}" method="post" id="cart-form" data-cart-page>
+      <ul class="bag__lines">
+        {%- for item in cart.items -%}
+          <li class="cart-line">
+            <a class="cart-line__img" href="{{ item.url }}">
+              {%- if item.image -%}{{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', alt: item.product.title, width: 120, height: 150 }}{%- endif -%}
+            </a>
+            <div class="cart-line__info">
+              <a class="cart-line__name" href="{{ item.url }}">{{ item.product.title }}</a>
+              {%- unless item.product.has_only_default_variant -%}<p class="micro muted">{{ item.variant.title }}</p>{%- endunless -%}
+              <div class="qty">
+                <label class="sr-only" for="qty-{{ item.key }}">{{ 'cart.quantity' | t }}</label>
+                <input class="qty__input" id="qty-{{ item.key }}" type="number" name="updates[]" value="{{ item.quantity }}" min="0" data-line="{{ forloop.index }}">
+              </div>
+            </div>
+            <div class="cart-line__end">
+              <p class="micro">{% render 'price', amount: item.final_line_price %}</p>
+              <a class="micro muted u-link" href="{{ item.url_to_remove }}">{{ 'cart.remove' | t }}</a>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+      <label class="lbl micro" for="cart-note">{{ 'cart.note' | t }}</label>
+      <textarea class="field" id="cart-note" name="note">{{ cart.note }}</textarea>
+    </form>
+    <aside class="bag__summary">
+      <p class="eyebrow">{{ 'cart.order_summary' | t }}</p>
+      <div class="row"><span class="micro">{{ 'cart.subtotal' | t }}</span><span class="micro">{% render 'price', amount: cart.total_price %}</span></div>
+      {%- for discount in cart.cart_level_discount_applications -%}
+        <div class="row"><span class="micro">{{ discount.title }}</span><span class="micro">-{% render 'price', amount: discount.total_allocated_amount %}</span></div>
+      {%- endfor -%}
+      <p class="micro muted">{{ 'cart.taxes_note' | t }}</p>
+      <button class="btn btn--solid btn--block" type="submit" name="checkout" form="cart-form">{{ 'cart.checkout' | t }} {% render 'icon', name: 'arrow' %}</button>
+      <button class="btn btn--block" type="submit" name="update" form="cart-form">Update</button>
+      <a class="btn btn--block" href="{{ routes.all_products_collection_url }}">{{ 'cart.keep_shopping' | t }}</a>
+      {%- if additional_checkout_buttons -%}<div class="dynamic-checkout">{{ content_for_additional_checkout_buttons }}</div>{%- endif -%}
+    </aside>
+  {%- else -%}
+    <div class="empty-state">
+      <p class="title">{{ 'cart.empty' | t }}</p>
+      <p class="muted">{{ 'cart.empty_text' | t }}</p>
+      <a class="btn" href="{{ routes.all_products_collection_url }}">{{ 'general.shop_all' | t }} {% render 'icon', name: 'arrow' %}</a>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{ "name": "Cart", "tag": "div", "settings": [] }
+{% endschema %}

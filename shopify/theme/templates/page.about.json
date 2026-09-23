@@ -1,0 +1,19 @@
+{
+  "sections": {
+    "banner": { "type": "image-banner", "settings": { "eyebrow": "Our Story", "heading": "Australian Born.\nGlobal Minded.", "fallback": "category-story" } },
+    "manifesto": { "type": "manifesto", "settings": {} },
+    "pillars": {
+      "type": "pillars",
+      "blocks": {
+        "p1": { "type": "pillar", "settings": { "title": "Street", "text": "Car parks, courts, skate spots, late-night meets. The places the culture actually happens." } },
+        "p2": { "type": "pillar", "settings": { "title": "Sports", "text": "Training, discipline, repetition. The gym mindset applied to everything." } },
+        "p3": { "type": "pillar", "settings": { "title": "Automotive", "text": "The setting, never the subject. Engines in the background, people in front." } },
+        "p4": { "type": "pillar", "settings": { "title": "Worldwide", "text": "Australian born, global minded. Built here, worn anywhere." } }
+      },
+      "block_order": ["p1", "p2", "p3", "p4"],
+      "settings": {}
+    },
+    "split": { "type": "image-with-text", "settings": { "button_label": "Shop Core Washed", "button_link": "/collections/core-washed" } }
+  },
+  "order": ["banner", "manifesto", "pillars", "split"]
+}

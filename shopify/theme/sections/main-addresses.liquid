@@ -1,0 +1,37 @@
+{%- assign t_title = 'customer.addresses' | t -%}
+{%- assign t_eyebrow = 'customer.account' | t -%}
+{% render 'page-head', eyebrow: t_eyebrow, title: t_title %}
+<section class="wrap section addresses">
+  {%- paginate customer.addresses by 10 -%}
+    <ul class="addr-list">
+      {%- for address in customer.addresses -%}
+        <li class="addr">
+          {%- if address == customer.default_address -%}<p class="micro">{{ 'customer.default_address' | t }}</p>{%- endif -%}
+          <div class="muted">{{ address | format_address }}</div>
+          <details>
+            <summary class="micro u-link">{{ 'customer.edit' | t }}</summary>
+            {%- form 'customer_address', address -%}
+              {% render 'address-form', form: form, id: address.id %}
+              <button class="btn btn--solid" type="submit">{{ 'customer.save' | t }}</button>
+            {%- endform -%}
+          </details>
+          <form method="post" action="{{ address.url }}" class="addr-delete">
+            <input type="hidden" name="_method" value="delete">
+            <button class="micro muted u-link" type="submit">{{ 'customer.delete' | t }}</button>
+          </form>
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endpaginate -%}
+  <details class="addr-new" {% if customer.addresses_count == 0 %}open{% endif %}>
+    <summary class="btn">{{ 'customer.add_address' | t }}</summary>
+    {%- form 'customer_address', customer.new_address -%}
+      {% render 'address-form', form: form, id: 'new' %}
+      <button class="btn btn--solid" type="submit">{{ 'customer.save' | t }}</button>
+    {%- endform -%}
+  </details>
+  <a class="link-arrow" href="{{ routes.account_url }}">{{ 'customer.return_to_account' | t }} {% render 'icon', name: 'arrow' %}</a>
+</section>
+{% schema %}
+{ "name": "Customer addresses", "tag": "div", "settings": [] }
+{% endschema %}

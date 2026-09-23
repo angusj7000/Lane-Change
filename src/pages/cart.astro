@@ -7,7 +7,7 @@ import { site } from '../config/site';
 <Base title="Bag">
   <div class="page">
     <PageHead eyebrow="Lane Change" title="Your Bag" />
-    <section class="wrap bag" data-bag>
+    <section class="wrap bag-page" data-bag>
       <ul class="bag__lines" data-bag-lines></ul>
       <aside class="bag__summary">
         <p class="eyebrow">Order Summary</p>
@@ -44,16 +44,16 @@ import { site } from '../config/site';
   render();
 </script>
 <style>
-  .bag { display: grid; grid-template-columns: 1fr 380px; gap: clamp(28px, 5vw, 80px); padding-block: 24px 120px; align-items: start; }
+  .bag-page { display: grid; grid-template-columns: 1fr 380px; gap: clamp(28px, 5vw, 80px); padding-block: 24px 120px; align-items: start; }
   .bag__summary { position: sticky; top: calc(var(--header-h) + 24px); display: grid; gap: 16px; padding: 28px; border: 1px solid var(--line); }
   .row { display: flex; justify-content: space-between; }
-  .bag.is-empty .bag__lines, .bag.is-empty .bag__summary { display: none; }
-  .bag :global(.cart-line) { grid-template-columns: 120px 1fr auto; }
-  .bag :global(.cart-line__img img) { width: 120px; height: 150px; }
+  .bag-page.is-empty .bag__lines, .bag-page.is-empty .bag__summary { display: none; }
+  .bag-page :global(.cart-line) { grid-template-columns: 120px 1fr auto; }
+  .bag-page :global(.cart-line__img img) { width: 120px; height: 150px; }
   @media (max-width: 900px) {
-    .bag { grid-template-columns: 1fr; }
+    .bag-page { grid-template-columns: 1fr; }
     .bag__summary { position: static; }
-    .bag :global(.cart-line) { grid-template-columns: 84px 1fr auto; }
-    .bag :global(.cart-line__img img) { width: 84px; height: 105px; }
+    .bag-page :global(.cart-line) { grid-template-columns: 84px 1fr auto; }
+    .bag-page :global(.cart-line__img img) { width: 84px; height: 105px; }
   }
 </style>

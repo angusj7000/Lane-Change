@@ -1,0 +1,32 @@
+<section class="pillars">
+  {%- for block in section.blocks -%}
+    <div class="pillar reveal" style="--d: {{ forloop.index0 | times: 0.08 }}s" {{ block.shopify_attributes }}>
+      <p class="micro muted">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</p>
+      <h2 class="title">{{ block.settings.title }}</h2>
+      <p class="muted">{{ block.settings.text }}</p>
+    </div>
+  {%- endfor -%}
+</section>
+
+{% schema %}
+{
+  "name": "Pillars",
+  "tag": "div",
+  "max_blocks": 4,
+  "blocks": [
+    { "type": "pillar", "name": "Pillar", "settings": [
+      { "type": "text", "id": "title", "label": "Title", "default": "Street" },
+      { "type": "textarea", "id": "text", "label": "Text", "default": "Car parks, courts, skate spots, late-night meets." }
+    ] }
+  ],
+  "presets": [{
+    "name": "Pillars",
+    "blocks": [
+      { "type": "pillar", "settings": { "title": "Street", "text": "Car parks, courts, skate spots, late-night meets. The places the culture actually happens." } },
+      { "type": "pillar", "settings": { "title": "Sports", "text": "Training, discipline, repetition. The gym mindset applied to everything." } },
+      { "type": "pillar", "settings": { "title": "Automotive", "text": "The setting, never the subject. Engines in the background, people in front." } },
+      { "type": "pillar", "settings": { "title": "Worldwide", "text": "Australian born, global minded. Built here, worn anywhere." } }
+    ]
+  }]
+}
+{% endschema %}

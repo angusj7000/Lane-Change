@@ -1,0 +1,19 @@
+{%- assign t_title = 'customer.register' | t -%}
+{% render 'page-head', eyebrow: 'Join The Lane', title: t_title %}
+<section class="wrap section">
+  {%- form 'create_customer', class: 'acct__form' -%}
+    {%- if form.errors -%}<p class="micro buy__msg" role="alert">{{ form.errors | default_errors }}</p>{%- endif -%}
+    <label class="lbl micro" for="reg-first">{{ 'customer.first_name' | t }}</label>
+    <input class="field" id="reg-first" name="customer[first_name]" autocomplete="given-name">
+    <label class="lbl micro" for="reg-last">{{ 'customer.last_name' | t }}</label>
+    <input class="field" id="reg-last" name="customer[last_name]" autocomplete="family-name">
+    <label class="lbl micro" for="reg-email">{{ 'customer.email' | t }}</label>
+    <input class="field" id="reg-email" type="email" name="customer[email]" autocomplete="email" required>
+    <label class="lbl micro" for="reg-pass">{{ 'customer.password' | t }}</label>
+    <input class="field" id="reg-pass" type="password" name="customer[password]" autocomplete="new-password" required>
+    <button class="btn btn--solid btn--block" type="submit">{{ 'customer.register' | t }} {% render 'icon', name: 'arrow' %}</button>
+  {%- endform -%}
+</section>
+{% schema %}
+{ "name": "Customer register", "tag": "div", "settings": [] }
+{% endschema %}

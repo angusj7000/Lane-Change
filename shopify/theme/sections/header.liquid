@@ -1,0 +1,109 @@
+{%- liquid
+  assign menu = section.settings.menu
+  assign overlay = false
+  if section.settings.transparent_home and template.name == 'index'
+    assign overlay = true
+  elsif section.settings.transparent_banners and template.name == 'collection'
+    assign overlay = true
+  elsif section.settings.transparent_banners and template.name == 'article'
+    assign overlay = true
+  elsif section.settings.transparent_banners and template.suffix == 'about'
+    assign overlay = true
+  endif
+-%}
+{%- unless overlay -%}<style>#MainContent { padding-top: var(--header-h); }</style>{%- endunless -%}
+<header class="site-header" data-variant="{% if overlay %}overlay{% else %}solid{% endif %}" data-header>
+  <div class="bar">
+    <div class="bar__left">
+      <button class="icon-btn only-mobile" type="button" aria-label="{{ 'general.open_menu' | t }}" aria-controls="mobile-menu" aria-expanded="false" data-menu-open>
+        {% render 'icon', name: 'menu', px: 24 %}
+      </button>
+      {%- if menu.links.size > 0 -%}
+        <nav class="primary only-desktop" aria-label="Primary">
+          <ul>
+            {%- for link in menu.links -%}
+              <li class="primary__item{% if link.links.size > 0 %} has-menu{% endif %}">
+                <a class="primary__link u-link" href="{{ link.url }}"{% if link.active or link.child_active %} aria-current="page"{% endif %}>
+                  {{ link.title }}
+                  {%- if link.links.size > 0 %}{% render 'icon', name: 'chevron', px: 12, class: 'chev' %}{% endif -%}
+                </a>
+                {%- if link.links.size > 0 -%}
+                  <div class="dropdown">
+                    <ul>
+                      {%- for child in link.links -%}
+                        <li><a class="u-link" href="{{ child.url }}">{{ child.title }}</a></li>
+                      {%- endfor -%}
+                    </ul>
+                    <p class="micro muted dropdown__foot">{{ settings.brand_line }}</p>
+                  </div>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+    </div>
+
+    <a class="bar__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+      {%- if section.settings.logo -%}
+        {{ section.settings.logo | image_url: width: 400 | image_tag: widths: '200, 300, 400', sizes: '160px', alt: shop.name }}
+      {%- else -%}
+        {% render 'logo-wordmark' %}
+      {%- endif -%}
+    </a>
+
+    <div class="bar__right">
+      {%- if section.settings.region_text != blank -%}<span class="micro region only-desktop">{{ section.settings.region_text }}</span>{%- endif -%}
+      <a class="icon-btn" href="{{ routes.search_url }}" aria-label="{{ 'general.search' | t }}" data-search-open>{% render 'icon', name: 'search' %}</a>
+      {%- if shop.customer_accounts_enabled -%}
+        <a class="icon-btn only-desktop" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" aria-label="{{ 'general.account' | t }}">{% render 'icon', name: 'account' %}</a>
+      {%- endif -%}
+      <a class="icon-btn bag{% if cart.item_count > 0 %} has-items{% endif %}" href="{{ routes.cart_url }}" aria-label="{{ 'general.bag_count' | t: count: cart.item_count }}" data-cart-open>
+        {% render 'icon', name: 'bag' %}
+        <span class="bag__count micro" data-cart-count>({{ cart.item_count }})</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="{{ 'general.menu' | t }}" hidden data-menu>
+  <div class="mobile-menu__top">
+    <button class="icon-btn" type="button" aria-label="{{ 'general.close_menu' | t }}" data-menu-close>{% render 'icon', name: 'close', px: 24 %}</button>
+    <a class="bar__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">{% render 'logo-wordmark' %}</a>
+    <span style="width:44px"></span>
+  </div>
+  <nav class="mobile-menu__nav" aria-label="Mobile">
+    <ul>
+      {%- for link in menu.links -%}
+        <li style="--d: {{ forloop.index0 | times: 0.05 | plus: 0.05 }}s">
+          <a class="display" href="{{ link.url }}">{{ link.title }}</a>
+          {%- if link.links.size > 0 -%}
+            <ul class="mobile-menu__sub">
+              {%- for child in link.links -%}<li><a class="micro" href="{{ child.url }}">{{ child.title }}</a></li>{%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </nav>
+  <div class="mobile-menu__foot">
+    {%- if shop.customer_accounts_enabled -%}<a class="micro" href="{{ routes.account_url }}">{{ 'general.account' | t }}</a>{%- endif -%}
+    {%- if settings.wishlist_enabled -%}<a class="micro" href="{{ routes.root_url }}pages/wishlist">{{ 'general.wishlist' | t }}</a>{%- endif -%}
+    <span class="micro muted">{{ section.settings.region_text }}</span>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu", "info": "Nested links show as dropdowns (e.g. Shop → Tees, Hoodies)." },
+    { "type": "image_picker", "id": "logo", "label": "Logo image", "info": "Optional. Leave empty to use the Lane Change gothic wordmark." },
+    { "type": "text", "id": "region_text", "label": "Region text", "default": "AUS — Worldwide" },
+    { "type": "checkbox", "id": "transparent_home", "label": "Transparent over homepage hero", "default": true },
+    { "type": "checkbox", "id": "transparent_banners", "label": "Transparent over collection, article and About banners", "default": true }
+  ]
+}
+{% endschema %}

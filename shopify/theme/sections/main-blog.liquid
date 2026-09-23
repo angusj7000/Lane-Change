@@ -1,0 +1,39 @@
+{% render 'page-head', eyebrow: section.settings.eyebrow, title: blog.title, lede: section.settings.lede %}
+{%- paginate blog.articles by 9 -%}
+  <section class="wrap section posts">
+    {%- for article in blog.articles -%}
+      <a class="post{% if forloop.first and paginate.current_page == 1 %} post--lead{% endif %}" href="{{ article.url }}">
+        <div class="post__media media reveal-img">
+          {%- if article.image -%}
+            {{ article.image | image_url: width: 1600 | image_tag: widths: '480, 720, 1080, 1600', sizes: '(max-width: 900px) 100vw, 50vw', loading: 'lazy', alt: article.title }}
+          {%- else -%}
+            <img src="{{ 'category-story.jpg' | asset_url }}" alt="" loading="lazy" width="1600" height="815">
+          {%- endif -%}
+        </div>
+        <div class="post__meta micro muted"><span>{{ article.tags.first | default: blog.title }}</span><time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%d %b %Y' }}</time></div>
+        <h2 class="title post__title">{{ article.title }}</h2>
+        <p class="muted post__ex">{{ article.excerpt_or_content | strip_html | truncatewords: 26 }}</p>
+      </a>
+    {%- else -%}
+      <p class="muted">Journal entries will appear here.</p>
+    {%- endfor -%}
+  </section>
+  {%- if paginate.pages > 1 -%}
+    <nav class="pagination micro wrap" aria-label="Pagination">
+      {%- if paginate.previous -%}<a class="u-link" href="{{ paginate.previous.url }}">{{ 'general.previous' | t }}</a>{%- endif -%}
+      <span class="muted">{{ paginate.current_page }} / {{ paginate.pages }}</span>
+      {%- if paginate.next -%}<a class="u-link" href="{{ paginate.next.url }}">{{ 'general.next' | t }}</a>{%- endif -%}
+    </nav>
+  {%- endif -%}
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Blog",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Journal" },
+    { "type": "text", "id": "lede", "label": "Intro", "default": "Campaigns, product notes and the people behind the culture." }
+  ]
+}
+{% endschema %}

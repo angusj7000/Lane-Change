@@ -1,5 +1,5 @@
 """
-Vectorise the Lane Change wordmark and LC monogram from the approved mockup
+Vectorise the Lane Change wordmark (homepage mockup) and LC monogram (logo sheet)
 into clean SVGs (src/assets/brand/*.svg). Swap these for the final vector
 artwork from the designer when available — same filenames.
 
@@ -16,11 +16,14 @@ OUT = ROOT / "src/assets/brand"
 OUT.mkdir(parents=True, exist_ok=True)
 
 
-def trace(crop, scale, thresh, name, blur=1.6, turd=40, open_k=0, close_k=0):
+def trace(crop, scale, thresh, name, blur=1.6, turd=40, open_k=0, close_k=0, dark=False, drop_box=None):
     g = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
     g = cv2.resize(g, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
     g = cv2.GaussianBlur(g, (0, 0), blur)
-    bw = (g > thresh).astype(np.uint8)
+    bw = ((g < thresh) if dark else (g > thresh)).astype(np.uint8)
+    if drop_box:  # erase a separate element (e.g. the star beside the monogram)
+        x0, y0, x1, y1 = (int(v * scale) for v in drop_box)
+        bw[y0:y1, x0:x1] = 0
     if close_k:
         bw = cv2.morphologyEx(bw, cv2.MORPH_CLOSE, np.ones((close_k, close_k), np.uint8))
     if open_k:
@@ -52,5 +55,6 @@ def trace(crop, scale, thresh, name, blur=1.6, turd=40, open_k=0, close_k=0):
 
 # Header wordmark: white on dark
 trace(SRC[12:78, 525:695], 10, 150, "wordmark", blur=4, turd=200)
-# LC monogram from the embroidered close-up
-trace(SRC[640:722, 225:300], 8, 80, "monogram", blur=3, turd=400, open_k=7, close_k=9)
+# LC monogram — "secondary tag mark" on the logo sheet (black on paper)
+SHEET = cv2.imread(str(ROOT / "design/reference/logo-system.png"))
+trace(SHEET[712:874, 182:350], 8, 110, "monogram", blur=2, turd=200, dark=True, drop_box=(104, 18, 168, 70))

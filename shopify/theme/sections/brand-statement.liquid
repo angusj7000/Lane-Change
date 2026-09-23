@@ -1,0 +1,42 @@
+<section class="statement" aria-labelledby="statement-{{ section.id }}">
+  <div class="statement__media media reveal-img">
+    {%- if section.settings.image -%}
+      {{ section.settings.image | image_url: width: 2400 | image_tag: widths: '720, 1080, 1440, 2000, 2400', sizes: '100vw', loading: 'lazy', alt: section.settings.image.alt }}
+    {%- else -%}
+      <img src="{{ 'brand-statement.jpg' | asset_url }}" alt="" loading="lazy" width="2063" height="321">
+    {%- endif -%}
+  </div>
+  <div class="statement__shade" aria-hidden="true"></div>
+
+  <div class="statement__side statement__side--left micro reveal">
+    {%- assign groups = section.settings.left_text | split: '|' -%}
+    {%- for g in groups -%}<p class="stacked-words">{{ g | strip | newline_to_br }}</p>{%- endfor -%}
+  </div>
+
+  <div class="statement__centre">
+    {% render 'logo-star', class: 'statement__star reveal' %}
+    <h2 id="statement-{{ section.id }}" class="serif-mark statement__mark reveal" style="--d:.1s">{{ section.settings.title }}</h2>
+    <p class="eyebrow eyebrow--wide reveal" style="--d:.2s">{{ section.settings.subtitle | default: settings.brand_line }}</p>
+    <p class="micro statement__est reveal" style="--d:.3s">{{ settings.brand_est }}<br>{{ settings.brand_origin }}</p>
+  </div>
+
+  <div class="statement__side statement__side--right micro reveal" style="--d:.2s">
+    <p class="stacked-words">{{ section.settings.right_text | newline_to_br }}</p>
+    <span class="dash" aria-hidden="true"></span>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Brand statement",
+  "tag": "div",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Background image", "info": "Wide landscape, road or highway. Leave empty for the placeholder." },
+    { "type": "text", "id": "title", "label": "Title", "default": "Lane Change" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "International Street Sports" },
+    { "type": "textarea", "id": "left_text", "label": "Left text", "info": "Use | to start a new group.", "default": "Same\nDirection|Different\nLanes" },
+    { "type": "textarea", "id": "right_text", "label": "Right text", "default": "Drive\nProgress\nDaily" }
+  ],
+  "presets": [{ "name": "Brand statement" }]
+}
+{% endschema %}

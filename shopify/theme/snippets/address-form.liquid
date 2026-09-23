@@ -1,0 +1,15 @@
+{%- comment -%} Usage: {% render 'address-form', form: form, id: 'new' %} inside a customer_address form {%- endcomment -%}
+<div class="addr-grid">
+  <div><label class="lbl micro" for="a-first-{{ id }}">{{ 'customer.first_name' | t }}</label><input class="field" id="a-first-{{ id }}" name="address[first_name]" value="{{ form.first_name }}" autocomplete="given-name"></div>
+  <div><label class="lbl micro" for="a-last-{{ id }}">{{ 'customer.last_name' | t }}</label><input class="field" id="a-last-{{ id }}" name="address[last_name]" value="{{ form.last_name }}" autocomplete="family-name"></div>
+  <div class="full"><label class="lbl micro" for="a-co-{{ id }}">{{ 'customer.company' | t }}</label><input class="field" id="a-co-{{ id }}" name="address[company]" value="{{ form.company }}" autocomplete="organization"></div>
+  <div class="full"><label class="lbl micro" for="a-1-{{ id }}">{{ 'customer.address1' | t }}</label><input class="field" id="a-1-{{ id }}" name="address[address1]" value="{{ form.address1 }}" autocomplete="address-line1"></div>
+  <div class="full"><label class="lbl micro" for="a-2-{{ id }}">{{ 'customer.address2' | t }}</label><input class="field" id="a-2-{{ id }}" name="address[address2]" value="{{ form.address2 }}" autocomplete="address-line2"></div>
+  <div><label class="lbl micro" for="a-city-{{ id }}">{{ 'customer.city' | t }}</label><input class="field" id="a-city-{{ id }}" name="address[city]" value="{{ form.city }}" autocomplete="address-level2"></div>
+  <div><label class="lbl micro" for="a-zip-{{ id }}">{{ 'customer.zip' | t }}</label><input class="field" id="a-zip-{{ id }}" name="address[zip]" value="{{ form.zip }}" autocomplete="postal-code"></div>
+  <div><label class="lbl micro" for="a-country-{{ id }}">{{ 'customer.country' | t }}</label>
+    <select class="field" id="a-country-{{ id }}" name="address[country]" data-default="{{ form.country }}">{{ all_country_option_tags }}</select></div>
+  <div><label class="lbl micro" for="a-prov-{{ id }}">{{ 'customer.province' | t }}</label><input class="field" id="a-prov-{{ id }}" name="address[province]" value="{{ form.province }}" autocomplete="address-level1"></div>
+  <div class="full"><label class="lbl micro" for="a-phone-{{ id }}">{{ 'customer.phone' | t }}</label><input class="field" id="a-phone-{{ id }}" type="tel" name="address[phone]" value="{{ form.phone }}" autocomplete="tel"></div>
+  <label class="check micro full">{{ form.set_as_default_checkbox }} {{ 'customer.set_default' | t }}</label>
+</div>

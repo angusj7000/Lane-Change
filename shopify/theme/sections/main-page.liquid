@@ -1,0 +1,16 @@
+{% render 'page-head', eyebrow: section.settings.eyebrow, title: page.title %}
+{%- if page.content != blank -%}
+  <section class="wrap section">
+    <div class="rte page-body">{{ page.content }}</div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Page",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "International Street Sports" }
+  ]
+}
+{% endschema %}

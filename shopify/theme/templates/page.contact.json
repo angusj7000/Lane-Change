@@ -1,0 +1,7 @@
+{
+  "sections": {
+    "main": { "type": "main-page", "settings": { "eyebrow": "Contact" } },
+    "form": { "type": "contact-form", "settings": {} }
+  },
+  "order": ["main", "form"]
+}

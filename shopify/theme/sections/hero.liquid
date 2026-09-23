@@ -1,0 +1,70 @@
+{%- liquid
+  assign img = section.settings.image
+  assign img_m = section.settings.mobile_image | default: section.settings.image
+  assign words = section.settings.side_list | newline_to_br | split: '<br />'
+-%}
+<section class="hero" aria-labelledby="hero-title-{{ section.id }}" style="--hero-shade: {{ section.settings.overlay | divided_by: 100.0 }}; --hero-pos: {{ section.settings.focal }};">
+  <picture class="hero__media">
+    {%- if img_m -%}
+      <source media="(max-width: 700px) and (orientation: portrait)" srcset="{{ img_m | image_url: width: 480 }} 480w, {{ img_m | image_url: width: 720 }} 720w, {{ img_m | image_url: width: 1080 }} 1080w" sizes="100vw">
+    {%- else -%}
+      <source media="(max-width: 700px) and (orientation: portrait)" srcset="{{ 'hero-campaign-mobile.jpg' | asset_url }}">
+    {%- endif -%}
+    {%- if img -%}
+      {%- assign hero_alt = img.alt | default: section.settings.alt -%}
+      {{ img | image_url: width: 2400 | image_tag: widths: '960, 1440, 1920, 2400', sizes: '100vw', fetchpriority: 'high', loading: 'eager', alt: hero_alt }}
+    {%- else -%}
+      <img src="{{ 'hero-campaign.jpg' | asset_url }}" alt="{{ section.settings.alt | escape }}" width="1942" height="976" fetchpriority="high">
+    {%- endif -%}
+  </picture>
+  <div class="hero__shade" aria-hidden="true"></div>
+
+  <div class="hero__copy">
+    {%- if section.settings.eyebrow != blank -%}<p class="eyebrow eyebrow--wide hero__line">{{ section.settings.eyebrow }}</p>{%- endif -%}
+    <h1 id="hero-title-{{ section.id }}" class="display hero__title">
+      <span class="ln"><span>{{ section.settings.heading_1 }}</span></span>
+      <span class="ln"><span>{{ section.settings.heading_2 }} <em>{{ section.settings.heading_2_accent }}</em></span></span>
+    </h1>
+    {%- if section.settings.text != blank -%}<div class="hero__sub">{{ section.settings.text }}</div>{%- endif -%}
+    <div class="hero__cta">
+      {%- if section.settings.button_1_label != blank -%}
+        <a class="btn btn--solid" href="{{ section.settings.button_1_link | default: routes.all_products_collection_url }}">{{ section.settings.button_1_label }} {% render 'icon', name: 'arrow' %}</a>
+      {%- endif -%}
+      {%- if section.settings.button_2_label != blank -%}
+        <a class="btn" href="{{ section.settings.button_2_link | default: routes.collections_url }}">{{ section.settings.button_2_label }} {% render 'icon', name: 'arrow' %}</a>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <p class="micro hero__est">{{ settings.brand_est }}<br>{{ settings.brand_origin }}</p>
+  <ul class="micro hero__list">
+    {%- for w in words -%}{%- assign w = w | strip -%}{%- if w != '' -%}<li style="--i: {{ forloop.index0 }}">{{ w }}</li>{%- endif -%}{%- endfor -%}
+  </ul>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "tag": "div",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image (desktop)", "info": "Landscape, at least 2400px wide. Leave empty to use the campaign placeholder." },
+    { "type": "image_picker", "id": "mobile_image", "label": "Image (phones)", "info": "Portrait, model centred." },
+    { "type": "text", "id": "alt", "label": "Image description (alt text)", "default": "Model photographed from behind in a night-time parking structure wearing the washed-black Lane Change flagship tee." },
+    { "type": "select", "id": "focal", "label": "Desktop focal point", "default": "62% 30%", "options": [
+      { "value": "50% 30%", "label": "Centre" }, { "value": "62% 30%", "label": "Right of centre" }, { "value": "75% 30%", "label": "Right" }
+    ] },
+    { "type": "range", "id": "overlay", "label": "Extra darkening", "min": 0, "max": 60, "step": 2, "unit": "%", "default": 0, "info": "Added on top of the built-in shade that keeps the copy readable." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "International Street Sports" },
+    { "type": "text", "id": "heading_1", "label": "Heading line 1", "default": "Different Lanes." },
+    { "type": "text", "id": "heading_2", "label": "Heading line 2", "default": "Same" },
+    { "type": "text", "id": "heading_2_accent", "label": "Heading line 2 — grey word", "default": "Vision." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Built for bigger moves. Australian born.<br/>Global minded. Street sports culture, redefined.</p>" },
+    { "type": "text", "id": "button_1_label", "label": "Button 1 label", "default": "Shop Now" },
+    { "type": "url", "id": "button_1_link", "label": "Button 1 link", "default": "/collections/all" },
+    { "type": "text", "id": "button_2_label", "label": "Button 2 label", "default": "View Collection" },
+    { "type": "url", "id": "button_2_link", "label": "Button 2 link", "default": "/collections" },
+    { "type": "textarea", "id": "side_list", "label": "Bottom-right words (one per line)", "default": "Street\nSports\nLifestyle\nProgress\nDaily" }
+  ],
+  "presets": [{ "name": "Hero" }]
+}
+{% endschema %}

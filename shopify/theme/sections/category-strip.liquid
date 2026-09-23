@@ -1,0 +1,60 @@
+<section class="strip" aria-label="{{ section.settings.label | escape }}">
+  {%- for block in section.blocks -%}
+    <a class="panel has-arrow" href="{{ block.settings.link | default: '#' }}" {{ block.shopify_attributes }}>
+      <div class="panel__media media reveal-img" style="--d: {{ forloop.index0 | times: 0.12 }}s">
+        {%- if block.settings.image -%}
+          {%- assign alt = block.settings.image.alt | default: block.settings.title -%}
+          {%- assign focal = block.settings.image.presentation.focal_point | default: 'center' | prepend: 'object-position:' -%}
+          {{ block.settings.image | image_url: width: 1400 | image_tag: widths: '480, 720, 960, 1400', sizes: '(max-width: 700px) 100vw, 34vw', loading: 'lazy', alt: alt, style: focal }}
+        {%- elsif block.settings.fallback != 'none' -%}
+          <img src="{{ block.settings.fallback | append: '.jpg' | asset_url }}" alt="" loading="lazy" width="900" height="460">
+        {%- endif -%}
+      </div>
+      {%- if block.settings.show_star -%}{% render 'logo-star', class: 'panel__star' %}{%- endif -%}
+      <div class="panel__copy">
+        <h2 class="title panel__title">{{ block.settings.title }} {% render 'icon', name: 'arrow' %}</h2>
+        <p class="micro panel__lines">{{ block.settings.text | newline_to_br }}</p>
+      </div>
+    </a>
+  {%- endfor -%}
+</section>
+
+{% schema %}
+{
+  "name": "Category strip",
+  "tag": "div",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "label", "label": "Accessible label", "default": "Shop by category" }
+  ],
+  "blocks": [
+    {
+      "type": "panel",
+      "name": "Panel",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "select", "id": "fallback", "label": "Placeholder image (when no image is set)", "default": "category-tees", "options": [
+          { "value": "category-tees", "label": "Tee close-up" },
+          { "value": "category-hoodies", "label": "Hoodie back" },
+          { "value": "category-story", "label": "Overpass" },
+          { "value": "none", "label": "None" }
+        ] },
+        { "type": "text", "id": "title", "label": "Title", "default": "Tees" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Everyday essentials.\nBuilt different." },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "checkbox", "id": "show_star", "label": "Show compass star", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category strip",
+      "blocks": [
+        { "type": "panel", "settings": { "title": "Tees", "text": "Everyday essentials.\nBuilt different.", "fallback": "category-tees", "show_star": true } },
+        { "type": "panel", "settings": { "title": "Hoodies", "text": "Bigger moves.\nColder days.", "fallback": "category-hoodies" } },
+        { "type": "panel", "settings": { "title": "Our Story", "text": "Australian born.\nGlobal minded.", "fallback": "category-story" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

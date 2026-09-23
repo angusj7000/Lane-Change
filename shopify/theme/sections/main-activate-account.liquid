@@ -1,0 +1,17 @@
+{%- assign t_title = 'customer.activate' | t -%}
+{%- assign t_lede = 'customer.activate_text' | t -%}
+{% render 'page-head', eyebrow: shop.name, title: t_title, lede: t_lede %}
+<section class="wrap section">
+  {%- form 'activate_customer_password', class: 'acct__form' -%}
+    {%- if form.errors -%}<p class="micro buy__msg" role="alert">{{ form.errors | default_errors }}</p>{%- endif -%}
+    <label class="lbl micro" for="act-pass">{{ 'customer.password' | t }}</label>
+    <input class="field" id="act-pass" type="password" name="customer[password]" autocomplete="new-password" required>
+    <label class="lbl micro" for="act-conf">{{ 'customer.confirm_password' | t }}</label>
+    <input class="field" id="act-conf" type="password" name="customer[password_confirmation]" autocomplete="new-password" required>
+    <button class="btn btn--solid btn--block" type="submit">{{ 'customer.activate' | t }}</button>
+    <button class="btn btn--block" type="submit" name="decline">{{ 'customer.decline' | t }}</button>
+  {%- endform -%}
+</section>
+{% schema %}
+{ "name": "Activate account", "tag": "div", "settings": [] }
+{% endschema %}

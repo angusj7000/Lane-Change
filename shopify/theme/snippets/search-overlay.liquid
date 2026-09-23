@@ -1,0 +1,24 @@
+<div class="search" id="search-overlay" role="dialog" aria-modal="true" aria-label="{{ 'general.search' | t }}" hidden data-search>
+  <div class="search__panel">
+    <form class="search__form wrap" action="{{ routes.search_url }}" method="get" role="search">
+      {% render 'icon', name: 'search', px: 22 %}
+      <label class="sr-only" for="search-input">{{ 'general.search' | t }}</label>
+      <input id="search-input" class="search__input title" name="q" type="search" placeholder="{{ 'general.search' | t }}" autocomplete="off" data-search-input>
+      <input type="hidden" name="type" value="product">
+      <button type="button" class="search__close" aria-label="{{ 'general.close' | t }}" data-search-close>{% render 'icon', name: 'close' %}</button>
+    </form>
+    <div class="wrap search__body">
+      <div class="search__suggest">
+        <p class="micro muted">{{ 'search.trending' | t }}</p>
+        <ul>
+          {%- assign trending = 'Washed black,Oversized tee,Hoodie,Cap,Concrete grey' | split: ',' -%}
+          {%- for term in trending -%}
+            <li><a class="u-link" href="{{ routes.search_url }}?q={{ term | url_encode }}&type=product">{{ term }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+      <ul class="search__results" data-search-results aria-live="polite"></ul>
+    </div>
+  </div>
+  <div class="search__scrim" data-search-close></div>
+</div>

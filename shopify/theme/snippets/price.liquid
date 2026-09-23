@@ -1,0 +1,3 @@
+{%- comment -%} Renders a price as "$70 AUD". Usage: {% render 'price', amount: product.price %} {%- endcomment -%}
+{{- amount | money_without_trailing_zeros -}}
+{%- if settings.show_currency_code %} {{ cart.currency.iso_code }}{% endif -%}

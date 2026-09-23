@@ -1,0 +1,32 @@
+<section class="split">
+  <div class="split__media media reveal-img">
+    {%- if section.settings.image -%}
+      {{ section.settings.image | image_url: width: 1600 | image_tag: widths: '720, 1080, 1600', sizes: '(max-width: 900px) 100vw, 50vw', loading: 'lazy', alt: section.settings.image.alt }}
+    {%- else -%}
+      <img src="{{ 'hero-campaign-mobile.jpg' | asset_url }}" alt="" loading="lazy" width="893" height="1159">
+    {%- endif -%}
+  </div>
+  <div class="split__copy">
+    {% render 'logo-monogram', class: 'split__mono' %}
+    <p class="serif-mark split__mark">{{ section.settings.heading }}</p>
+    <div class="muted rte">{{ section.settings.text }}</div>
+    {%- if section.settings.button_label != blank -%}
+      <a class="btn" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label }} {% render 'icon', name: 'arrow' %}</a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image with text",
+  "tag": "div",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Designed To Win" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Every graphic carries the same codes: the gothic Lane Change wordmark, the LC monogram and the compass star — a reminder there's more than one road to where you're going.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop Now" },
+    { "type": "url", "id": "button_link", "label": "Button link", "default": "/collections/all" }
+  ],
+  "presets": [{ "name": "Image with text" }]
+}
+{% endschema %}

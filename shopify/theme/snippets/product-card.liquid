@@ -1,0 +1,70 @@
+{%- comment -%}
+  Product card. Usage: {% render 'product-card', product: product, index: forloop.index0, sizes: '…' %}
+  Pass product: blank to render a placeholder card.
+{%- endcomment -%}
+{%- assign sizes = sizes | default: '(max-width: 700px) 50vw, (max-width: 1100px) 33vw, 20vw' -%}
+{%- assign delay = index | modulo: 5 | times: 0.07 -%}
+{%- if product == blank -%}
+  <article class="card reveal" style="--d: {{ delay }}s">
+    <div class="card__media">{{ 'product-apparel-1' | placeholder_svg_tag: 'card__placeholder' }}</div>
+    <div class="card__info">
+      <h3 class="micro card__name">Product name</h3>
+      <p class="micro card__price">{% render 'price', amount: 7000 %}</p>
+    </div>
+  </article>
+{%- else -%}
+  {%- liquid
+    assign colour = ''
+    for option in product.options_with_values
+      assign oname = option.name | downcase
+      if oname == 'color' or oname == 'colour'
+        assign colour = option.values | join: ' / '
+      endif
+    endfor
+    assign badge = ''
+    for tag in product.tags
+      if tag contains 'badge:'
+        assign badge = tag | remove_first: 'badge:'
+      endif
+    endfor
+    assign second = product.media[1]
+  -%}
+  <article class="card reveal" style="--d: {{ delay }}s">
+    <a class="card__link" href="{{ product.url }}">
+      <div class="card__media">
+        {%- if product.featured_media -%}
+          {%- assign card_alt = product.featured_media.alt | default: product.title -%}
+          {{ product.featured_media | image_url: width: 900 | image_tag:
+            widths: '320, 480, 640, 800, 900', sizes: sizes, loading: 'lazy',
+            class: 'card__img', alt: card_alt }}
+          {%- if settings.card_hover_image and second -%}
+            {{ second | image_url: width: 900 | image_tag:
+              widths: '320, 480, 640, 800, 900', sizes: sizes, loading: 'lazy',
+              class: 'card__img card__img--alt', alt: '' }}
+          {%- endif -%}
+        {%- else -%}
+          <div class="card__pending">{% render 'logo-monogram' %}</div>
+        {%- endif -%}
+        {%- if product.available == false -%}
+          <span class="card__badge micro">{% if product.tags contains 'coming-soon' %}{{ 'products.product.coming_soon' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
+        {%- elsif badge != '' -%}
+          <span class="card__badge micro">{{ badge }}</span>
+        {%- endif -%}
+      </div>
+      <div class="card__info">
+        <h3 class="micro card__name">{{ product.title }}</h3>
+        {%- if colour != '' -%}<p class="micro muted card__colour">{{ colour }}</p>{%- endif -%}
+        <p class="micro card__price">
+          {%- if product.price_varies -%}From {% endif -%}
+          {%- render 'price', amount: product.price -%}
+          {%- if product.compare_at_price > product.price %} <s class="muted">{% render 'price', amount: product.compare_at_price %}</s>{% endif -%}
+        </p>
+      </div>
+    </a>
+    {%- if settings.wishlist_enabled -%}
+      <button class="card__wish" type="button" data-wish="{{ product.handle }}" aria-pressed="false" aria-label="{{ 'products.product.save_to_wishlist' | t }}: {{ product.title | escape }}">
+        {% render 'icon', name: 'heart', px: 18 %}
+      </button>
+    {%- endif -%}
+  </article>
+{%- endif -%}

@@ -1,0 +1,193 @@
+{
+  "general": {
+    "page": "Page {{ page }}",
+    "error": "Something went wrong. Try again.",
+    "back_home": "Back Home",
+    "previous": "Previous",
+    "next": "Next",
+    "view_all": "View All",
+    "shop_all": "Shop All",
+    "close": "Close",
+    "menu": "Menu",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu",
+    "search": "Search",
+    "account": "Account",
+    "wishlist": "Wishlist",
+    "bag": "Bag",
+    "bag_count": "Shopping bag, {{ count }} items"
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "close": "Close",
+    "breadcrumb": "Breadcrumb"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add To Cart",
+      "sold_out": "Sold Out",
+      "unavailable": "Unavailable",
+      "coming_soon": "Coming Soon",
+      "select_size": "Select a size to continue.",
+      "added": "Added to bag",
+      "size": "Size",
+      "select": "Select",
+      "colour": "Colour",
+      "size_guide": "Size guide",
+      "save_to_wishlist": "Save to wishlist",
+      "description": "Description",
+      "fit": "Fit",
+      "fabric": "Fabric",
+      "care": "Care",
+      "shoot_pending": "{{ view }} view — campaign shoot pending",
+      "view_label": "View",
+      "complete_the_lane": "Complete The Lane",
+      "shipping_note": "Free AU shipping over {{ amount }}. Ships worldwide from Australia.",
+      "returns_note": "30-day returns on unworn pieces."
+    }
+  },
+  "collections": {
+    "products_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    },
+    "sort_by": "Sort",
+    "filter": "Filter",
+    "all": "All",
+    "empty": "No products here yet.",
+    "clear": "Clear"
+  },
+  "cart": {
+    "title": "Your Bag",
+    "empty": "Your bag is empty",
+    "empty_text": "New roads always. Start with the core range.",
+    "subtotal": "Subtotal",
+    "checkout": "Checkout",
+    "view_bag": "View Bag",
+    "keep_shopping": "Keep Shopping",
+    "remove": "Remove",
+    "quantity": "Quantity",
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity",
+    "taxes_note": "Shipping and duties calculated at checkout. Ships from Australia, worldwide.",
+    "free_shipping_away": "[amount] away from free AU shipping",
+    "free_shipping_unlocked": "Free AU shipping unlocked",
+    "order_summary": "Order Summary",
+    "note": "Order note"
+  },
+  "search": {
+    "title": "Find Your Lane",
+    "placeholder": "Search tees, hoodies, colours",
+    "results": {
+      "one": "{{ count }} result for “{{ terms }}”",
+      "other": "{{ count }} results for “{{ terms }}”"
+    },
+    "no_results": "No results for “{{ terms }}”.",
+    "no_results_short": "No results.",
+    "trending": "Trending"
+  },
+  "wishlist": {
+    "title": "Wishlist",
+    "lede": "Pieces you've marked for later. Saved on this device.",
+    "empty": "Nothing saved yet",
+    "empty_text": "Tap the heart on any piece to keep it here.",
+    "saved": "Saved to wishlist",
+    "removed": "Removed from wishlist"
+  },
+  "newsletter": {
+    "email": "Your email",
+    "subscribe": "Subscribe",
+    "success": "You're in the lane. Watch your inbox."
+  },
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "topic": "Topic",
+    "message": "Message",
+    "send": "Send Message",
+    "success": "Message received. We will be in touch."
+  },
+  "customer": {
+    "login": "Sign In",
+    "email": "Email",
+    "password": "Password",
+    "forgot": "Forgot your password?",
+    "recover": "Reset Password",
+    "recover_text": "We'll email you a link to reset your password.",
+    "recover_success": "Check your email for a reset link.",
+    "cancel": "Cancel",
+    "new_customer": "New to the lane?",
+    "new_customer_text": "Track orders, save your addresses and get early access to drops.",
+    "register": "Create Account",
+    "first_name": "First name",
+    "last_name": "Last name",
+    "account": "Account",
+    "logout": "Log out",
+    "orders": "Order History",
+    "no_orders": "You haven't placed any orders yet.",
+    "order": "Order",
+    "date": "Date",
+    "payment_status": "Payment",
+    "fulfillment_status": "Fulfilment",
+    "total": "Total",
+    "addresses": "Addresses",
+    "view_addresses": "View addresses",
+    "default_address": "Default address",
+    "add_address": "Add a new address",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "company": "Company",
+    "address1": "Address",
+    "address2": "Apartment, suite, etc.",
+    "city": "Suburb / City",
+    "country": "Country",
+    "province": "State",
+    "zip": "Postcode",
+    "phone": "Phone",
+    "set_default": "Set as default address",
+    "activate": "Activate Account",
+    "activate_text": "Create your password to activate your account.",
+    "decline": "Decline invitation",
+    "confirm_password": "Confirm password",
+    "reset": "Reset Account Password",
+    "product": "Product",
+    "sku": "SKU",
+    "price": "Price",
+    "quantity": "Quantity",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "billing_address": "Billing address",
+    "shipping_address": "Shipping address",
+    "cancelled": "Cancelled on {{ date }}",
+    "return_to_account": "Return to account"
+  },
+  "password": {
+    "title": "Opening Soon",
+    "enter": "Enter using password",
+    "password": "Password",
+    "submit": "Enter",
+    "owner": "Are you the store owner?",
+    "login": "Log in here"
+  },
+  "gift_card": {
+    "title": "Your gift card",
+    "code": "Gift card code",
+    "expired": "Expired",
+    "disabled": "Disabled",
+    "expires_on": "Expires on {{ date }}",
+    "use": "Use it online at {{ shop }}",
+    "print": "Print",
+    "shop": "Start shopping"
+  },
+  "404": {
+    "title": "Change Lanes.",
+    "eyebrow": "404 — Wrong Turn",
+    "text": "This road doesn't go anywhere. Let's get you back on track."
+  },
+  "blog": {
+    "read_more": "Read",
+    "back": "Back to Journal"
+  }
+}

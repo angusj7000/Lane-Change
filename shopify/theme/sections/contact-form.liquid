@@ -1,0 +1,42 @@
+<section class="wrap section contact">
+  {%- form 'contact', class: 'cform', id: 'ContactForm' -%}
+    {%- if form.posted_successfully? -%}
+      <p class="micro" role="status">{{ 'contact.success' | t }}</p>
+    {%- elsif form.errors -%}
+      <p class="micro buy__msg" role="alert">{{ form.errors | default_errors }}</p>
+    {%- endif -%}
+    <div><label class="lbl micro" for="c-name">{{ 'contact.name' | t }}</label><input class="field" id="c-name" name="contact[name]" autocomplete="name" value="{{ form.name }}" required></div>
+    <div><label class="lbl micro" for="c-email">{{ 'contact.email' | t }}</label><input class="field" id="c-email" name="contact[email]" type="email" autocomplete="email" value="{{ form.email }}" required></div>
+    <div><label class="lbl micro" for="c-topic">{{ 'contact.topic' | t }}</label>
+      <select class="field" id="c-topic" name="contact[topic]">
+        {%- assign topics = section.settings.topics | split: ',' -%}
+        {%- for t in topics -%}<option>{{ t | strip }}</option>{%- endfor -%}
+      </select>
+    </div>
+    <div><label class="lbl micro" for="c-msg">{{ 'contact.message' | t }}</label><textarea class="field" id="c-msg" name="contact[body]" required>{{ form.body }}</textarea></div>
+    <button class="btn btn--solid" type="submit">{{ 'contact.send' | t }} {% render 'icon', name: 'arrow' %}</button>
+  {%- endform -%}
+  <aside class="cinfo">
+    {%- if section.settings.email != blank -%}<div><p class="micro muted">Email</p><a class="u-link" href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a></div>{%- endif -%}
+    {%- if section.settings.collab_email != blank -%}<div><p class="micro muted">Collabs</p><a class="u-link" href="mailto:{{ section.settings.collab_email }}">{{ section.settings.collab_email }}</a></div>{%- endif -%}
+    <div><p class="micro muted">Social</p>
+      {%- if settings.social_instagram != blank -%}<a class="u-link" href="{{ settings.social_instagram }}" target="_blank" rel="noopener">Instagram</a><br>{%- endif -%}
+      {%- if settings.social_tiktok != blank -%}<a class="u-link" href="{{ settings.social_tiktok }}" target="_blank" rel="noopener">TikTok</a><br>{%- endif -%}
+      {%- if settings.social_youtube != blank -%}<a class="u-link" href="{{ settings.social_youtube }}" target="_blank" rel="noopener">YouTube</a>{%- endif -%}
+    </div>
+    <div><p class="micro muted">Based</p><p>{{ settings.brand_origin }}</p></div>
+  </aside>
+</section>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "topics", "label": "Topics (comma separated)", "default": "Order enquiry, Sizing, Returns, Collaboration, Wholesale, Other" },
+    { "type": "text", "id": "email", "label": "Email", "default": "hello@lanechange.com.au" },
+    { "type": "text", "id": "collab_email", "label": "Collaborations email", "default": "collabs@lanechange.com.au" }
+  ],
+  "presets": [{ "name": "Contact form" }]
+}
+{% endschema %}

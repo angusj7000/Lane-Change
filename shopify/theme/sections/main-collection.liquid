@@ -1,0 +1,77 @@
+{%- paginate collection.products by section.settings.per_page -%}
+  <section class="banner">
+    <div class="banner__media media">
+      {%- if collection.image -%}
+        {{ collection.image | image_url: width: 2400 | image_tag: widths: '720, 1080, 1440, 1920, 2400', sizes: '100vw', loading: 'eager', alt: collection.title }}
+      {%- elsif section.settings.fallback_image -%}
+        {{ section.settings.fallback_image | image_url: width: 2400 | image_tag: widths: '720, 1080, 1440, 1920, 2400', sizes: '100vw', loading: 'eager', alt: collection.title }}
+      {%- else -%}
+        <img src="{{ 'hero-campaign.jpg' | asset_url }}" alt="" width="1942" height="976" style="object-position: 60% 35%">
+      {%- endif -%}
+    </div>
+    <div class="banner__copy wrap">
+      <p class="eyebrow eyebrow--wide reveal">{{ settings.brand_line }}</p>
+      <h1 class="display banner__title reveal" style="--d:.08s">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}<div class="banner__intro reveal" style="--d:.16s">{{ collection.description }}</div>{%- endif -%}
+    </div>
+  </section>
+
+  <section class="listing wrap">
+    <form class="listing__bar" data-collection-form>
+      <p class="micro muted">{{ 'collections.products_count' | t: count: collection.products_count }}</p>
+
+      {%- for filter in collection.filters -%}
+        {%- if filter.type == 'list' and filter.values.size > 1 and filter.values.size < 10 -%}
+          <div class="filters" role="group" aria-label="{{ filter.label | escape }}">
+            <span class="micro muted">{{ filter.label }}</span>
+            {%- for value in filter.values -%}
+              {%- if value.count > 0 or value.active -%}
+                <a class="micro u-link" href="{% if value.active %}{{ value.url_to_remove }}{% else %}{{ value.url_to_add }}{% endif %}" aria-pressed="{{ value.active }}">{{ value.label }}</a>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      <label class="sort micro">
+        <span class="muted">{{ 'collections.sort_by' | t }}</span>
+        <select name="sort_by" data-sort>
+          {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+          {%- for option in collection.sort_options -%}
+            <option value="{{ option.value | escape }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name | escape }}</option>
+          {%- endfor -%}
+        </select>
+      </label>
+    </form>
+
+    <div class="grid-products">
+      {%- for product in collection.products -%}
+        {% render 'product-card', product: product, index: forloop.index0, sizes: '(max-width: 700px) 50vw, (max-width: 1100px) 33vw, 25vw' %}
+      {%- else -%}
+        <div class="empty-state">
+          <p class="title">{{ 'collections.empty' | t }}</p>
+          <a class="btn" href="{{ routes.all_products_collection_url }}">{{ 'general.shop_all' | t }} {% render 'icon', name: 'arrow' %}</a>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if paginate.pages > 1 -%}
+      <nav class="pagination micro" aria-label="Pagination">
+        {%- if paginate.previous -%}<a class="u-link" href="{{ paginate.previous.url }}">{{ 'general.previous' | t }}</a>{%- endif -%}
+        <span class="muted">{{ paginate.current_page }} / {{ paginate.pages }}</span>
+        {%- if paginate.next -%}<a class="u-link" href="{{ paginate.next.url }}">{{ 'general.next' | t }}</a>{%- endif -%}
+      </nav>
+    {%- endif -%}
+  </section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection",
+  "tag": "div",
+  "settings": [
+    { "type": "image_picker", "id": "fallback_image", "label": "Banner image when a collection has none" },
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 }
+  ]
+}
+{% endschema %}
