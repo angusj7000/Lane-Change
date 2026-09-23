@@ -1,0 +1,77 @@
+---
+import '@fontsource/barlow-condensed/500.css';
+import '@fontsource/barlow-condensed/600.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/cormorant-garamond/500.css';
+import '../styles/global.css';
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CartDrawer from '../components/CartDrawer.astro';
+import SearchOverlay from '../components/SearchOverlay.astro';
+import { site } from '../config/site';
+import { clientCatalog } from '../data/catalog';
+import { getImage } from 'astro:assets';
+import { img } from '../data/images';
+
+interface Props {
+  title?: string;
+  description?: string;
+  header?: 'overlay' | 'solid';
+  ogImage?: string;
+  jsonLd?: Record<string, unknown>;
+}
+const { title, description = site.description, header = 'solid', ogImage = 'hero-campaign', jsonLd } = Astro.props;
+const fullTitle = title ? `${title} — Lane Change` : 'Lane Change — International Street Sports';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const og = await getImage({ src: img(ogImage), width: 1200, format: 'jpg' });
+const catalog = await clientCatalog();
+---
+<!doctype html>
+<html lang="en-AU" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#0a0a0a" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Lane Change" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(og.src, Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline>document.documentElement.classList.replace('no-js', 'js');</script>
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header variant={header} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <CartDrawer />
+    <SearchOverlay />
+    <div class="grain" aria-hidden="true"></div>
+    <div class="toast micro" role="status" aria-live="polite" data-toast></div>
+    <script type="application/json" id="lc-catalog" set:html={JSON.stringify(catalog)} />
+    <script>
+      import '../scripts/ui';
+      import '../scripts/store';
+    </script>
+    <style is:global>
+      .toast {
+        position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); z-index: 160;
+        transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+        padding: 14px 20px; background: var(--bone); color: var(--black);
+        transition: opacity 0.35s var(--ease), transform 0.45s var(--ease-out);
+      }
+      .toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+    </style>
+  </body>
+</html>

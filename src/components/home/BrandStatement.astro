@@ -1,0 +1,67 @@
+---
+import Photo from '../Photo.astro';
+import Brand from '../Brand.astro';
+import { site } from '../../config/site';
+---
+<section class="statement" aria-labelledby="statement-title">
+  <div class="statement__media media reveal-img">
+    <Photo src="brand-statement" alt="Dark mountain highway beneath heavy storm cloud at dusk." sizes="100vw" widths={[720, 1080, 1440, 2000]} />
+  </div>
+  <div class="statement__shade" aria-hidden="true"></div>
+
+  <div class="statement__side statement__side--left micro reveal">
+    <p class="stacked-words"><span>Same</span><span>Direction</span></p>
+    <p class="stacked-words"><span>Different</span><span>Lanes</span></p>
+  </div>
+
+  <div class="statement__centre">
+    <Brand mark="star" class="statement__star reveal" />
+    <h2 id="statement-title" class="serif-mark statement__mark reveal" style="--d:.1s">Lane Change</h2>
+    <p class="eyebrow eyebrow--wide reveal" style="--d:.2s">{site.line}</p>
+    <p class="micro statement__est reveal" style="--d:.3s">{site.est}<br />{site.origin}</p>
+  </div>
+
+  <div class="statement__side statement__side--right micro reveal" style="--d:.2s">
+    <p class="stacked-words"><span>Drive</span><span>Progress</span><span>Daily</span></p>
+    <span class="dash" aria-hidden="true"></span>
+  </div>
+</section>
+
+<style>
+  .statement {
+    position: relative;
+    min-height: clamp(360px, 42vw, 640px);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: clamp(48px, 6vw, 96px) var(--gutter);
+    overflow: hidden;
+    isolation: isolate;
+    border-top: 1px solid var(--line-strong);
+  }
+  .statement__media { position: absolute; inset: 0; z-index: -2; }
+  .statement__shade { position: absolute; inset: 0; z-index: -1; background: rgba(6, 6, 6, 0.38); }
+
+  .statement__centre { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px; }
+  .statement__centre :global(.statement__star) { width: clamp(26px, 2.6vw, 40px); color: var(--white); margin-bottom: 10px; }
+  .statement__mark { font-size: clamp(30px, 3.6vw, 56px); color: var(--white); margin-right: -0.55em; }
+  .statement__est { margin-top: 6px; letter-spacing: var(--track-md); }
+
+  .statement__side { align-self: end; display: grid; gap: 18px; letter-spacing: var(--track-md); }
+  .statement__side--left { justify-self: start; }
+  .statement__side--right { justify-self: end; text-align: left; }
+  .dash { display: block; width: 36px; height: 1px; background: var(--bone); margin-top: 6px; }
+
+  @media (max-width: 800px) {
+    .statement {
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas: 'centre centre' 'left right';
+      row-gap: 56px;
+      min-height: 520px;
+    }
+    .statement__centre { grid-area: centre; }
+    .statement__side--left { grid-area: left; }
+    .statement__side--right { grid-area: right; }
+    .statement__mark { letter-spacing: 0.4em; margin-right: -0.4em; }
+  }
+</style>

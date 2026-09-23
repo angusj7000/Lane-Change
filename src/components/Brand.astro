@@ -1,0 +1,18 @@
+---
+// Lane Change brand marks. Swap the SVGs in src/assets/brand for final
+// vector artwork — every placement on the site picks them up.
+import Wordmark from '../assets/brand/wordmark.svg';
+import Monogram from '../assets/brand/monogram.svg';
+import Star from '../assets/brand/star.svg';
+
+interface Props {
+  mark: 'wordmark' | 'monogram' | 'star';
+  class?: string;
+  label?: string;
+}
+const { mark, class: cls, label } = Astro.props;
+const a11y = label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': 'true' };
+---
+{mark === 'wordmark' && <Wordmark class:list={['brand-wordmark', cls]} {...a11y} />}
+{mark === 'monogram' && <Monogram class:list={['brand-monogram', cls]} {...a11y} />}
+{mark === 'star' && <Star class:list={['brand-star', cls]} {...a11y} />}

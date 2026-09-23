@@ -1,0 +1,178 @@
+---
+import { getImage } from 'astro:assets';
+import Icon from '../Icon.astro';
+import { img } from '../../data/images';
+import { site } from '../../config/site';
+
+// Art-directed: landscape campaign frame on desktop, model-centred portrait on phones.
+const desktop = img('hero-campaign');
+const mobile = img('hero-campaign-mobile');
+const widths = [960, 1440, 1920].filter((w) => w <= desktop.width);
+const mk = (src: typeof desktop, ws: number[], format: 'avif' | 'webp') =>
+  Promise.all(ws.map((w) => getImage({ src, width: w, format, quality: 78 }))).then((r) =>
+    r.map((x, i) => `${x.src} ${ws[i]}w`).join(', '),
+  );
+const [dAvif, dWebp, mAvif, mWebp] = await Promise.all([
+  mk(desktop, widths, 'avif'),
+  mk(desktop, widths, 'webp'),
+  mk(mobile, [480, 720, 900], 'avif'),
+  mk(mobile, [480, 720, 900], 'webp'),
+]);
+const fallback = await getImage({ src: desktop, width: 1920, format: 'jpg', quality: 80 });
+const vertical = ['Street', 'Sports', 'Lifestyle', 'Progress', 'Daily'];
+---
+<section class="hero" aria-labelledby="hero-title">
+  <picture class="hero__media">
+    <source media="(max-width: 700px) and (orientation: portrait)" type="image/avif" srcset={mAvif} sizes="100vw" />
+    <source media="(max-width: 700px) and (orientation: portrait)" type="image/webp" srcset={mWebp} sizes="100vw" />
+    <source type="image/avif" srcset={dAvif} sizes="100vw" />
+    <source type="image/webp" srcset={dWebp} sizes="100vw" />
+    <img
+      src={fallback.src}
+      alt="Model photographed from behind in a night-time parking structure, wearing the washed-black Lane Change flagship tee with the large gothic back graphic; a dark performance car sits out of focus behind."
+      width={desktop.width}
+      height={desktop.height}
+      fetchpriority="high"
+      decoding="async"
+    />
+  </picture>
+  <div class="hero__shade" aria-hidden="true"></div>
+
+  <div class="hero__copy">
+    <p class="eyebrow eyebrow--wide hero__line">{site.line}</p>
+    <h1 id="hero-title" class="display hero__title">
+      <span class="ln"><span>Different Lanes.</span></span>
+      <span class="ln"><span>Same <em>Vision.</em></span></span>
+    </h1>
+    <p class="hero__sub">
+      Built for bigger moves. Australian born.<br />
+      Global minded. Street sports culture, redefined.
+    </p>
+    <div class="hero__cta">
+      <a class="btn btn--solid" href="/shop">Shop Now <Icon name="arrow" /></a>
+      <a class="btn" href="/collections/core-washed">View Collection <Icon name="arrow" /></a>
+    </div>
+  </div>
+
+  <p class="micro hero__est">{site.est}<br />{site.origin}</p>
+  <ul class="micro hero__list" aria-label="Lane Change values">
+    {vertical.map((w, i) => <li style={`--i:${i}`}>{w}</li>)}
+  </ul>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    height: 100vh; height: 100svh;
+    min-height: 620px; max-height: 1180px;
+    overflow: hidden;
+    isolation: isolate;
+    color: var(--white);
+  }
+  .hero__media, .hero__media img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+  }
+  .hero__media img {
+    object-fit: cover;
+    object-position: 62% 30%;
+    transform: scale(1.06);
+    animation: hero-settle 2.6s var(--ease-out) forwards;
+  }
+  @keyframes hero-settle { to { transform: scale(1); } }
+
+  /* subtle cinematic shade: flat darken + a left-side scrim behind the copy */
+  .hero__shade {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background:
+      linear-gradient(90deg, rgba(8, 8, 8, 0.72) 0%, rgba(8, 8, 8, 0.35) 38%, rgba(8, 8, 8, 0) 62%),
+      linear-gradient(0deg, rgba(8, 8, 8, 0.55) 0%, rgba(8, 8, 8, 0) 28%),
+      rgba(8, 8, 8, 0.12);
+  }
+
+  .hero__copy {
+    position: absolute; z-index: 2;
+    left: calc(var(--gutter) + 8px);
+    top: 50%;
+    transform: translateY(-58%);
+    max-width: 640px;
+  }
+  .hero__line { color: var(--bone); opacity: 0; animation: fade 1.2s var(--ease-out) 0.2s forwards; }
+  .hero__title {
+    margin-top: clamp(20px, 2.4vw, 34px);
+    font-size: clamp(46px, 5.6vw, 92px);
+    letter-spacing: 0.05em;
+    color: var(--white);
+  }
+  .hero__title em { font-style: normal; color: #b9b7b1; }
+  .ln { display: block; overflow: hidden; padding-bottom: 0.04em; }
+  .ln > span { display: block; transform: translateY(105%); animation: rise 1.2s var(--ease-out) forwards; }
+  .ln:nth-child(2) > span { animation-delay: 0.12s; }
+
+  .hero__sub {
+    margin-top: clamp(18px, 2vw, 28px);
+    font-size: clamp(12px, 1vw, 14px);
+    line-height: 1.75;
+    letter-spacing: 0.04em;
+    color: var(--bone);
+    opacity: 0; animation: fade 1.2s var(--ease-out) 0.45s forwards;
+  }
+  .hero__cta {
+    display: flex; flex-wrap: wrap; gap: 18px;
+    margin-top: clamp(24px, 3vw, 38px);
+    opacity: 0; animation: fade 1.2s var(--ease-out) 0.6s forwards;
+  }
+
+  .hero__est {
+    position: absolute; z-index: 2; left: var(--gutter); bottom: clamp(24px, 4vh, 44px);
+    letter-spacing: var(--track-md);
+  }
+  .hero__list {
+    position: absolute; z-index: 2; right: var(--gutter); bottom: clamp(24px, 4vh, 44px);
+    letter-spacing: var(--track-md); line-height: 1.9;
+  }
+  .hero__list li { opacity: 0; animation: fade 0.9s var(--ease-out) forwards; animation-delay: calc(0.7s + var(--i) * 0.08s); }
+
+  @keyframes rise { to { transform: none; } }
+  @keyframes fade { to { opacity: 1; } }
+
+  /* ----- tablet ----- */
+  @media (max-width: 1100px) {
+    .hero__media img { object-position: 66% 30%; }
+    .hero__shade {
+      background:
+        linear-gradient(90deg, rgba(8, 8, 8, 0.8) 0%, rgba(8, 8, 8, 0.4) 50%, rgba(8, 8, 8, 0.1) 80%),
+        linear-gradient(0deg, rgba(8, 8, 8, 0.6) 0%, rgba(8, 8, 8, 0) 30%);
+    }
+  }
+
+  /* ----- phones: full-viewport portrait, copy anchored low ----- */
+  @media (max-width: 700px) {
+    .hero { min-height: 560px; max-height: none; }
+    .hero__media img { object-position: 50% 18%; }
+    .hero__shade {
+      background:
+        linear-gradient(0deg, rgba(8, 8, 8, 0.96) 0%, rgba(8, 8, 8, 0.86) 34%, rgba(8, 8, 8, 0.4) 52%, rgba(8, 8, 8, 0) 66%),
+        rgba(8, 8, 8, 0.1);
+    }
+    .hero__copy {
+      top: auto; transform: none;
+      left: var(--gutter); right: var(--gutter);
+      bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+    .hero__line { font-size: 10px; letter-spacing: var(--track-md); }
+    .hero__title { font-size: clamp(42px, 13vw, 60px); margin-top: 14px; }
+    .hero__sub { font-size: 12px; }
+    .hero__sub br { display: none; }
+    .hero__cta { gap: 10px; }
+    .hero__cta .btn { flex: 1 1 140px; padding: 0 12px; gap: 10px; }
+    .hero__est { bottom: calc(22px + env(safe-area-inset-bottom)); }
+    .hero__list {
+      display: flex; gap: 10px; bottom: calc(22px + env(safe-area-inset-bottom));
+      font-size: 9px; letter-spacing: 0.16em;
+    }
+    .hero__list li:nth-child(n + 4) { display: none; }
+  }
+  @media (max-height: 640px) and (max-width: 700px) {
+    .hero__sub { display: none; }
+  }
+</style>

@@ -1,0 +1,58 @@
+---
+import Icon from './Icon.astro';
+const suggestions = ['Washed black', 'Oversized tee', 'Hoodie', 'Dusty pink', 'Compass'];
+---
+<div class="search" id="search-overlay" role="dialog" aria-modal="true" aria-label="Search" hidden data-search>
+  <div class="search__panel">
+    <form class="search__form wrap" action="/search" method="get" role="search">
+      <Icon name="search" size={22} />
+      <label class="sr-only" for="search-input">Search Lane Change</label>
+      <input id="search-input" class="search__input title" name="q" type="search" placeholder="Search" autocomplete="off" data-search-input />
+      <button type="button" class="search__close" aria-label="Close search" data-search-close><Icon name="close" /></button>
+    </form>
+    <div class="wrap search__body">
+      <div class="search__suggest">
+        <p class="micro muted">Trending</p>
+        <ul>
+          {suggestions.map((s) => <li><a class="u-link" href={`/search?q=${encodeURIComponent(s)}`}>{s}</a></li>)}
+        </ul>
+      </div>
+      <ul class="search__results" data-search-results aria-live="polite"></ul>
+    </div>
+  </div>
+  <div class="search__scrim" data-search-close></div>
+</div>
+
+<style>
+  .search { position: fixed; inset: 0; z-index: 115; display: flex; flex-direction: column; }
+  .search[hidden] { display: none; }
+  .search__panel {
+    background: var(--ink); border-bottom: 1px solid var(--line);
+    animation: drop 0.5s var(--ease-out);
+  }
+  .search__scrim { flex: 1; background: rgba(0, 0, 0, 0.65); }
+  @keyframes drop { from { transform: translateY(-24px); opacity: 0; } }
+
+  .search__form {
+    display: flex; align-items: center; gap: 16px;
+    height: calc(var(--header-h) + 24px);
+    border-bottom: 1px solid var(--line);
+  }
+  .search__input {
+    flex: 1; min-width: 0; background: none; border: 0; outline: none;
+    font-size: clamp(28px, 4vw, 48px); letter-spacing: 0.12em;
+  }
+  .search__input::placeholder { color: var(--concrete); }
+  .search__input::-webkit-search-cancel-button { display: none; }
+  .search__close { width: 44px; height: 44px; display: grid; place-items: center; }
+
+  .search__body { display: grid; grid-template-columns: 220px 1fr; gap: 40px; padding-block: 28px 40px; }
+  .search__suggest ul { margin-top: 14px; display: grid; gap: 10px; font-size: 12px; text-transform: uppercase; letter-spacing: var(--track-sm); }
+  .search__results { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; }
+  .search__results :global(a) { display: grid; gap: 10px; }
+  .search__results :global(img) { aspect-ratio: 4 / 5; object-fit: cover; background: var(--washed); width: 100%; }
+  @media (max-width: 700px) {
+    .search__body { grid-template-columns: 1fr; gap: 24px; }
+    .search__results { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>

@@ -1,0 +1,96 @@
+---
+import Brand from './Brand.astro';
+import Icon from './Icon.astro';
+import { footerNav, site } from '../config/site';
+
+const socials = [
+  { label: 'Instagram', href: site.social.instagram, icon: 'instagram' as const },
+  { label: 'TikTok', href: site.social.tiktok, icon: 'tiktok' as const },
+  { label: 'YouTube', href: site.social.youtube, icon: 'youtube' as const },
+];
+---
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div class="footer__brand reveal">
+      <a href="/" class="footer__logo" aria-label="Lane Change — home"><Brand mark="wordmark" /></a>
+      <p class="eyebrow eyebrow--wide">{site.line}</p>
+      <p class="micro muted footer__est">{site.est}<br />{site.origin}</p>
+    </div>
+
+    <nav class="footer__col reveal" style="--d:.08s" aria-label="Footer">
+      <p class="micro muted col-title">Navigate</p>
+      <ul>
+        {footerNav.map((l) => <li><a class="u-link" href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="footer__col reveal" style="--d:.16s">
+      <p class="micro muted col-title">Follow</p>
+      <ul>
+        {socials.map((s) => (
+          <li>
+            <a class="social" href={s.href} target="_blank" rel="noopener noreferrer">
+              <Icon name={s.icon} size={16} /> <span class="u-link">{s.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="footer__news reveal" style="--d:.24s">
+      <h2 class="title news__title">Join The Lane</h2>
+      <p class="muted news__copy">Drops, campaign releases and events before anyone else. No spam — just new roads.</p>
+      <form class="news__form" data-newsletter action={site.newsletterEndpoint || undefined} method="post" novalidate>
+        <label class="sr-only" for="news-email">Your email</label>
+        <input class="field" id="news-email" name="email" type="email" autocomplete="email" placeholder="Your email" required />
+        <button class="btn btn--solid" type="submit">Subscribe <Icon name="arrow" /></button>
+        <p class="micro news__msg" role="status" aria-live="polite" data-newsletter-msg></p>
+      </form>
+    </div>
+  </div>
+
+  <div class="wrap footer__base">
+    <p class="micro">© 2025 Lane Change</p>
+    <p class="micro muted only-wide">Designed to win</p>
+    <p class="micro">{site.origin}</p>
+  </div>
+</footer>
+
+<style>
+  .footer { background: var(--black); border-top: 1px solid var(--line); }
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr 0.7fr 1.5fr;
+    gap: clamp(32px, 4vw, 72px);
+    padding-block: clamp(56px, 7vw, 104px);
+  }
+  .footer__logo { display: block; width: clamp(170px, 16vw, 230px); margin-bottom: 22px; color: var(--white); }
+  .footer__logo :global(svg) { width: 100%; height: auto; }
+  .footer__est { margin-top: 28px; }
+  .col-title { margin-bottom: 20px; }
+  .footer__col ul { display: flex; flex-direction: column; gap: 12px; }
+  .footer__col a { font-size: 12px; letter-spacing: var(--track-sm); text-transform: uppercase; }
+  .social { display: inline-flex; align-items: center; gap: 12px; }
+
+  .news__title { font-size: clamp(30px, 3vw, 42px); letter-spacing: 0.14em; }
+  .news__copy { margin-top: 12px; max-width: 42ch; font-size: 13px; }
+  .news__form { display: grid; grid-template-columns: 1fr auto; margin-top: 24px; }
+  .news__form .field { border-right: 0; }
+  .news__msg { grid-column: 1 / -1; min-height: 1.7em; margin-top: 10px; color: var(--smoke); }
+
+  .footer__base {
+    display: flex; justify-content: space-between; gap: 16px;
+    padding-block: 22px calc(22px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 1100px) {
+    .footer__grid { grid-template-columns: 1fr 1fr; }
+    .footer__brand, .footer__news { grid-column: 1 / -1; }
+  }
+  @media (max-width: 560px) {
+    .news__form { grid-template-columns: 1fr; gap: 10px; }
+    .news__form .field { border-right: 1px solid var(--line-strong); }
+    .only-wide { display: none; }
+  }
+</style>

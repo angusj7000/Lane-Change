@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/home/Hero.astro';
+import CategoryStrip from '../components/home/CategoryStrip.astro';
+import FeaturedCollection from '../components/home/FeaturedCollection.astro';
+import BrandStatement from '../components/home/BrandStatement.astro';
+import { site } from '../config/site';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Lane Change',
+  slogan: 'Different Lanes. Same Vision.',
+  description: site.description,
+  url: 'https://lanechange.com.au',
+  foundingDate: '2025',
+  foundingLocation: 'Australia',
+  sameAs: Object.values(site.social),
+};
+---
+<Base header="overlay" jsonLd={jsonLd}>
+  <Hero />
+  <CategoryStrip />
+  <FeaturedCollection />
+  <BrandStatement />
+</Base>

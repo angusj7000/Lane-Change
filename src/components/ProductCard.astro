@@ -1,0 +1,83 @@
+---
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+import Brand from './Brand.astro';
+import type { Product } from '../data/products';
+import { formatPrice } from '../data/products';
+
+interface Props {
+  product: Product;
+  index?: number;
+  sizes?: string;
+}
+const { product: p, index = 0, sizes = '(max-width: 700px) 50vw, (max-width: 1100px) 33vw, 20vw' } = Astro.props;
+const front = p.gallery.front ?? p.gallery.back;
+const hover = p.gallery.front ? p.gallery.back : null;
+---
+<article class="card reveal" style={`--d:${(index % 5) * 0.07}s`}>
+  <a class="card__link" href={`/products/${p.slug}`}>
+    <div class="card__media">
+      {front ? (
+        <Photo src={front} alt={`${p.name} in ${p.colour.name}, front view`} sizes={sizes} widths={[320, 480, 640, 800]} class="card__img" />
+      ) : (
+        <div class="card__pending"><Brand mark="monogram" /></div>
+      )}
+      {hover && (
+        <Photo src={hover} alt="" sizes={sizes} widths={[320, 480, 640, 800]} class="card__img card__img--alt" />
+      )}
+      {p.badge && <span class="card__badge micro">{p.badge}</span>}
+    </div>
+    <div class="card__info">
+      <h3 class="micro card__name">{p.name}</h3>
+      <p class="micro muted card__colour">{p.colour.name}</p>
+      <p class="micro card__price">{p.status === 'coming-soon' ? 'Coming soon' : formatPrice(p.price)}</p>
+    </div>
+  </a>
+  <button class="card__wish" type="button" data-wish={p.slug} aria-pressed="false" aria-label={`Save ${p.name} to wishlist`}>
+    <Icon name="heart" size={18} />
+  </button>
+</article>
+
+<style>
+  .card { position: relative; }
+  .card__link { display: block; }
+  .card__media {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #0d0d0d;
+  }
+  .card__media :global(.card__img) {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover;
+    transition: opacity 0.7s var(--ease), transform 1.2s var(--ease-out);
+  }
+  .card__media :global(.card__img--alt) { opacity: 0; }
+  @media (hover: hover) {
+    .card:hover .card__media :global(.card__img--alt) { opacity: 1; }
+    .card:hover .card__media :global(.card__img) { transform: scale(1.03); }
+  }
+  .card__pending { position: absolute; inset: 0; display: grid; place-items: center; color: var(--charcoal); }
+  .card__pending :global(svg) { width: 34%; height: auto; }
+
+  .card__badge {
+    position: absolute; left: 12px; top: 12px;
+    padding: 5px 8px; border: 1px solid var(--line-strong);
+    background: rgba(10, 10, 10, 0.6); font-size: 9px;
+  }
+  .card__info { padding-top: 14px; text-align: center; display: grid; gap: 2px; }
+  .card__name { letter-spacing: var(--track-md); font-size: 11px; overflow-wrap: anywhere; }
+  @media (max-width: 700px) { .card__name { letter-spacing: var(--track-sm); } }
+  .card__colour { font-size: 9px; }
+  .card__price { letter-spacing: var(--track-sm); margin-top: 2px; }
+
+  .card__wish {
+    position: absolute; right: 6px; top: 6px;
+    width: 40px; height: 40px; display: grid; place-items: center;
+    color: var(--bone);
+    opacity: 0; transition: opacity 0.3s var(--ease);
+  }
+  .card:hover .card__wish, .card__wish:focus-visible, .card__wish.is-on { opacity: 1; }
+  .card__wish.is-on :global(svg) { fill: currentColor; }
+  @media (hover: none) { .card__wish { opacity: 0.85; } }
+</style>

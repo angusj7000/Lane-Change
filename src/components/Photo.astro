@@ -1,0 +1,32 @@
+---
+// Responsive, lazy, AVIF/WebP photo from src/assets/images by key.
+import { Picture } from 'astro:assets';
+import { img } from '../data/images';
+
+interface Props {
+  src: string;
+  alt: string;
+  sizes: string;
+  widths?: number[];
+  eager?: boolean;
+  class?: string;
+  position?: string;
+}
+const { src, alt, sizes, widths = [360, 540, 720, 960, 1280, 1600], eager = false, class: cls, position } = Astro.props;
+const image = img(src);
+const ws = widths.filter((w) => w <= image.width);
+if (!ws.length) ws.push(image.width);
+---
+<Picture
+  src={image}
+  alt={alt}
+  widths={ws}
+  sizes={sizes}
+  formats={['avif', 'webp']}
+  fallbackFormat="jpg"
+  quality={78}
+  loading={eager ? 'eager' : 'lazy'}
+  decoding="async"
+  class={cls}
+  style={position ? `object-position:${position}` : undefined}
+/>

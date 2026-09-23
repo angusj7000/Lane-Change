@@ -1,0 +1,105 @@
+---
+import Photo from '../Photo.astro';
+import Icon from '../Icon.astro';
+import Brand from '../Brand.astro';
+
+const panels = [
+  {
+    title: 'Tees',
+    lines: ['Everyday essentials.', 'Built different.'],
+    href: '/collections/tees',
+    image: 'category-tees',
+    alt: 'Close-up of the embroidered LC monogram on washed-black heavyweight jersey.',
+    position: '60% 40%',
+    star: true,
+  },
+  {
+    title: 'Hoodies',
+    lines: ['Bigger moves.', 'Colder days.'],
+    href: '/collections/hoodies',
+    image: 'category-hoodies',
+    alt: 'Model from behind wearing the washed-black Lane Change hoodie with the tonal gothic back graphic.',
+    position: '50% 30%',
+  },
+  {
+    title: 'Our Story',
+    lines: ['Australian born.', 'Global minded.'],
+    href: '/about',
+    image: 'category-story',
+    alt: 'Curving concrete overpass and empty road under a heavy grey sky.',
+    position: '50% 50%',
+  },
+];
+---
+<section class="strip" aria-label="Shop by category">
+  {panels.map((p, i) => (
+    <a class="panel has-arrow" href={p.href} style={`--d:${i * 0.12}s`}>
+      <div class="panel__media media reveal-img" style={`--d:${i * 0.12}s`}>
+        <Photo src={p.image} alt={p.alt} sizes="(max-width: 700px) 100vw, 34vw" position={p.position} />
+      </div>
+      {p.star && <Brand mark="star" class="panel__star" />}
+      <div class="panel__copy">
+        <h2 class="title panel__title">{p.title} <Icon name="arrow" /></h2>
+        <p class="micro panel__lines">{p.lines.map((l) => <span>{l}</span>)}</p>
+      </div>
+    </a>
+  ))}
+</section>
+
+<style>
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line-strong);
+    border-block: 1px solid var(--line-strong);
+  }
+  .panel {
+    position: relative;
+    display: block;
+    aspect-ratio: 1.95 / 1;
+    min-height: 240px;
+    overflow: hidden;
+    background: var(--black);
+    isolation: isolate;
+  }
+  .panel__media { position: absolute; inset: 0; }
+  .panel__media :global(img) {
+    transition: transform 1.4s var(--ease-out), filter 0.8s var(--ease);
+    filter: grayscale(0.2) brightness(0.86);
+  }
+  .panel::after {
+    content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.1) 55%, rgba(0, 0, 0, 0) 100%);
+  }
+  .panel:hover .panel__media :global(img),
+  .panel:focus-visible .panel__media :global(img) { transform: scale(1.045); filter: grayscale(0) brightness(0.95); }
+
+  .panel :global(.panel__star) {
+    position: absolute; z-index: 2; width: clamp(22px, 2.6vw, 36px);
+    left: 64%; bottom: 19%; transform: translateX(-50%); color: var(--bone); opacity: 0.9;
+  }
+
+  .panel__copy {
+    position: absolute; z-index: 2;
+    left: clamp(20px, 2.4vw, 32px); bottom: clamp(20px, 2.2vw, 30px);
+  }
+  .panel__title {
+    display: flex; align-items: center; gap: 18px;
+    font-size: clamp(24px, 2.2vw, 34px);
+    letter-spacing: 0.16em;
+  }
+  .panel__title :global(.arrow) { width: 34px; height: 12px; }
+  .panel__lines { display: flex; flex-direction: column; margin-top: 12px; letter-spacing: var(--track-md); }
+
+  @media (max-width: 900px) {
+    .panel { aspect-ratio: 1.3 / 1; }
+    .panel__lines { font-size: 9px; }
+  }
+  @media (max-width: 700px) {
+    .strip { grid-template-columns: 1fr; }
+    .panel { aspect-ratio: 16 / 10; }
+    .panel__title { font-size: 30px; }
+    .panel__lines { font-size: 10px; }
+  }
+</style>

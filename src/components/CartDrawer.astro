@@ -1,0 +1,69 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../config/site';
+---
+<div class="drawer-scrim" data-cart-scrim hidden></div>
+<aside class="drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden data-cart-drawer>
+  <div class="drawer__head">
+    <h2 id="cart-title" class="eyebrow">Bag <span data-cart-count-inline>(0)</span></h2>
+    <button class="drawer__close" type="button" aria-label="Close bag" data-cart-close><Icon name="close" /></button>
+  </div>
+
+  <div class="drawer__ship micro" data-ship-progress data-threshold={site.freeShippingThreshold}>
+    <span data-ship-text>Free AU shipping over ${site.freeShippingThreshold}</span>
+    <span class="ship-bar"><span data-ship-bar></span></span>
+  </div>
+
+  <ul class="drawer__items" data-cart-items></ul>
+
+  <div class="drawer__empty" data-cart-empty>
+    <p class="title">Your bag is empty</p>
+    <p class="muted">New roads always. Start with the core range.</p>
+    <a class="btn" href="/collections/core-washed">Shop Core Washed <Icon name="arrow" /></a>
+  </div>
+
+  <div class="drawer__foot" data-cart-foot>
+    <div class="drawer__row"><span class="eyebrow">Subtotal</span><span class="eyebrow" data-cart-subtotal>$0 AUD</span></div>
+    <p class="micro muted">Shipping and duties calculated at checkout. Ships from Australia, worldwide.</p>
+    <a class="btn btn--solid btn--block" href="/checkout">Checkout <Icon name="arrow" /></a>
+    <a class="btn btn--block" href="/cart">View Bag</a>
+  </div>
+</aside>
+
+<style>
+  .drawer-scrim {
+    position: fixed; inset: 0; z-index: 110;
+    background: rgba(0, 0, 0, 0.6);
+    opacity: 0; transition: opacity 0.4s var(--ease);
+  }
+  .drawer-scrim.is-open { opacity: 1; }
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 111;
+    width: min(460px, 100%);
+    display: flex; flex-direction: column;
+    background: var(--ink);
+    border-left: 1px solid var(--line);
+    transform: translateX(100%);
+    transition: transform 0.55s var(--ease-out);
+  }
+  .drawer.is-open { transform: none; }
+  .drawer[hidden], .drawer-scrim[hidden] { display: none; }
+
+  .drawer__head {
+    display: flex; justify-content: space-between; align-items: center;
+    height: var(--header-h); padding: 0 24px; border-bottom: 1px solid var(--line);
+  }
+  .drawer__close { width: 44px; height: 44px; display: grid; place-items: center; margin-right: -12px; }
+  .drawer__ship { padding: 16px 24px; border-bottom: 1px solid var(--line); display: grid; gap: 10px; }
+  .ship-bar { display: block; height: 1px; background: var(--line); }
+  .ship-bar span { display: block; height: 100%; width: 0; background: var(--bone); transition: width 0.6s var(--ease-out); }
+
+  .drawer__items { flex: 1; overflow-y: auto; padding: 8px 24px; }
+  .drawer__empty { flex: 1; display: none; flex-direction: column; align-items: flex-start; gap: 14px; padding: 40px 24px; }
+  .drawer__empty .title { font-size: 28px; }
+  .drawer.is-empty .drawer__empty { display: flex; }
+  .drawer.is-empty .drawer__items, .drawer.is-empty .drawer__foot { display: none; }
+
+  .drawer__foot { padding: 20px 24px calc(20px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); display: grid; gap: 12px; }
+  .drawer__row { display: flex; justify-content: space-between; }
+</style>
