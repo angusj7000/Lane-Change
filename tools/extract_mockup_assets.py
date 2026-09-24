@@ -76,9 +76,11 @@ hero = clean(hero, [
     (30, 540, 170, 582),      # est / aus
     (1115, 512, 1200, 594),   # vertical list
 ])
-save("hero-campaign", upscale(hero, 1.6))
-# portrait crop focused on the model for phones
-save("hero-campaign-mobile", upscale(hero[0:610, 540:1010], 1.9))
+# the flagship-graphic hero is kept as source: tools/swap_hero_graphic.py prints the
+# Gothic Stack graphic on it to make the site hero (run it after this script)
+save("hero-campaign-flagship", upscale(hero, 1.6), 95, RAW)
+# portrait crop of the flagship tee — used as the FIT view of the core washed tees
+save("products/core-washed-fit", upscale(hero[0:610, 540:1010], 1.9))
 
 # ---------- CATEGORY PANELS ----------
 panels = {

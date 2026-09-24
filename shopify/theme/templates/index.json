@@ -7,29 +7,67 @@
         "heading_1": "Different Lanes.",
         "heading_2": "Same",
         "heading_2_accent": "Vision.",
-        "text": "<p>Built for bigger moves. Australian born.<br/>Global minded. Street sports culture, redefined.</p>",
+        "text": "<p>Built for bigger moves. Australian born. <br/>Global minded. Street sports culture, redefined.</p>",
         "button_1_label": "Shop Now",
-        "button_1_link": "/collections/all",
         "button_2_label": "View Collection",
-        "button_2_link": "/collections/core-washed",
         "side_list": "Street\nSports\nLifestyle\nProgress\nDaily",
         "overlay": 0,
-        "focal": "62% 30%"
+        "focal": "62% 30%",
+        "button_1_path": "/collections/all",
+        "button_2_path": "/collections/core-washed",
+        "alt": "Model photographed from behind in a night-time parking structure wearing the washed-black Lane Change Gothic Stack Tee."
       }
     },
     "categories": {
       "type": "category-strip",
       "blocks": {
-        "tees": { "type": "panel", "settings": { "title": "Tees", "text": "Everyday essentials.\nBuilt different.", "fallback": "category-tees", "link": "/collections/tees", "show_star": true } },
-        "hoodies": { "type": "panel", "settings": { "title": "Hoodies", "text": "Bigger moves.\nColder days.", "fallback": "category-hoodies", "link": "/collections/hoodies" } },
-        "story": { "type": "panel", "settings": { "title": "Our Story", "text": "Australian born.\nGlobal minded.", "fallback": "category-story", "link": "/pages/about" } }
+        "tees": {
+          "type": "panel",
+          "settings": {
+            "title": "Tees",
+            "text": "Everyday essentials.\nBuilt different.",
+            "fallback": "category-tees",
+            "show_star": true,
+            "link_path": "/collections/tees"
+          }
+        },
+        "hoodies": {
+          "type": "panel",
+          "settings": {
+            "title": "Hoodies",
+            "text": "Bigger moves.\nColder days.",
+            "fallback": "category-hoodies",
+            "link_path": "/collections/hoodies"
+          }
+        },
+        "story": {
+          "type": "panel",
+          "settings": {
+            "title": "Our Story",
+            "text": "Australian born.\nGlobal minded.",
+            "fallback": "category-story",
+            "link_path": "/pages/about"
+          }
+        }
       },
-      "block_order": ["tees", "hoodies", "story"],
-      "settings": { "label": "Shop by category" }
+      "block_order": [
+        "tees",
+        "hoodies",
+        "story"
+      ],
+      "settings": {
+        "label": "Shop by category"
+      }
     },
     "featured": {
       "type": "featured-collection",
-      "settings": { "heading": "Featured Collection", "collection": "core-washed", "limit": 5, "columns": 5, "show_more_tile": true }
+      "settings": {
+        "heading": "Featured Collection",
+        "limit": 5,
+        "columns": 5,
+        "show_more_tile": true,
+        "collection_handle": "core-washed"
+      }
     },
     "statement": {
       "type": "brand-statement",
@@ -41,5 +79,10 @@
       }
     }
   },
-  "order": ["hero", "categories", "featured", "statement"]
+  "order": [
+    "hero",
+    "categories",
+    "featured",
+    "statement"
+  ]
 }

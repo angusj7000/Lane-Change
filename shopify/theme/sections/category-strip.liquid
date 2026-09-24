@@ -1,6 +1,7 @@
 <section class="strip" aria-label="{{ section.settings.label | escape }}">
   {%- for block in section.blocks -%}
-    <a class="panel has-arrow" href="{{ block.settings.link | default: '#' }}" {{ block.shopify_attributes }}>
+    {%- capture href -%}{% render 'resolve-link', url: block.settings.link, path: block.settings.link_path %}{%- endcapture -%}
+    <a class="panel has-arrow" href="{{ href | strip }}" {{ block.shopify_attributes }}>
       <div class="panel__media media reveal-img" style="--d: {{ forloop.index0 | times: 0.12 }}s">
         {%- if block.settings.image -%}
           {%- assign alt = block.settings.image.alt | default: block.settings.title -%}
@@ -42,6 +43,7 @@
         { "type": "text", "id": "title", "label": "Title", "default": "Tees" },
         { "type": "textarea", "id": "text", "label": "Text", "default": "Everyday essentials.\nBuilt different." },
         { "type": "url", "id": "link", "label": "Link" },
+        { "type": "text", "id": "link_path", "label": "Link path", "default": "/collections/all", "info": "Used when Link is empty, e.g. /collections/tees or /pages/about. If that collection or page doesn't exist yet, the panel opens Shop All." },
         { "type": "checkbox", "id": "show_star", "label": "Show compass star", "default": false }
       ]
     }
@@ -50,9 +52,9 @@
     {
       "name": "Category strip",
       "blocks": [
-        { "type": "panel", "settings": { "title": "Tees", "text": "Everyday essentials.\nBuilt different.", "fallback": "category-tees", "show_star": true } },
-        { "type": "panel", "settings": { "title": "Hoodies", "text": "Bigger moves.\nColder days.", "fallback": "category-hoodies" } },
-        { "type": "panel", "settings": { "title": "Our Story", "text": "Australian born.\nGlobal minded.", "fallback": "category-story" } }
+        { "type": "panel", "settings": { "title": "Tees", "text": "Everyday essentials.\nBuilt different.", "fallback": "category-tees", "link_path": "/collections/tees", "show_star": true } },
+        { "type": "panel", "settings": { "title": "Hoodies", "text": "Bigger moves.\nColder days.", "fallback": "category-hoodies", "link_path": "/collections/hoodies" } },
+        { "type": "panel", "settings": { "title": "Our Story", "text": "Australian born.\nGlobal minded.", "fallback": "category-story", "link_path": "/pages/about" } }
       ]
     }
   ]

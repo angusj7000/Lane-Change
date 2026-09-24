@@ -72,7 +72,7 @@ function washedTee(
       side: null,
       detail: `products/${image}-detail`,
       fabric: `products/${image}-fabric`,
-      fit: 'hero-campaign-mobile',
+      fit: 'products/core-washed-fit',
     },
     status: 'available',
     grams: 300,

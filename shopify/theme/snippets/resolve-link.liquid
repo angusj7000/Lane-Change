@@ -1,0 +1,32 @@
+{%- comment -%}
+  Outputs a link that always goes somewhere.
+  Usage: {%- capture href -%}{% render 'resolve-link', url: block.settings.link, path: block.settings.link_path %}{%- endcapture -%}
+  - url:  a URL setting picked in the theme editor (preferred)
+  - path: a typed path such as /collections/tees or /pages/about (used when url is empty)
+  If the collection or page it points to doesn't exist yet, it falls back to Shop All,
+  so a panel or button is never a dead click while the store is being set up.
+{%- endcomment -%}
+{%- liquid
+  assign href = url
+  if href == blank
+    assign href = path | strip
+  endif
+  assign safe = routes.all_products_collection_url
+  if href == blank
+    assign href = safe
+  endif
+  if href contains '/collections/'
+    assign handle = href | split: '/collections/' | last | split: '?' | first | split: '/' | first
+    if handle != blank and handle != 'all'
+      if collections[handle].id == blank
+        assign href = safe
+      endif
+    endif
+  elsif href contains '/pages/'
+    assign handle = href | split: '/pages/' | last | split: '?' | first | split: '/' | first
+    if pages[handle].id == blank
+      assign href = safe
+    endif
+  endif
+  echo href
+-%}

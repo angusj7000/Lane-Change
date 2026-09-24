@@ -28,10 +28,12 @@
     {%- if section.settings.text != blank -%}<div class="hero__sub">{{ section.settings.text }}</div>{%- endif -%}
     <div class="hero__cta">
       {%- if section.settings.button_1_label != blank -%}
-        <a class="btn btn--solid" href="{{ section.settings.button_1_link | default: routes.all_products_collection_url }}">{{ section.settings.button_1_label }} {% render 'icon', name: 'arrow' %}</a>
+        {%- capture href_1 -%}{% render 'resolve-link', url: section.settings.button_1_link, path: section.settings.button_1_path %}{%- endcapture -%}
+        <a class="btn btn--solid" href="{{ href_1 | strip }}">{{ section.settings.button_1_label }} {% render 'icon', name: 'arrow' %}</a>
       {%- endif -%}
       {%- if section.settings.button_2_label != blank -%}
-        <a class="btn" href="{{ section.settings.button_2_link | default: routes.collections_url }}">{{ section.settings.button_2_label }} {% render 'icon', name: 'arrow' %}</a>
+        {%- capture href_2 -%}{% render 'resolve-link', url: section.settings.button_2_link, path: section.settings.button_2_path %}{%- endcapture -%}
+        <a class="btn" href="{{ href_2 | strip }}">{{ section.settings.button_2_label }} {% render 'icon', name: 'arrow' %}</a>
       {%- endif -%}
     </div>
   </div>
@@ -49,7 +51,7 @@
   "settings": [
     { "type": "image_picker", "id": "image", "label": "Image (desktop)", "info": "Landscape, at least 2400px wide. Leave empty to use the campaign placeholder." },
     { "type": "image_picker", "id": "mobile_image", "label": "Image (phones)", "info": "Portrait, model centred." },
-    { "type": "text", "id": "alt", "label": "Image description (alt text)", "default": "Model photographed from behind in a night-time parking structure wearing the washed-black Lane Change flagship tee." },
+    { "type": "text", "id": "alt", "label": "Image description (alt text)", "default": "Model photographed from behind in a night-time parking structure wearing the washed-black Lane Change Gothic Stack Tee." },
     { "type": "select", "id": "focal", "label": "Desktop focal point", "default": "62% 30%", "options": [
       { "value": "50% 30%", "label": "Centre" }, { "value": "62% 30%", "label": "Right of centre" }, { "value": "75% 30%", "label": "Right" }
     ] },
@@ -58,11 +60,13 @@
     { "type": "text", "id": "heading_1", "label": "Heading line 1", "default": "Different Lanes." },
     { "type": "text", "id": "heading_2", "label": "Heading line 2", "default": "Same" },
     { "type": "text", "id": "heading_2_accent", "label": "Heading line 2 — grey word", "default": "Vision." },
-    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Built for bigger moves. Australian born.<br/>Global minded. Street sports culture, redefined.</p>" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Built for bigger moves. Australian born. <br/>Global minded. Street sports culture, redefined.</p>" },
     { "type": "text", "id": "button_1_label", "label": "Button 1 label", "default": "Shop Now" },
-    { "type": "url", "id": "button_1_link", "label": "Button 1 link", "default": "/collections/all" },
+    { "type": "url", "id": "button_1_link", "label": "Button 1 link" },
+    { "type": "text", "id": "button_1_path", "label": "Button 1 link path", "default": "/collections/all", "info": "Used when Button 1 link is empty." },
     { "type": "text", "id": "button_2_label", "label": "Button 2 label", "default": "View Collection" },
-    { "type": "url", "id": "button_2_link", "label": "Button 2 link", "default": "/collections" },
+    { "type": "url", "id": "button_2_link", "label": "Button 2 link" },
+    { "type": "text", "id": "button_2_path", "label": "Button 2 link path", "default": "/collections/core-washed", "info": "Used when Button 2 link is empty. Falls back to Shop All until the collection exists." },
     { "type": "textarea", "id": "side_list", "label": "Bottom-right words (one per line)", "default": "Street\nSports\nLifestyle\nProgress\nDaily" }
   ],
   "presets": [{ "name": "Hero" }]

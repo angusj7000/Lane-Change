@@ -56,6 +56,8 @@ Go to **Products → Collections → Create collection**. Create each collection
 
 Add a collection image if you want one; it is used as the collection page banner. Without one, the theme uses the campaign photo.
 
+> Until these collections (and the About page in step 4) exist, the homepage's Tees / Hoodies / Our Story panels and the View Collection button open **Shop All**, so nothing is a dead click. Once you create them, the panels go to the right places automatically. You don't need to re-upload the theme.
+
 ## 4. Create the pages
 
 Go to **Online Store → Pages → Add page**. In the right-hand panel, pick the **Theme template** shown below.

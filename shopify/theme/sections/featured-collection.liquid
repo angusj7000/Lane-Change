@@ -1,4 +1,12 @@
-{%- assign collection = section.settings.collection -%}
+{%- liquid
+  assign collection = section.settings.collection
+  if collection == blank and section.settings.collection_handle != blank
+    assign collection = collections[section.settings.collection_handle]
+  endif
+  if collection.id == blank
+    assign collection = collections.all
+  endif
+-%}
 <section class="featured" aria-labelledby="featured-{{ section.id }}">
   <div class="featured__inner">
     <div class="section-bar">
@@ -32,6 +40,7 @@
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "Featured Collection" },
     { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "text", "id": "collection_handle", "label": "Collection handle", "default": "core-washed", "info": "Used when no collection is picked above. Shows all products until that collection exists." },
     { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 12, "step": 1, "default": 5 },
     { "type": "range", "id": "columns", "label": "Columns on desktop", "min": 3, "max": 6, "step": 1, "default": 5 },
     { "type": "checkbox", "id": "show_more_tile", "label": "Show “Shop All” tile on tablet and mobile", "default": true }
