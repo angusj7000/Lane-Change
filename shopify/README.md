@@ -5,7 +5,7 @@ Everything you need to run Lane Change on Shopify is in this folder:
 | File | What it is |
 | --- | --- |
 | `lane-change-theme.zip` | The full Lane Change theme, ready to upload. |
-| `products.csv` | All 14 products (sizes, prices, stock, SKUs, images, descriptions), ready to import. |
+| `products.csv` | The 5 launch tees (sizes, prices, stock, SKUs, 8 photos each, descriptions), ready to import. |
 | `theme/` | The theme's source files (only needed if you or a developer want to edit the code). |
 
 Setup takes about 20 minutes. Do the steps in this order.
@@ -20,22 +20,25 @@ Setup takes about 20 minutes. Do the steps in this order.
 
 ## 2. Import the products
 
+> **Already imported the earlier 14-product file?** Delete those first so only the five launch tees show: go to **Products**, tick the checkbox at the top of the list to select all, then **More actions → Delete products**.
+
 1. Go to **Products → Import**.
 2. Choose `products.csv` and click **Upload and preview**, then **Import products**.
 3. Shopify downloads the product photos during import, which can take a few minutes.
 
 What the import creates:
 
-- **14 products**, each with a Size option and a Color option.
-- **Stock** of 25 for each size. Sizes marked sold out on the demo site import with 0 stock, so they show as sold out.
+- **5 products** (Gothic Stack, Compass, Roads, Checker, Beyond Limits), each with a Size option (XS–XXL) and a Color option.
+- **8 photos per product:** front, back, side, fit, chest detail, back print, fabric and neck label.
+- **Stock** of 25 for each size.
 - **SKUs** such as `LC-GLOBLA-M`.
 - **Weights** for shipping rates.
 - **SEO titles and descriptions.**
 - **Tags** that the theme uses:
-  - `tees`, `hoodies`, `accessories`, `core-washed`, `graphic-tees` build the collections in step 3.
-  - `family:…` links colourways of the same tee, so the product page shows colour swatches that switch between them.
+  - `tees` and `core-washed` build the collections in step 3.
+  - `family:core-washed-tee` links the five tees, so each product page shows all five colour swatches and you can switch between them.
   - `swatch:#hex` sets the swatch colour.
-  - `badge:…` adds the small label on product cards (Flagship, Low stock, Style 01, New).
+  - `badge:…` adds the small label on product cards (the Gothic Stack Tee is marked Flagship).
 - **Descriptions with Fit, Fabric and Care sections.** These are written as **Heading 6** in each description, and the theme turns each Heading 6 into its own dropdown. To change them, edit the description and use the Heading 6 style for each section title.
 
 > Before importing, update the stock numbers and prices in the CSV if needed (open it in Google Sheets or Excel). You can also change them in Shopify afterwards.
@@ -49,14 +52,13 @@ Go to **Products → Collections → Create collection**. Create each collection
 | Title | Handle | Condition: tag equals |
 | --- | --- | --- |
 | Core Washed | `core-washed` | `core-washed` |
-| Graphic Tees | `graphic-tees` | `graphic-tees` |
 | Tees | `tees` | `tees` |
-| Hoodies | `hoodies` | `hoodies` |
-| Accessories | `accessories` | `accessories` |
 
 Add a collection image if you want one; it is used as the collection page banner. Without one, the theme uses the campaign photo.
 
 > Until these collections (and the About page in step 4) exist, the homepage's Tees / Hoodies / Our Story panels and the View Collection button open **Shop All**, so nothing is a dead click. Once you create them, the panels go to the right places automatically. You don't need to re-upload the theme.
+>
+> **Hoodies:** don't create a Hoodies collection until you have hoodies to sell. Until then, the homepage Hoodies panel opens Shop All. When hoodies arrive, create a `hoodies` collection (tag equals `hoodies`) and the panel links to it automatically.
 
 ## 4. Create the pages
 
@@ -81,12 +83,9 @@ Go to **Online Store → Navigation**.
 
 - Shop → `/collections/all`
   - Tees → Tees collection
-  - Hoodies → Hoodies collection
-  - Accessories → Accessories collection
   - Wishlist → Wishlist page
 - Collections → `/collections`
   - Core Washed
-  - Graphic Tees
 - About → About page
 - Journal → Journal blog
 

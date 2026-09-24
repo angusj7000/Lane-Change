@@ -11,7 +11,7 @@
       <div class="search__suggest">
         <p class="micro muted">{{ 'search.trending' | t }}</p>
         <ul>
-          {%- assign trending = 'Washed black,Oversized tee,Hoodie,Cap,Concrete grey' | split: ',' -%}
+          {%- assign trending = 'Gothic Stack,Washed black,Checker,Concrete grey,Dusty pink' | split: ',' -%}
           {%- for term in trending -%}
             <li><a class="u-link" href="{{ routes.search_url }}?q={{ term | url_encode }}&type=product">{{ term }}</a></li>
           {%- endfor -%}

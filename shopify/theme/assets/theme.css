@@ -573,7 +573,7 @@ label.lbl { display: block; margin-bottom: 8px; }
   .card__link { display: block; }
   .card__media {
     position: relative;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 4 / 5;
     overflow: hidden;
     background: #0d0d0d;
   }
@@ -827,7 +827,7 @@ label.lbl { display: block; margin-bottom: 8px; }
   .featured__more {
     display: none;
     flex-direction: column; align-items: center; justify-content: center; gap: 12px;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 4 / 5;
     border: 1px solid var(--line);
     text-align: center;
     transition: border-color 0.4s var(--ease);
@@ -1170,7 +1170,7 @@ label.lbl { display: block; margin-bottom: 8px; }
   .sform { margin-top: 28px; max-width: 560px; }
   .results { margin-top: 28px; }
   .results a { display: grid; gap: 8px; text-align: center; }
-  .results img { width: 100%; aspect-ratio: 1; object-fit: cover; background: #0d0d0d; }
+  .results img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; background: #0d0d0d; }
 
 
 /* ---- src/pages/404.astro ---- */
@@ -1226,12 +1226,12 @@ label.lbl { display: block; margin-bottom: 8px; }
 /* search results (non-product) */
 .result-text { display: grid; gap: 8px; padding: 18px; border: 1px solid var(--line); align-content: start; }
 .search__results a { display: grid; gap: 8px; }
-.search__results img { width: 100%; aspect-ratio: 1; object-fit: cover; background: #0d0d0d; }
+.search__results img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; background: #0d0d0d; }
 
 /* wishlist grid (rendered client-side) */
 [data-wish-grid] li { display: grid; gap: 10px; }
 [data-wish-grid] a { display: grid; gap: 8px; text-align: center; }
-[data-wish-grid] img { width: 100%; aspect-ratio: 1; object-fit: cover; background: #0d0d0d; }
+[data-wish-grid] img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; background: #0d0d0d; }
 [data-wish-grid] .wish-remove { justify-self: center; }
 
 /* pagination */

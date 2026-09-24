@@ -47,23 +47,21 @@ tools/                 imagery + logo pipelines, Shopify CSV export, theme build
 
 ## Replacing placeholder photography
 
-All current imagery comes from the supplied design files in `design/reference/`:
-the homepage mockup (`tools/extract_mockup_assets.py`, `tools/build_product_images.py`), plus the
-brand board and on-model shots for the extended range (`tools/build_new_products.py`). To go live, overwrite a
+Campaign imagery (hero, category panels, closing frame) is cut from the homepage mockup
+(`tools/extract_mockup_assets.py`, then `tools/swap_hero_graphic.py` puts the Gothic Stack graphic
+on the hero shirt). Product photos come from the confirmed lookbook sheets in
+`design/reference/products/` (`tools/build_lookbook_products.py`). To go live, overwrite a
 file in `src/assets/images/` with real photography. Keep the same filename and you won't need
 to change any code. Large originals are fine, since Astro resizes and compresses them at build.
 
 | File | Used for | Suggested shot |
 | --- | --- | --- |
 | `hero-campaign.jpg` | Homepage hero, desktop | Landscape ≥ 2560px. Model from behind in the flagship tee, parking structure at night. Keep the car secondary. |
-| `hero-campaign-mobile.jpg` | Homepage hero on phones, and the FIT view | Portrait ≥ 1200×1600, model centred. |
+| `hero-campaign-mobile.jpg` | Homepage hero on phones, About page | Portrait ≥ 1200×1600, model centred. |
 | `category-tees.jpg` / `category-hoodies.jpg` / `category-story.jpg` | Category strip, collection banners | Landscape ≥ 1600px. |
 | `brand-statement.jpg` | Closing campaign frame | Wide landscape ≥ 2400px, road or highway. |
-| `products/<colour>-front.jpg`, `-back.jpg`, `-detail.jpg`, `-fabric.jpg` | Product cards and galleries | 4:5 ≥ 1600×2000, same studio-black background for every colourway. |
-
-To add a view that's still pending (for example the **SIDE** view), add
-`products/<colour>-side.jpg` and set `side: 'products/<colour>-side'` in `src/data/products.ts`.
-Until then, the gallery shows a branded "shoot pending" tile.
+| `products/<slug>-front/-back/-side/-fit.jpg` | Product cards and galleries (on-model) | 4:5 ≥ 1600×2000, full length on the grey studio backdrop. |
+| `products/<slug>-detail/-print/-fabric/-label.jpg` | Close-ups in the gallery | 4:5 ≥ 1600×2000. |
 
 Logo files in `src/assets/brand/` are traced from the supplied artwork (wordmark from the homepage
 mockup, LC monogram from the logo sheet). When the designer supplies final

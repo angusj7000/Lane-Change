@@ -22,13 +22,11 @@ export const primaryNav = [
   { label: 'Shop', href: '/shop', menu: [
     { label: 'All Products', href: '/shop' },
     { label: 'Tees', href: '/collections/tees' },
-    { label: 'Hoodies', href: '/collections/hoodies' },
     { label: 'Wishlist', href: '/wishlist' },
   ] },
   { label: 'Collections', href: '/collections', menu: [
     { label: 'Core Washed — SS25', href: '/collections/core-washed' },
     { label: 'Tees', href: '/collections/tees' },
-    { label: 'Hoodies', href: '/collections/hoodies' },
   ] },
   { label: 'About', href: '/about' },
   { label: 'Journal', href: '/journal' },

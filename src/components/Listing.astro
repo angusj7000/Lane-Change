@@ -1,6 +1,7 @@
 ---
 // Product listing with category filter + sort, used by /shop and collections.
 import ProductCard from './ProductCard.astro';
+import Icon from './Icon.astro';
 import type { Product } from '../data/products';
 
 interface Props { items: Product[]; filters?: boolean }
@@ -8,6 +9,7 @@ const { items, filters = true } = Astro.props;
 const cats = [...new Set(items.map((p) => p.category))];
 ---
 <section class="listing wrap">
+  {items.length > 0 && (
   <div class="listing__bar">
     <p class="micro muted"><span data-count>{items.length}</span> products</p>
     {filters && cats.length > 1 && (
@@ -26,6 +28,7 @@ const cats = [...new Set(items.map((p) => p.category))];
       </select>
     </label>
   </div>
+  )}
   <div class="grid-products" data-listing>
     {items.map((p, i) => (
       <div data-item data-cat={p.category} data-price={p.price} data-name={p.name} data-i={i}>
@@ -33,6 +36,13 @@ const cats = [...new Set(items.map((p) => p.category))];
       </div>
     ))}
   </div>
+  {items.length === 0 && (
+    <div class="empty-state">
+      <p class="title">Landing soon</p>
+      <p class="muted">Nothing here yet. Join the lane in the footer to hear first — or shop the Core Washed drop.</p>
+      <a class="btn" href="/collections/core-washed">Shop Core Washed <Icon name="arrow" /></a>
+    </div>
+  )}
 </section>
 
 <script>

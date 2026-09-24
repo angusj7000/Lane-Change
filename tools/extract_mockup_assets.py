@@ -79,8 +79,6 @@ hero = clean(hero, [
 # the flagship-graphic hero is kept as source: tools/swap_hero_graphic.py prints the
 # Gothic Stack graphic on it to make the site hero (run it after this script)
 save("hero-campaign-flagship", upscale(hero, 1.6), 95, RAW)
-# portrait crop of the flagship tee — used as the FIT view of the core washed tees
-save("products/core-washed-fit", upscale(hero[0:610, 540:1010], 1.9))
 
 # ---------- CATEGORY PANELS ----------
 panels = {
@@ -103,17 +101,4 @@ st = clean(st, [
 ])
 save("brand-statement", upscale(st, 1.7))
 
-# ---------- PRODUCTS ----------
-# tee bounding boxes (x0, x1) on the product row, y 876-1052
-tees = {
-    "washed-black": (30, 245),
-    "concrete-grey": (268, 480),
-    "forest-green": (500, 713),
-    "faded-blue": (735, 948),
-    "dusty-pink": (970, 1184),
-}
-for slug, (x0, x1) in tees.items():
-    crop = img[874:1054, x0:x1]
-    big = upscale(crop, 3.2)
-    save(f"products/{slug}-front-raw", big, 95, RAW)
 print("done")
