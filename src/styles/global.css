@@ -340,3 +340,33 @@ label.lbl { display: block; margin-bottom: 8px; }
 
 .empty-state { padding-block: 64px; display: grid; gap: 16px; justify-items: start; }
 .empty-state .title { font-size: clamp(28px, 4vw, 44px); }
+
+/* ---------- light "lookbook" band ----------
+   Product photography is shot on a light studio backdrop. Inside .on-paper the
+   section takes that exact colour and photo edges fade into it, so the models
+   read as standing on the page rather than sitting in white boxes. */
+:root {
+  --paper: #e8e8e7;
+  --paper-ink: #111111;
+  --paper-muted: #6b6b68;
+  --paper-line: rgba(17, 17, 17, 0.16);
+}
+.on-paper { background: var(--paper); color: var(--paper-ink); }
+.on-paper .muted { color: var(--paper-muted); }
+.on-paper ::selection { background: var(--paper-ink); color: var(--paper); }
+body .on-paper .card__media { background: var(--paper); }
+body .on-paper .card__img {
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0, #000 7%, #000 93%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 5%, #000 93%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent 0, #000 7%, #000 93%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 5%, #000 93%, transparent 100%);
+  mask-composite: intersect;
+}
+body .on-paper .card__badge { background: var(--paper-ink); color: var(--paper); border-color: var(--paper-ink); }
+body .on-paper .card__wish { color: var(--paper-ink); }
+body .on-paper .btn { --btn-fg: var(--paper-ink); border-color: var(--paper-ink); }
+body .on-paper .btn:hover { --btn-bg: var(--paper-ink); --btn-fg: var(--paper); }
+.on-paper :focus-visible { outline-color: var(--paper-ink); }

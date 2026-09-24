@@ -6,7 +6,7 @@ import { featuredSlugs, getProduct } from '../../data/products';
 
 const featured = featuredSlugs.map(getProduct).filter((p) => p !== undefined);
 ---
-<section class="featured" aria-labelledby="featured-title">
+<section class="featured on-paper" aria-labelledby="featured-title">
   <div class="featured__inner">
     <div class="section-bar">
       <h2 id="featured-title" class="eyebrow eyebrow--wide reveal">Featured Collection</h2>
@@ -26,6 +26,7 @@ const featured = featuredSlugs.map(getProduct).filter((p) => p !== undefined);
 
 <style>
   .featured { background: #0d0d0d; padding-block: clamp(28px, 3vw, 44px) clamp(40px, 5vw, 72px); }
+  .featured.on-paper { background: var(--paper); padding-block: clamp(40px, 4.5vw, 72px) clamp(48px, 5.5vw, 88px); }
   .featured__inner { padding-inline: clamp(16px, 2.6vw, 40px); max-width: 1920px; margin-inline: auto; }
   .featured .section-bar { padding-inline: clamp(0px, 0.6vw, 10px); }
   .featured__grid {
@@ -38,10 +39,14 @@ const featured = featuredSlugs.map(getProduct).filter((p) => p !== undefined);
     flex-direction: column; align-items: center; justify-content: center; gap: 12px;
     aspect-ratio: 4 / 5;
     border: 1px solid var(--line);
+    color: inherit;
     text-align: center;
     transition: border-color 0.4s var(--ease);
   }
   .featured__more:hover { border-color: var(--line-strong); }
+  .on-paper .featured__more { border-color: var(--paper-line); }
+  .on-paper .featured__more:hover { border-color: var(--paper-ink); }
+  .on-paper .featured__more :global(.more__star) { color: var(--paper-ink); }
   .featured__more .title { font-size: 26px; letter-spacing: 0.16em; }
   .featured__more :global(.more__star) { width: 20px; color: var(--bone); }
 

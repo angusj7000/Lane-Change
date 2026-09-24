@@ -45,6 +45,29 @@ def sharpen(im, amt=0.35, sigma=1.3):
     return cv2.addWeighted(im, 1 + amt, blur, -amt, 0)
 
 
+PAPER = np.array([231, 232, 232], np.float32)   # BGR of --paper (#e8e8e7) in src/styles/global.css
+
+
+def flatten_backdrop(img):
+    """Even out studio lighting so the backdrop is exactly PAPER everywhere.
+
+    Estimates the backdrop's brightness field with the model masked out, then
+    applies the difference to the whole frame (a smooth lighting correction, so
+    the garment keeps its colour relative to its surroundings).
+    """
+    h, w = img.shape[:2]
+    lum = img.mean(axis=2)
+    sat = img.max(axis=2) - img.min(axis=2)
+    model = ((lum < 205) | (sat > 18)).astype(np.uint8) * 255
+    model = cv2.dilate(model, np.ones((31, 31), np.uint8))
+    small = cv2.resize(np.clip(img, 0, 255).astype(np.uint8), (w // 8, h // 8), interpolation=cv2.INTER_AREA)
+    smask = cv2.resize(model, (w // 8, h // 8), interpolation=cv2.INTER_NEAREST)
+    field = cv2.inpaint(small, smask, 5, cv2.INPAINT_TELEA).astype(np.float32)
+    field = cv2.GaussianBlur(field, (0, 0), 4)
+    field = cv2.resize(field, (w, h), interpolation=cv2.INTER_CUBIC)
+    return img + (PAPER[None, None, :] - field)
+
+
 def backdrop_profile(strip):
     """Per-row backdrop colour from an edge strip, ignoring the (darker) model."""
     lum = strip.mean(axis=2)
@@ -97,7 +120,7 @@ for sheet in sorted(SRC.glob("*.webp")):
     for (x0, x1), view in zip(TOP, TOP_VIEWS):
         panel = im[TOP_Y[0]:TOP_Y[1], x0 + 2:x1 - 2]
         h = panel.shape[0]
-        framed = extend(panel, int(h * 0.8), h)
+        framed = flatten_backdrop(extend(panel, int(h * 0.8), h))
         save(f"{slug}-{view}", sharpen(cv2.resize(framed, (W, H), interpolation=cv2.INTER_CUBIC), 0.3))
 
     for (x0, x1), view in zip(BOTTOM, BOTTOM_VIEWS):

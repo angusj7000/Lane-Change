@@ -7,7 +7,7 @@
     assign collection = collections.all
   endif
 -%}
-<section class="featured" aria-labelledby="featured-{{ section.id }}">
+<section class="featured{% if section.settings.background == 'light' %} on-paper{% endif %}" aria-labelledby="featured-{{ section.id }}">
   <div class="featured__inner">
     <div class="section-bar">
       <h2 id="featured-{{ section.id }}" class="eyebrow eyebrow--wide reveal">{{ section.settings.heading }}</h2>
@@ -39,6 +39,10 @@
   "tag": "div",
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "Featured Collection" },
+    { "type": "select", "id": "background", "label": "Background", "default": "light", "options": [
+      { "value": "light", "label": "Light — matches the studio photos" },
+      { "value": "dark", "label": "Dark" }
+    ], "info": "Light blends white-backdrop product photos into the section." },
     { "type": "collection", "id": "collection", "label": "Collection" },
     { "type": "text", "id": "collection_handle", "label": "Collection handle", "default": "core-washed", "info": "Used when no collection is picked above. Shows all products until that collection exists." },
     { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 12, "step": 1, "default": 5 },
