@@ -62,6 +62,9 @@ const fonts = [
   ['ibm-plex-mono', 'ibm-plex-mono-latin-400-normal.woff2'],
   ['ibm-plex-mono', 'ibm-plex-mono-latin-500-normal.woff2'],
   ['cormorant-garamond', 'cormorant-garamond-latin-500-normal.woff2'],
+  ['jost', 'jost-latin-300-normal.woff2'],
+  ['jost', 'jost-latin-400-normal.woff2'],
+  ['jost', 'jost-latin-500-normal.woff2'],
 ];
 for (const [pkg, file] of fonts) {
   copyFileSync(join(ROOT, 'node_modules/@fontsource', pkg, 'files', file), join(THEME, 'assets', file));
@@ -91,6 +94,8 @@ const images = [
   ['category-hoodies', 1400],
   ['category-story', 1600],
   ['brand-statement', 2000],
+  ['coming-soon', 1920],
+  ['coming-soon-mobile', 900],
 ];
 for (const [name, width] of images) {
   await sharp(join(ROOT, 'src/assets/images', `${name}.jpg`))

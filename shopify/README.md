@@ -111,6 +111,17 @@ When you're happy with it, click **Publish**.
 
 ---
 
+## Coming soon page (lock the store)
+
+While you get ready to launch, visitors see the Lane Change **coming soon** page, styled exactly like the approved design: car-park photo, gothic logo, Different Lanes. Same Vision, Coming Soon, and an email sign-up. Nobody can browse or buy without the password.
+
+**Turn it on or off:** go to **Online Store → Preferences → Password protection**, tick **Restrict access to visitors with the password**, set a password and **Save**. Untick it on launch day to open the store.
+
+- **Getting in:** you and anyone you give the password to click **ENTER** (top right), type the password, and see the full store. You can also preview the store from the admin, where you're already logged in.
+- **Sign-ups:** emails entered in **Notify Me** are saved as customers tagged `prelaunch` and `newsletter` (see **Customers**), ready for your launch email with Shopify Email or Klaviyo.
+- **Editing it:** open **Customize**, then use the page picker at the top to choose **Password**. You can change the background photo (desktop and phone separately), the tagline, "Coming Soon", the button text and the thank-you message. Instagram and TikTok links come from **Theme settings → Social media**.
+- **Note:** on a free trial or development store, Shopify keeps password protection on until you pick a plan. That's normal and is the page shown here.
+
 ## Editing the theme code
 
 The theme is generated from the same design source as the preview website, so the two look the same.
