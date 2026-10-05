@@ -73,6 +73,7 @@ for (const [pkg, file] of fonts) {
 /* ---------- brand marks → snippets ---------- */
 const brand = [
   ['wordmark', 'logo-wordmark', 'brand-wordmark', 'Lane Change'],
+  ['wordmark-drip', 'logo-wordmark-drip', 'brand-wordmark', 'Lane Change'],
   ['monogram', 'logo-monogram', 'brand-monogram', 'LC'],
   ['star', 'logo-star', 'brand-star', ''],
 ];

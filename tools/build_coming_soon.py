@@ -1,7 +1,7 @@
 """
 Background photo for the coming-soon (password) page.
 
-Takes the approved design (design/reference/coming-soon.webp), removes the
+Takes the approved design (design/reference/coming-soon-v2.webp), removes the
 baked-in UI text (logo, ENTER, centre lockup, email form, footer links) by
 inpainting only the bright text strokes, and writes:
   src/assets/images/coming-soon.jpg         desktop (landscape)
@@ -15,23 +15,24 @@ import cv2
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
-img = cv2.imread(str(ROOT / "design/reference/coming-soon.webp"))
+img = cv2.imread(str(ROOT / "design/reference/coming-soon-v2.webp"))
 H, W = img.shape[:2]
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY).astype(np.float32)
 
 # (x0, y0, x1, y1, mode)  mode: 'text' = bright strokes only, 'all' = whole box
 BOXES = [
-    (78, 24, 288, 108, "text"),      # logo top-left
-    (1338, 46, 1478, 78, "text"),    # ENTER ——
-    (512, 478, 1018, 632, "text"),   # LANE CHANGE wordmark
-    (566, 612, 968, 642, "text"),    # International Street Sports
-    (736, 657, 800, 675, "text"),    # short rule
-    (476, 692, 1060, 731, "text"),   # Different Lanes. Same Vision.
-    (666, 747, 874, 783, "text"),    # Coming Soon
-    (514, 812, 1022, 876, "text"),   # email field outline + placeholder
-    (884, 816, 1018, 872, "all"),    # solid white Notify Me button
-    (66, 944, 274, 976, "text"),     # Instagram  TikTok
-    (1234, 944, 1480, 976, "text"),  # AUS — Worldwide ——
+    (70, 46, 276, 128, "text"),      # logo top-left
+    (1356, 74, 1490, 100, "text"),   # ENTER ——
+    (370, 366, 882, 549, "text"),    # LANE CHANGE wordmark
+    (793, 532, 812, 584, "text"),    # the drip off the G
+    (428, 543, 832, 572, "text"),    # International Street Sports
+    (594, 595, 660, 611, "text"),    # short rule
+    (366, 635, 898, 668, "text"),    # Different Lanes. Same Vision.
+    (532, 694, 724, 723, "text"),    # Coming Soon
+    (390, 758, 870, 818, "text"),    # email field outline + placeholder
+    (731, 761, 867, 815, "all"),     # solid white Notify Me button
+    (72, 938, 274, 964, "text"),     # Instagram  TikTok
+    (1246, 938, 1490, 964, "text"),  # AUS — Worldwide ——
 ]
 
 mask = np.zeros((H, W), np.uint8)
@@ -62,7 +63,7 @@ def up(im, factor):
 out = ROOT / "src/assets/images"
 desktop = up(clean, 1.25)                                  # 1920 x 1280
 cv2.imwrite(str(out / "coming-soon.jpg"), np.clip(desktop, 0, 255).astype(np.uint8), [cv2.IMWRITE_JPEG_QUALITY, 86, cv2.IMWRITE_JPEG_PROGRESSIVE, 1])
-cx = 1090                                                  # model's centre line
+cx = 1165                                                  # model's centre line
 cw = int(H * 0.62)
 x0 = min(max(cx - cw // 2, 0), W - cw)
 mobile = up(clean[:, x0:x0 + cw], 1.4)

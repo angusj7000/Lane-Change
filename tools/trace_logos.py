@@ -58,3 +58,45 @@ trace(SRC[12:78, 525:695], 10, 150, "wordmark", blur=4, turd=200)
 # LC monogram — "secondary tag mark" on the logo sheet (black on paper)
 SHEET = cv2.imread(str(ROOT / "design/reference/logo-system.png"))
 trace(SHEET[712:874, 182:350], 8, 110, "monogram", blur=2, turd=200, dark=True, drop_box=(104, 18, 168, 70))
+
+
+# Coming-soon wordmark with the long drip off the G (from the approved password-page design)
+V2 = cv2.imread(str(ROOT / "design/reference/coming-soon-v2.webp"))
+
+
+def trace_drip_wordmark():
+    g = cv2.cvtColor(V2, cv2.COLOR_BGR2GRAY)
+    x0, y0, x1, y1 = 372, 368, 880, 582
+    crop = g[y0:y1, x0:x1].astype(np.float32)
+    keep = np.zeros_like(crop, np.uint8)
+    keep[: 547 - y0, :] = 1                         # the letters
+    keep[536 - y0: 579 - y0, 799 - x0: 805 - x0] = 1  # the drip, through the S of SPORTS
+    crop = crop * keep
+    scale = 6
+    big = cv2.resize(crop, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+    big = cv2.GaussianBlur(big, (0, 0), 2.2)
+    bw = (big > 120).astype(np.uint8)
+    ys, xs = np.nonzero(bw)
+    pad = 4
+    bw = bw[ys.min() - pad:ys.max() + pad, xs.min() - pad:xs.max() + pad]
+    plist = potrace.Bitmap(~bw.astype(bool)).trace(turdsize=120, turnpolicy=potrace.POTRACE_TURNPOLICY_MINORITY,
+                                                   alphamax=0.9, opticurve=True, opttolerance=0.3)
+    parts = []
+    for curve in plist:
+        st = curve.start_point
+        d = [f"M{st.x:.1f} {st.y:.1f}"]
+        for seg in curve.segments:
+            if seg.is_corner:
+                d.append(f"L{seg.c.x:.1f} {seg.c.y:.1f}L{seg.end_point.x:.1f} {seg.end_point.y:.1f}")
+            else:
+                d.append(f"C{seg.c1.x:.1f} {seg.c1.y:.1f} {seg.c2.x:.1f} {seg.c2.y:.1f} {seg.end_point.x:.1f} {seg.end_point.y:.1f}")
+        d.append("Z")
+        parts.append("".join(d))
+    h, w = bw.shape
+    (OUT / "wordmark-drip.svg").write_text(
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" fill="currentColor">'
+        f'<path fill-rule="evenodd" d="{"".join(parts)}"/></svg>\n')
+    print("wordmark-drip", w, h)
+
+
+trace_drip_wordmark()
