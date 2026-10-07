@@ -243,6 +243,18 @@
     const msg = $('[data-buy-msg]', form);
     const addBtn = $('[data-add-button]', form);
     const priceEl = $('[data-price]', section);
+    const stockMsg = $('[data-stock-msg]', section);
+    const stockEl = $('[data-stock-json]', section);
+    const stock = stockEl ? JSON.parse(stockEl.textContent) : {};
+    const lowAt = Number(section.dataset.lowStock || 3);
+    const showStock = (v) => {
+      if (!stockMsg) return;
+      const qty = stock[v.id];
+      const size = v.options.find((o, i) => !$(`[data-option-fixed][data-option-index="${i}"]`, form)) || v.title;
+      if (!v.available) stockMsg.textContent = stockMsg.dataset.out.replace('[size]', size);
+      else if (qty !== null && qty !== undefined && qty <= lowAt) stockMsg.textContent = stockMsg.dataset.low.replace('[count]', qty).replace('[size]', size);
+      else stockMsg.textContent = '';
+    };
 
     const selected = () => {
       const opts = [];
@@ -265,6 +277,7 @@
       const v = findVariant(selected());
       if (!v) return;
       idInput.value = v.id;
+      showStock(v);
       if (priceEl) {
         priceEl.innerHTML = formatMoney(v.price) +
           (v.compare_at_price > v.price ? ` <s class="muted">${formatMoney(v.compare_at_price)}</s>` : '');

@@ -3,7 +3,7 @@
   assign img_m = section.settings.mobile_image | default: section.settings.image
   assign words = section.settings.side_list | newline_to_br | split: '<br />'
 -%}
-<section class="hero" aria-labelledby="hero-title-{{ section.id }}" style="--hero-shade: {{ section.settings.overlay | divided_by: 100.0 }}; --hero-pos: {{ section.settings.focal }};">
+<section class="hero{% if section.settings.copy_position == 'between' %} hero--between{% endif %}" aria-labelledby="hero-title-{{ section.id }}" style="--hero-shade: {{ section.settings.overlay | divided_by: 100.0 }}; --hero-pos: {{ section.settings.focal }};">
   <picture class="hero__media">
     {%- if img_m -%}
       <source media="(max-width: 700px) and (orientation: portrait)" srcset="{{ img_m | image_url: width: 480 }} 480w, {{ img_m | image_url: width: 720 }} 720w, {{ img_m | image_url: width: 1080 }} 1080w" sizes="100vw">
@@ -14,9 +14,12 @@
       {%- assign hero_alt = img.alt | default: section.settings.alt -%}
       {{ img | image_url: width: 2400 | image_tag: widths: '960, 1440, 1920, 2400', sizes: '100vw', fetchpriority: 'high', loading: 'eager', alt: hero_alt }}
     {%- else -%}
-      <img src="{{ 'hero-campaign.jpg' | asset_url }}" alt="{{ section.settings.alt | escape }}" width="1942" height="976" fetchpriority="high">
+      <img src="{{ 'hero-campaign.jpg' | asset_url }}" alt="{{ section.settings.alt | escape }}" width="1949" height="1261" fetchpriority="high">
     {%- endif -%}
   </picture>
+  {%- if section.settings.video != blank -%}
+    <div class="hero__video">{{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, preload: 'metadata', image_size: '1920x' }}</div>
+  {%- endif -%}
   <div class="hero__shade" aria-hidden="true"></div>
 
   <div class="hero__copy">
@@ -25,6 +28,7 @@
       <span class="ln"><span>{{ section.settings.heading_1 }}</span></span>
       <span class="ln"><span>{{ section.settings.heading_2 }} <em>{{ section.settings.heading_2_accent }}</em></span></span>
     </h1>
+    {%- if section.settings.statement != blank -%}<p class="hero__statement">{{ section.settings.statement }}</p>{%- endif -%}
     {%- if section.settings.text != blank -%}<div class="hero__sub">{{ section.settings.text }}</div>{%- endif -%}
     <div class="hero__cta">
       {%- if section.settings.button_1_label != blank -%}
@@ -49,26 +53,160 @@
   "name": "Hero",
   "tag": "div",
   "settings": [
-    { "type": "image_picker", "id": "image", "label": "Image (desktop)", "info": "Landscape, at least 2400px wide. Leave empty to use the campaign placeholder." },
-    { "type": "image_picker", "id": "mobile_image", "label": "Image (phones)", "info": "Portrait, model centred." },
-    { "type": "text", "id": "alt", "label": "Image description (alt text)", "default": "Model photographed from behind in a night-time parking structure wearing the washed-black Lane Change Gothic Stack Tee." },
-    { "type": "select", "id": "focal", "label": "Desktop focal point", "default": "62% 30%", "options": [
-      { "value": "50% 30%", "label": "Centre" }, { "value": "62% 30%", "label": "Right of centre" }, { "value": "75% 30%", "label": "Right" }
-    ] },
-    { "type": "range", "id": "overlay", "label": "Extra darkening", "min": 0, "max": 60, "step": 2, "unit": "%", "default": 0, "info": "Added on top of the built-in shade that keeps the copy readable." },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "International Street Sports" },
-    { "type": "text", "id": "heading_1", "label": "Heading line 1", "default": "Different Lanes." },
-    { "type": "text", "id": "heading_2", "label": "Heading line 2", "default": "Same" },
-    { "type": "text", "id": "heading_2_accent", "label": "Heading line 2 — grey word", "default": "Vision." },
-    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Built for bigger moves. Australian born. <br/>Global minded. Street sports culture, redefined.</p>" },
-    { "type": "text", "id": "button_1_label", "label": "Button 1 label", "default": "Shop Now" },
-    { "type": "url", "id": "button_1_link", "label": "Button 1 link" },
-    { "type": "text", "id": "button_1_path", "label": "Button 1 link path", "default": "/collections/all", "info": "Used when Button 1 link is empty." },
-    { "type": "text", "id": "button_2_label", "label": "Button 2 label", "default": "View Collection" },
-    { "type": "url", "id": "button_2_link", "label": "Button 2 link" },
-    { "type": "text", "id": "button_2_path", "label": "Button 2 link path", "default": "/collections/core-washed", "info": "Used when Button 2 link is empty. Falls back to Shop All until the collection exists." },
-    { "type": "textarea", "id": "side_list", "label": "Bottom-right words (one per line)", "default": "Street\nSports\nLifestyle\nProgress\nDaily" }
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image (desktop)",
+      "info": "Landscape, at least 2400px wide. Leave empty to use the campaign placeholder."
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Image (phones)",
+      "info": "Portrait, model centred."
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Campaign video (optional)",
+      "info": "Plays muted on a loop over the image. Keep it short (10–20s). The image still shows while it loads."
+    },
+    {
+      "type": "text",
+      "id": "alt",
+      "label": "Image description (alt text)",
+      "default": "Model photographed from behind in a night-time parking structure wearing the washed black Lane Change Stacker Tee; a dark car sits in the shadows to the left."
+    },
+    {
+      "type": "select",
+      "id": "copy_position",
+      "label": "Copy position (desktop)",
+      "default": "between",
+      "options": [
+        {
+          "value": "between",
+          "label": "Between car and model"
+        },
+        {
+          "value": "left",
+          "label": "Left edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "focal",
+      "label": "Desktop focal point",
+      "default": "50% 40%",
+      "options": [
+        {
+          "value": "50% 40%",
+          "label": "Centre"
+        },
+        {
+          "value": "62% 30%",
+          "label": "Right of centre"
+        },
+        {
+          "value": "75% 30%",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "overlay",
+      "label": "Extra darkening",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "%",
+      "default": 0,
+      "info": "Added on top of the built-in shade that keeps the copy readable."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Collection 001"
+    },
+    {
+      "type": "text",
+      "id": "heading_1",
+      "label": "Heading line 1",
+      "default": "International"
+    },
+    {
+      "type": "text",
+      "id": "heading_2",
+      "label": "Heading line 2",
+      "default": "Street"
+    },
+    {
+      "type": "text",
+      "id": "heading_2_accent",
+      "label": "Heading line 2 — grey word",
+      "default": "Sports."
+    },
+    {
+      "type": "text",
+      "id": "statement",
+      "label": "Supporting statement",
+      "default": "Different Lanes. Same Vision."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Built for bigger moves. Australian born, global minded.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_1_label",
+      "label": "Button 1 label",
+      "default": "Shop"
+    },
+    {
+      "type": "url",
+      "id": "button_1_link",
+      "label": "Button 1 link"
+    },
+    {
+      "type": "text",
+      "id": "button_1_path",
+      "label": "Button 1 link path",
+      "default": "/collections/all",
+      "info": "Used when Button 1 link is empty."
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "label": "Button 2 label",
+      "default": "Collection 001"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Button 2 link"
+    },
+    {
+      "type": "text",
+      "id": "button_2_path",
+      "label": "Button 2 link path",
+      "default": "/collections/collection-001",
+      "info": "Used when Button 2 link is empty. Falls back to Shop All until the collection exists."
+    },
+    {
+      "type": "textarea",
+      "id": "side_list",
+      "label": "Bottom-right words (one per line)",
+      "default": "Street\nSports\nLifestyle\nProgress\nDaily"
+    }
   ],
-  "presets": [{ "name": "Hero" }]
+  "presets": [
+    {
+      "name": "Hero"
+    }
+  ]
 }
 {% endschema %}

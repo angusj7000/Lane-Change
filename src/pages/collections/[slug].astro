@@ -10,7 +10,7 @@ export function getStaticPaths() {
 const { c } = Astro.props;
 const items = inCollection(c.slug);
 ---
-<Base title={c.title} description={`${c.title} — ${c.intro}`} header="overlay" ogImage={c.image}>
+<Base title={c.seoTitle.replace(' | Lane Change', '')} description={c.seoDescription} header="overlay" ogImage={c.image}>
   <section class="banner">
     <div class="banner__media media">
       <Photo src={c.image} alt="" sizes="100vw" widths={[720, 1080, 1440, 1920]} eager position="60% 35%" />

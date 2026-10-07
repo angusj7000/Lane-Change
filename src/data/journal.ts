@@ -13,16 +13,16 @@ export const posts = [
     ],
   },
   {
-    slug: 'building-the-core-washed-tee',
-    title: 'Building The Core Washed Tee',
+    slug: 'building-the-stacker-tee',
+    title: 'Building The Stacker Tee',
     date: '2025-04-02',
     tag: 'Product',
     image: 'category-tees',
-    excerpt: '280gsm, dropped shoulders, mineral wash. Twelve samples to get one silhouette right.',
+    excerpt: '260 GSM, dropped shoulders, raised 3D embroidery. Getting one silhouette right.',
     body: [
-      'We wanted one tee that could carry the whole brand. That meant weight first: 280gsm combed cotton that holds its shape and drapes square off the shoulder.',
-      'The wash took longest. Every piece is garment dyed then mineral washed individually, so no two are identical.',
-      'Small emblem on the front. The full story on the back.',
+      'We wanted one tee that could carry the whole brand. That meant weight first: 260 GSM heavyweight cotton that holds its shape and drapes square off the shoulder.',
+      'The wash took longest. Every piece is garment washed individually, so no two are identical.',
+      'Raised 3D embroidery on the chest. The full story on the back.',
     ],
   },
   {

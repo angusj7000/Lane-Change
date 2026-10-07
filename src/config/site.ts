@@ -18,23 +18,18 @@ export const site = {
   },
 } as const;
 
-export const primaryNav = [
-  { label: 'Shop', href: '/shop', menu: [
-    { label: 'All Products', href: '/shop' },
-    { label: 'Tees', href: '/collections/tees' },
-    { label: 'Wishlist', href: '/wishlist' },
-  ] },
-  { label: 'Collections', href: '/collections', menu: [
-    { label: 'Core Washed — SS25', href: '/collections/core-washed' },
-    { label: 'Tees', href: '/collections/tees' },
-  ] },
+export interface NavItem { label: string; href: string; menu?: { label: string; href: string }[] }
+
+export const primaryNav: NavItem[] = [
+  { label: 'Shop', href: '/shop' },
+  { label: 'Collection 001', href: '/collections/collection-001' },
   { label: 'About', href: '/about' },
   { label: 'Journal', href: '/journal' },
-] as const;
+];
 
 export const footerNav = [
   { label: 'Shop', href: '/shop' },
-  { label: 'Collections', href: '/collections' },
+  { label: 'Collection 001', href: '/collections/collection-001' },
   { label: 'About', href: '/about' },
   { label: 'Journal', href: '/journal' },
   { label: 'Contact', href: '/contact' },

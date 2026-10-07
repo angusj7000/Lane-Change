@@ -1,5 +1,27 @@
 {%- liquid
   assign menu = section.settings.menu
+  assign use_brand_nav = true
+  if section.settings.nav_source == 'menu' and menu.links.size > 0
+    assign use_brand_nav = false
+  endif
+
+  # Brand navigation: SHOP · COLLECTION 001 · ABOUT · JOURNAL.
+  # Collection 001 opens Shop All until that collection exists; About and
+  # Journal stay hidden until their page / blog exist, so nothing is a dead link.
+  assign brand_nav = 'Shop|' | append: routes.all_products_collection_url
+  assign c001 = collections['collection-001']
+  if c001.id != blank
+    assign brand_nav = brand_nav | append: '^Collection 001|' | append: c001.url
+  else
+    assign brand_nav = brand_nav | append: '^Collection 001|' | append: routes.all_products_collection_url
+  endif
+  if pages.about.id != blank
+    assign brand_nav = brand_nav | append: '^About|' | append: pages.about.url
+  endif
+  if blogs.journal.id != blank
+    assign brand_nav = brand_nav | append: '^Journal|' | append: blogs.journal.url
+  endif
+  assign brand_nav = brand_nav | split: '^'
   assign overlay = false
   if section.settings.transparent_home and template.name == 'index'
     assign overlay = true
@@ -18,7 +40,18 @@
       <button class="icon-btn only-mobile" type="button" aria-label="{{ 'general.open_menu' | t }}" aria-controls="mobile-menu" aria-expanded="false" data-menu-open>
         {% render 'icon', name: 'menu', px: 24 %}
       </button>
-      {%- if menu.links.size > 0 -%}
+      {%- if use_brand_nav -%}
+        <nav class="primary only-desktop" aria-label="Primary">
+          <ul>
+            {%- for item in brand_nav -%}
+              {%- assign parts = item | split: '|' -%}
+              <li class="primary__item">
+                <a class="primary__link u-link" href="{{ parts[1] }}"{% if request.path == parts[1] %} aria-current="page"{% endif %}>{{ parts[0] }}</a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- elsif menu.links.size > 0 -%}
         <nav class="primary only-desktop" aria-label="Primary">
           <ul>
             {%- for link in menu.links -%}
@@ -74,6 +107,12 @@
   </div>
   <nav class="mobile-menu__nav" aria-label="Mobile">
     <ul>
+      {%- if use_brand_nav -%}
+        {%- for item in brand_nav -%}
+          {%- assign parts = item | split: '|' -%}
+          <li style="--d: {{ forloop.index0 | times: 0.05 | plus: 0.05 }}s"><a class="display" href="{{ parts[1] }}">{{ parts[0] }}</a></li>
+        {%- endfor -%}
+      {%- else -%}
       {%- for link in menu.links -%}
         <li style="--d: {{ forloop.index0 | times: 0.05 | plus: 0.05 }}s">
           <a class="display" href="{{ link.url }}">{{ link.title }}</a>
@@ -84,9 +123,11 @@
           {%- endif -%}
         </li>
       {%- endfor -%}
+      {%- endif -%}
     </ul>
   </nav>
   <div class="mobile-menu__foot">
+    <a class="micro" href="{{ routes.search_url }}">{{ 'general.search' | t }}</a>
     {%- if shop.customer_accounts_enabled -%}<a class="micro" href="{{ routes.account_url }}">{{ 'general.account' | t }}</a>{%- endif -%}
     {%- if settings.wishlist_enabled -%}<a class="micro" href="{{ routes.root_url }}pages/wishlist">{{ 'general.wishlist' | t }}</a>{%- endif -%}
     <span class="micro muted">{{ section.settings.region_text }}</span>
@@ -97,13 +138,60 @@
 {
   "name": "Header",
   "class": "section-header",
-  "enabled_on": { "groups": ["header"] },
+  "enabled_on": {
+    "groups": [
+      "header"
+    ]
+  },
   "settings": [
-    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu", "info": "Nested links show as dropdowns (e.g. Shop → Tees, Hoodies)." },
-    { "type": "image_picker", "id": "logo", "label": "Logo image", "info": "Optional. Leave empty to use the Lane Change gothic wordmark." },
-    { "type": "text", "id": "region_text", "label": "Region text", "default": "AUS — Worldwide" },
-    { "type": "checkbox", "id": "transparent_home", "label": "Transparent over homepage hero", "default": true },
-    { "type": "checkbox", "id": "transparent_banners", "label": "Transparent over collection, article and About banners", "default": true }
+    {
+      "type": "select",
+      "id": "nav_source",
+      "label": "Navigation",
+      "default": "brand",
+      "options": [
+        {
+          "value": "brand",
+          "label": "Brand navigation (Shop · Collection 001 · About · Journal)"
+        },
+        {
+          "value": "menu",
+          "label": "Menu chosen below"
+        }
+      ],
+      "info": "Brand navigation updates itself as you create the Collection 001 collection, About page and Journal blog."
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu",
+      "info": "Used when Navigation is set to “Menu chosen below”. Nested links show as dropdowns."
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image",
+      "info": "Optional. Leave empty to use the Lane Change wordmark."
+    },
+    {
+      "type": "text",
+      "id": "region_text",
+      "label": "Region text",
+      "default": "AUS — Worldwide"
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_home",
+      "label": "Transparent over homepage hero",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_banners",
+      "label": "Transparent over collection, article and About banners",
+      "default": true
+    }
   ]
 }
 {% endschema %}

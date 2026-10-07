@@ -20,12 +20,12 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
       <nav class="primary only-desktop" aria-label="Primary">
         <ul>
           {primaryNav.map((item) => (
-            <li class:list={['primary__item', { 'has-menu': 'menu' in item }]}>
+            <li class:list={['primary__item', { 'has-menu': !!item.menu }]}>
               <a class:list={['primary__link', 'u-link']} href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
                 {item.label}
-                {'menu' in item && <Icon name="chevron" size={12} class="chev" />}
+                {item.menu && <Icon name="chevron" size={12} class="chev" />}
               </a>
-              {'menu' in item && (
+              {item.menu && (
                 <div class="dropdown">
                   <ul>
                     {item.menu.map((sub) => (
@@ -73,7 +73,7 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
       {primaryNav.map((item, i) => (
         <li style={`--d:${0.05 + i * 0.05}s`}>
           <a class="display" href={item.href}>{item.label}</a>
-          {'menu' in item && (
+          {item.menu && (
             <ul class="mobile-menu__sub">
               {item.menu.map((sub) => <li><a class="micro" href={sub.href}>{sub.label}</a></li>)}
             </ul>

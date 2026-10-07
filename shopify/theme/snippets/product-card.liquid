@@ -28,6 +28,12 @@
       endif
     endfor
     assign second = product.media[1]
+    assign low_left = false
+    for v in product.variants
+      if v.available and v.inventory_management == 'shopify' and v.inventory_policy == 'deny' and v.inventory_quantity <= 3
+        assign low_left = true
+      endif
+    endfor
   -%}
   <article class="card reveal" style="--d: {{ delay }}s">
     <a class="card__link" href="{{ product.url }}">
@@ -49,6 +55,8 @@
           <span class="card__badge micro">{% if product.tags contains 'coming-soon' %}{{ 'products.product.coming_soon' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
         {%- elsif badge != '' -%}
           <span class="card__badge micro">{{ badge }}</span>
+        {%- elsif low_left -%}
+          <span class="card__badge micro">{{ 'products.product.low_stock_badge' | t }}</span>
         {%- endif -%}
       </div>
       <div class="card__info">

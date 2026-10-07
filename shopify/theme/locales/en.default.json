@@ -43,7 +43,13 @@
       "view_label": "View",
       "complete_the_lane": "Complete The Lane",
       "shipping_note": "Free AU shipping over {{ amount }}. Ships worldwide from Australia.",
-      "returns_note": "30-day returns on unworn pieces."
+      "details": "Details",
+      "low_stock": "Low stock — only [count] left in [size]",
+      "sold_out_size": "[size] is sold out",
+      "shipping_link": "Shipping",
+      "returns_link": "Returns",
+      "questions": "Questions? Email us",
+      "low_stock_badge": "Low stock"
     }
   },
   "collections": {

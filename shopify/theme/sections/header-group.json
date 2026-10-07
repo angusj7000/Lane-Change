@@ -8,9 +8,12 @@
         "menu": "main-menu",
         "region_text": "AUS — Worldwide",
         "transparent_home": true,
-        "transparent_banners": true
+        "transparent_banners": true,
+        "nav_source": "brand"
       }
     }
   },
-  "order": ["header"]
+  "order": [
+    "header"
+  ]
 }

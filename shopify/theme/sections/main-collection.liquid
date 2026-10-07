@@ -6,7 +6,7 @@
       {%- elsif section.settings.fallback_image -%}
         {{ section.settings.fallback_image | image_url: width: 2400 | image_tag: widths: '720, 1080, 1440, 1920, 2400', sizes: '100vw', loading: 'eager', alt: collection.title }}
       {%- else -%}
-        <img src="{{ 'hero-campaign.jpg' | asset_url }}" alt="" width="1942" height="976" style="object-position: 60% 35%">
+        <img src="{{ 'hero-campaign.jpg' | asset_url }}" alt="" width="1949" height="1261" style="object-position: 50% 40%">
       {%- endif -%}
     </div>
     <div class="banner__copy wrap">

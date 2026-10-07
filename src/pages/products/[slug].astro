@@ -6,7 +6,7 @@ import Icon from '../../components/Icon.astro';
 import Brand from '../../components/Brand.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import {
-  products, colourwaysOf, formatPrice, viewLabels, viewOrder, type Product,
+  products, colourwaysOf, formatPrice, viewLabels, viewOrder, altFor as altText, type Product, type ViewKey,
 } from '../../data/products';
 import { img } from '../../data/images';
 import { site } from '../../config/site';
@@ -28,13 +28,10 @@ const available = p.status !== 'coming-soon';
 const firstImage = p.gallery.front ?? p.gallery.back ?? 'hero-campaign';
 const ldImage = await getImage({ src: img(firstImage), width: 1000, format: 'jpg' });
 
-const altFor = (view: string) =>
-  view === 'fit'
-    ? `Model wearing the Lane Change oversized washed tee from behind, showing the boxy fit and dropped shoulders${p.colour.name === 'Washed Black' ? '' : ' (shown in Washed Black)'}.`
-    : `${p.name} in ${p.colour.name} — ${view} view.`;
+const altFor = (view: ViewKey) => altText(p, view);
 
 const featureSets = {
-  tees: ['Oversized fit', 'Heavyweight cotton', 'Washed finish', 'Dropped shoulders'],
+  tees: ['Oversized fit', 'Heavyweight cotton', 'Garment washed', 'Dropped shoulders'],
   hoodies: ['Oversized fit', '450gsm fleece', 'Washed finish', 'Dropped shoulders'],
   accessories: ['Washed cotton twill', '3D embroidery', 'Adjustable strap', 'One size'],
 } as const;
@@ -50,7 +47,8 @@ const jsonLd = {
   '@type': 'Product',
   name: `Lane Change ${p.name} — ${p.colour.name}`,
   brand: { '@type': 'Brand', name: 'Lane Change' },
-  description: p.description.join(' '),
+  description: p.seoDescription,
+  sku: `LC001-${p.sku}-${p.colour.code}`,
   color: p.colour.name,
   image: new URL(ldImage.src, Astro.site).href,
   offers: {
@@ -62,7 +60,7 @@ const jsonLd = {
   },
 };
 ---
-<Base title={`${p.name} — ${p.colour.name}`} description={`${p.blurb} ${formatPrice(p.price)}.`} ogImage={firstImage} jsonLd={jsonLd}>
+<Base title={`${p.name} — ${p.colour.name}`} description={p.seoDescription} ogImage={firstImage} jsonLd={jsonLd}>
   <div class="page">
     <section class="pdp">
       <!-- gallery -->
@@ -160,16 +158,15 @@ const jsonLd = {
 
           <div class="accordions">
             <details open>
-              <summary class="eyebrow">Description <Icon name="plus" size={14} /></summary>
-              <div class="acc__body">{p.description.map((d) => <p>{d}</p>)}</div>
+              <summary class="eyebrow">Details <Icon name="plus" size={14} /></summary>
+              <div class="acc__body">
+                {p.description.map((d) => <p>{d}</p>)}
+                <ul>{p.fabric.map((d) => <li>{d}</li>)}</ul>
+              </div>
             </details>
             <details>
               <summary class="eyebrow">Fit <Icon name="plus" size={14} /></summary>
               <ul class="acc__body">{p.fit.map((d) => <li>{d}</li>)}</ul>
-            </details>
-            <details>
-              <summary class="eyebrow">Fabric <Icon name="plus" size={14} /></summary>
-              <ul class="acc__body">{p.fabric.map((d) => <li>{d}</li>)}</ul>
             </details>
             <details>
               <summary class="eyebrow">Care <Icon name="plus" size={14} /></summary>
@@ -179,7 +176,7 @@ const jsonLd = {
 
           <p class="micro muted ship-note">
             Free AU shipping over ${site.freeShippingThreshold}. Ships worldwide from Australia.<br />
-            30-day returns on unworn pieces.
+            Shipping, duties and returns are explained at checkout.
           </p>
         </div>
       </div>
@@ -333,7 +330,7 @@ const jsonLd = {
     font-size: 12px; letter-spacing: var(--track-xs);
     transition: background-color 0.25s var(--ease), color 0.25s var(--ease);
   }
-  .size:hover span:first-of-type { background: var(--washed); }
+  .size:hover input:not(:checked):not(:disabled) + span { background: var(--washed); }
   .size input:checked + span { background: var(--bone); color: var(--black); }
   .size input:focus-visible + span { outline: 1px solid var(--bone); outline-offset: -4px; }
   .size.is-out { cursor: not-allowed; color: var(--concrete); }

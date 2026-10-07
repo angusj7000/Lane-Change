@@ -55,8 +55,8 @@
     "split": {
       "type": "image-with-text",
       "settings": {
-        "button_label": "Shop Core Washed",
-        "button_path": "/collections/core-washed"
+        "button_label": "Shop Collection 001",
+        "button_path": "/collections/collection-001"
       }
     }
   },

@@ -6,6 +6,7 @@ baked-in UI text (logo, ENTER, centre lockup, email form, footer links) by
 inpainting only the bright text strokes, and writes:
   src/assets/images/coming-soon.jpg         desktop (landscape)
   src/assets/images/coming-soon-mobile.jpg  phones (portrait crop on the model)
+and copies both as the homepage hero (hero-campaign.jpg / hero-campaign-mobile.jpg).
 
 Usage:  python3 tools/build_coming_soon.py
 Needs:  pip install numpy opencv-python-headless
@@ -69,4 +70,7 @@ x0 = min(max(cx - cw // 2, 0), W - cw)
 mobile = up(clean[:, x0:x0 + cw], 1.4)
 cv2.imwrite(str(out / "coming-soon-mobile.jpg"), np.clip(mobile, 0, 255).astype(np.uint8), [cv2.IMWRITE_JPEG_QUALITY, 86, cv2.IMWRITE_JPEG_PROGRESSIVE, 1])
 cv2.imwrite(str(ROOT / "design/source/coming-soon-mask.png"), mask)
+import shutil
+shutil.copyfile(out / "coming-soon.jpg", out / "hero-campaign.jpg")
+shutil.copyfile(out / "coming-soon-mobile.jpg", out / "hero-campaign-mobile.jpg")
 print("coming-soon.jpg", desktop.shape[:2], "coming-soon-mobile.jpg", mobile.shape[:2])

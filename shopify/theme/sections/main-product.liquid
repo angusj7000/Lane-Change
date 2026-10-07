@@ -29,7 +29,8 @@
   endfor
 
   assign desc_parts = product.description | split: '<h6>'
-  assign view_names = 'Front,Back,Side,Detail,Fabric,Fit' | split: ','
+  assign view_names = 'Front,Back,Fit,Side,Chest detail,Back print,Fabric,Label' | split: ','
+  assign low_stock = section.settings.low_stock_threshold
   assign coming_soon = false
   if product.tags contains 'coming-soon'
     assign coming_soon = true
@@ -37,7 +38,7 @@
 -%}
 
 <div class="product-page">
-  <section class="pdp" data-product-section data-section-id="{{ section.id }}">
+  <section class="pdp" data-product-section data-section-id="{{ section.id }}" data-low-stock="{{ section.settings.low_stock_threshold }}">
     <div class="pdp__gallery" aria-label="Product images">
       <div class="gallery__track" data-gallery-track tabindex="0">
         {%- for media in product.media -%}
@@ -145,14 +146,18 @@
                   {%- for value in option.values -%}
                     {%- liquid
                       assign value_available = false
+                      assign value_low = false
                       for v in product.variants
                         if v.options contains value and v.available
                           assign value_available = true
+                          if v.inventory_management == 'shopify' and v.inventory_policy == 'deny' and v.inventory_quantity <= low_stock
+                            assign value_low = true
+                          endif
                           break
                         endif
                       endfor
                     -%}
-                    <label class="size{% unless value_available %} is-out{% endunless %}">
+                    <label class="size{% unless value_available %} is-out{% endunless %}{% if value_low %} is-low{% endif %}">
                       <input type="radio" class="sr-only" form="noop-{{ section.id }}" name="option-{{ option_index }}" value="{{ value | escape }}" data-option-index="{{ option_index }}"{% unless value_available %} disabled{% endunless %}{% if single and value_available %} checked{% endif %}>
                       <span>{{ value }}</span>
                       {%- unless value_available -%}<span class="sr-only">({{ 'products.product.sold_out' | t }})</span>{%- endunless -%}
@@ -163,6 +168,9 @@
             {%- endfor -%}
           {%- endunless -%}
           <p class="micro buy__msg" role="alert" data-buy-msg></p>
+          <p class="micro buy__stock" aria-live="polite" data-stock-msg
+             data-low="{{ 'products.product.low_stock' | t }}" data-out="{{ 'products.product.sold_out_size' | t }}"></p>
+          <script type="application/json" data-stock-json>{ {%- for v in product.variants -%}"{{ v.id }}": {% if v.inventory_management == 'shopify' and v.inventory_policy == 'deny' %}{{ v.inventory_quantity | at_least: 0 }}{% else %}null{% endif %}{% unless forloop.last %},{% endunless %}{%- endfor -%} }</script>
 
           {%- if product.available -%}
             <button class="btn btn--solid btn--block buy__add" type="submit" name="add" data-add-button>{{ 'products.product.add_to_cart' | t }} {% render 'icon', name: 'arrow' %}</button>
@@ -185,7 +193,7 @@
 
         <div class="accordions">
           <details open>
-            <summary class="eyebrow">{{ 'products.product.description' | t }} {% render 'icon', name: 'plus', px: 14 %}</summary>
+            <summary class="eyebrow">{{ 'products.product.details' | t }} {% render 'icon', name: 'plus', px: 14 %}</summary>
             <div class="acc__body rte">{{ desc_parts.first }}</div>
           </details>
           {%- if desc_parts.size > 1 -%}
@@ -207,11 +215,19 @@
           {%- endif -%}
         </div>
 
-        {%- if settings.free_shipping_threshold > 0 -%}
-          {%- assign threshold_cents = settings.free_shipping_threshold | times: 100 -%}
-          {%- capture threshold -%}{% render 'price', amount: threshold_cents %}{%- endcapture -%}
-          <p class="micro muted ship-note">{{ 'products.product.shipping_note' | t: amount: threshold }}<br>{{ 'products.product.returns_note' | t }}</p>
-        {%- endif -%}
+        <div class="micro muted ship-note">
+          {%- if settings.free_shipping_threshold > 0 -%}
+            {%- assign threshold_cents = settings.free_shipping_threshold | times: 100 -%}
+            {%- capture threshold -%}{% render 'price', amount: threshold_cents %}{%- endcapture -%}
+            <p>{{ 'products.product.shipping_note' | t: amount: threshold }}</p>
+          {%- endif -%}
+          {%- if section.settings.delivery_note != blank -%}<p>{{ section.settings.delivery_note }}</p>{%- endif -%}
+          <p class="ship-links">
+            {%- if shop.shipping_policy -%}<a class="u-link" href="{{ shop.shipping_policy.url }}">{{ 'products.product.shipping_link' | t }}</a>{%- endif -%}
+            {%- if shop.refund_policy -%}<a class="u-link" href="{{ shop.refund_policy.url }}">{{ 'products.product.returns_link' | t }}</a>{%- endif -%}
+            {%- if settings.support_email != blank -%}<a class="u-link" href="mailto:{{ settings.support_email }}">{{ 'products.product.questions' | t }}</a>{%- endif -%}
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -250,17 +266,58 @@
   "name": "Product",
   "tag": "div",
   "settings": [
-    { "type": "checkbox", "id": "show_features", "label": "Show feature grid", "default": true, "info": "Feature text is set per product type in Theme settings → Products." },
-    { "type": "page", "id": "size_guide_page", "label": "Size guide page", "info": "Optional. Leave empty to use the built-in oversized tee chart." }
+    {
+      "type": "checkbox",
+      "id": "show_features",
+      "label": "Show feature grid",
+      "default": true,
+      "info": "Feature text is set per product type in Theme settings → Products."
+    },
+    {
+      "type": "page",
+      "id": "size_guide_page",
+      "label": "Size guide page",
+      "info": "Optional. Leave empty to use the built-in oversized tee chart."
+    },
+    {
+      "type": "range",
+      "id": "low_stock_threshold",
+      "label": "Low stock message at",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "pcs",
+      "default": 3,
+      "info": "Shows “Low stock — only X left” when a size has this many or fewer. Sold-out sizes are crossed out."
+    },
+    {
+      "type": "text",
+      "id": "delivery_note",
+      "label": "Delivery expectations",
+      "info": "e.g. “Ships within 2 business days from Melbourne. AU delivery 2–6 business days.” Leave empty until confirmed."
+    }
   ],
   "blocks": [
     {
       "type": "accordion",
       "name": "Fallback accordion",
       "settings": [
-        { "type": "paragraph", "content": "Shown only when the product description has no Heading 6 sections. Add “Fit”, “Fabric” and “Care” as Heading 6 in a product description to give each product its own." },
-        { "type": "text", "id": "title", "label": "Title", "default": "Care" },
-        { "type": "richtext", "id": "content", "label": "Content", "default": "<p>Cold wash inside out. Hang dry. Do not iron the print.</p>" }
+        {
+          "type": "paragraph",
+          "content": "Shown only when the product description has no Heading 6 sections. Add “Fit” and “Care” as Heading 6 in a product description to give each product its own."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Care"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Cold wash inside out. Hang dry. Do not iron the print.</p>"
+        }
       ]
     }
   ]

@@ -69,13 +69,28 @@ def flatten_backdrop(img):
 
 
 def backdrop_profile(strip):
-    """Per-row backdrop colour from an edge strip, ignoring the (darker) model."""
+    """Per-row backdrop colour from an edge strip.
+
+    Rows where the edge isn't backdrop (a sleeve or arm touching the panel edge)
+    are skipped and filled from the nearest clean rows above and below, so the
+    garment's colour never gets smeared into the extended background.
+    """
     lum = strip.mean(axis=2)
-    out = np.empty((strip.shape[0], 3), np.float32)
-    for y in range(strip.shape[0]):
-        row = strip[y]
-        light = row[lum[y] >= np.percentile(lum[y], 70)]
-        out[y] = light.mean(axis=0)
+    sat = strip.max(axis=2) - strip.min(axis=2)
+    h = strip.shape[0]
+    out = np.zeros((h, 3), np.float32)
+    valid = np.zeros(h, bool)
+    for y in range(h):
+        ok = (lum[y] > 195) & (sat[y] < 16)
+        if ok.mean() > 0.6:
+            out[y] = strip[y][ok].mean(axis=0)
+            valid[y] = True
+    ys = np.arange(h)
+    if valid.any():
+        for c in range(3):
+            out[:, c] = np.interp(ys, ys[valid], out[valid, c])
+    else:
+        out[:] = PAPER
     return cv2.GaussianBlur(out[:, None, :], (0, 0), 12)[:, 0, :]
 
 

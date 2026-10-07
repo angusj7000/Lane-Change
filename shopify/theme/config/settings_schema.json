@@ -10,41 +10,148 @@
   {
     "name": "Brand",
     "settings": [
-      { "type": "text", "id": "brand_line", "label": "Brand line", "default": "International Street Sports" },
-      { "type": "text", "id": "brand_origin", "label": "Origin line", "default": "AUS — Worldwide" },
-      { "type": "text", "id": "brand_est", "label": "Established line", "default": "Est. 2025" },
-      { "type": "image_picker", "id": "favicon", "label": "Favicon", "info": "Square PNG, 64 × 64px. Leave empty to use the compass star." },
-      { "type": "image_picker", "id": "share_image", "label": "Social sharing image", "info": "Used when a page has no image of its own." },
-      { "type": "checkbox", "id": "show_grain", "label": "Film grain overlay", "default": true }
+      {
+        "type": "text",
+        "id": "brand_line",
+        "label": "Brand line",
+        "default": "International Street Sports"
+      },
+      {
+        "type": "text",
+        "id": "brand_origin",
+        "label": "Origin line",
+        "default": "AUS — Worldwide"
+      },
+      {
+        "type": "text",
+        "id": "brand_est",
+        "label": "Established line",
+        "default": "Est. 2025"
+      },
+      {
+        "type": "text",
+        "id": "support_email",
+        "label": "Customer support email",
+        "info": "Shown in the footer and on product pages. Use the address you'll actually answer, e.g. support@yourdomain."
+      },
+      {
+        "type": "textarea",
+        "id": "meta_description",
+        "label": "Fallback meta description",
+        "default": "Lane Change — International Street Sports. Oversized heavyweight garment-washed tees with quiet fronts and loud backs. Australian born, global minded. Shop Collection 001.",
+        "info": "Used for search results on pages without their own description. Set the homepage description in Online Store → Preferences."
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "Square PNG, 64 × 64px. Leave empty to use the compass star."
+      },
+      {
+        "type": "image_picker",
+        "id": "share_image",
+        "label": "Social sharing image",
+        "info": "Used when a page has no image of its own."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_grain",
+        "label": "Film grain overlay",
+        "default": true
+      }
     ]
   },
   {
     "name": "Cart & currency",
     "settings": [
       {
-        "type": "select", "id": "cart_type", "label": "Cart type", "default": "drawer",
-        "options": [ { "value": "drawer", "label": "Slide-out drawer" }, { "value": "page", "label": "Cart page" } ]
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart type",
+        "default": "drawer",
+        "options": [
+          {
+            "value": "drawer",
+            "label": "Slide-out drawer"
+          },
+          {
+            "value": "page",
+            "label": "Cart page"
+          }
+        ]
       },
-      { "type": "number", "id": "free_shipping_threshold", "label": "Free shipping threshold (store currency)", "default": 150, "info": "Shows a progress bar in the bag. Set to 0 to hide." },
-      { "type": "checkbox", "id": "show_currency_code", "label": "Show currency code after prices (e.g. $70 AUD)", "default": true }
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold (store currency)",
+        "default": 150,
+        "info": "Shows a progress bar in the bag. Set to 0 to hide."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_currency_code",
+        "label": "Show currency code after prices (e.g. $70 AUD)",
+        "default": true
+      }
     ]
   },
   {
     "name": "Social media",
     "settings": [
-      { "type": "text", "id": "social_instagram", "label": "Instagram URL", "default": "https://instagram.com/lanechange.aus" },
-      { "type": "text", "id": "social_tiktok", "label": "TikTok URL", "default": "https://tiktok.com/@lanechange.aus" },
-      { "type": "text", "id": "social_youtube", "label": "YouTube URL", "default": "https://youtube.com/@lanechange.aus" }
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram URL",
+        "default": "https://instagram.com/lanechange.aus"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok URL",
+        "default": "https://tiktok.com/@lanechange.aus"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube",
+        "label": "YouTube URL",
+        "default": "https://youtube.com/@lanechange.aus"
+      }
     ]
   },
   {
     "name": "Products",
     "settings": [
-      { "type": "checkbox", "id": "wishlist_enabled", "label": "Enable wishlist", "default": true },
-      { "type": "checkbox", "id": "card_hover_image", "label": "Show second image on hover", "default": true },
-      { "type": "text", "id": "features_tees", "label": "Feature grid — tees", "default": "Oversized fit, Heavyweight cotton, Washed finish, Dropped shoulders", "info": "Comma separated. Used for product type T-Shirt." },
-      { "type": "text", "id": "features_hoodies", "label": "Feature grid — hoodies", "default": "Oversized fit, 450gsm fleece, Washed finish, Dropped shoulders" },
-      { "type": "text", "id": "features_accessories", "label": "Feature grid — caps & accessories", "default": "Washed cotton twill, 3D embroidery, Adjustable strap, One size" }
+      {
+        "type": "checkbox",
+        "id": "wishlist_enabled",
+        "label": "Enable wishlist",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "card_hover_image",
+        "label": "Show second image on hover",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "features_tees",
+        "label": "Feature grid — tees",
+        "default": "Oversized fit, Heavyweight cotton, Washed finish, Dropped shoulders",
+        "info": "Comma separated. Used for product type T-Shirt."
+      },
+      {
+        "type": "text",
+        "id": "features_hoodies",
+        "label": "Feature grid — hoodies",
+        "default": "Oversized fit, 450gsm fleece, Washed finish, Dropped shoulders"
+      },
+      {
+        "type": "text",
+        "id": "features_accessories",
+        "label": "Feature grid — caps & accessories",
+        "default": "Washed cotton twill, 3D embroidery, Adjustable strap, One size"
+      }
     ]
   }
 ]

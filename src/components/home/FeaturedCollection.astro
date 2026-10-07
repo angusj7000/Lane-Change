@@ -9,15 +9,15 @@ const featured = featuredSlugs.map(getProduct).filter((p) => p !== undefined);
 <section class="featured on-paper" aria-labelledby="featured-title">
   <div class="featured__inner">
     <div class="section-bar">
-      <h2 id="featured-title" class="eyebrow eyebrow--wide reveal">Featured Collection</h2>
-      <a class="link-arrow reveal" href="/collections/core-washed">View All <Icon name="arrow" /></a>
+      <h2 id="featured-title" class="eyebrow eyebrow--wide reveal">Collection 001</h2>
+      <a class="link-arrow reveal" href="/collections/collection-001">View All <Icon name="arrow" /></a>
     </div>
     <div class="featured__grid">
       {featured.map((p, i) => <ProductCard product={p} index={i} />)}
       <a class="featured__more reveal" href="/shop">
         <Brand mark="star" class="more__star" />
         <span class="title">Shop All</span>
-        <span class="micro muted">Core Washed — SS25</span>
+        <span class="micro muted">Collection 001</span>
         <Icon name="arrow" />
       </a>
     </div>

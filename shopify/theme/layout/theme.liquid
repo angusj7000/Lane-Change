@@ -18,7 +18,9 @@
       {%- if current_page != 1 %} &ndash; {{ 'general.page' | t: page: current_page }}{% endif -%}
       {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
     </title>
-    {%- if page_description %}<meta name="description" content="{{ page_description | escape }}">{% endif %}
+    {%- assign meta_description = page_description | default: shop.description | default: settings.meta_description -%}
+    {%- if meta_description != blank %}<meta name="description" content="{{ meta_description | strip_html | escape }}">{% endif %}
+    {%- if template.name == 'search' or template.name == 'cart' or request.path contains '/pages/wishlist' %}<meta name="robots" content="noindex, follow">{% endif %}
 
     {% render 'meta-tags' %}
 

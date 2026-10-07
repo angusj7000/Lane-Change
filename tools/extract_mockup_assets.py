@@ -65,21 +65,6 @@ def save(name, im, q=90, out=None):
     cv2.imwrite(str(out / f"{name}.jpg"), im, [cv2.IMWRITE_JPEG_QUALITY, q, cv2.IMWRITE_JPEG_PROGRESSIVE, 1])
 
 
-# ---------- HERO ----------
-hero = img[0:610, 0:1214]
-hero = clean(hero, [
-    (30, 18, 410, 52),        # left nav
-    (525, 14, 690, 72),       # centre logo
-    (905, 18, 1200, 52),      # right utilities
-    (40, 150, 450, 340),      # eyebrow + headline + copy
-    (40, 350, 390, 400, 60, "all"),  # buttons
-    (30, 540, 170, 582),      # est / aus
-    (1115, 512, 1200, 594),   # vertical list
-])
-# the flagship-graphic hero is kept as source: tools/swap_hero_graphic.py prints the
-# Gothic Stack graphic on it to make the site hero (run it after this script)
-save("hero-campaign-flagship", upscale(hero, 1.6), 95, RAW)
-
 # ---------- CATEGORY PANELS ----------
 panels = {
     "category-hoodies": (img[613:822, 415:800], [(18, 130, 300, 205)]),

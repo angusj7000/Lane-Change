@@ -3,71 +3,43 @@
     "hero": {
       "type": "hero",
       "settings": {
-        "eyebrow": "International Street Sports",
-        "heading_1": "Different Lanes.",
-        "heading_2": "Same",
-        "heading_2_accent": "Vision.",
-        "text": "<p>Built for bigger moves. Australian born. <br/>Global minded. Street sports culture, redefined.</p>",
-        "button_1_label": "Shop Now",
-        "button_2_label": "View Collection",
+        "eyebrow": "Collection 001",
+        "heading_1": "International",
+        "heading_2": "Street",
+        "heading_2_accent": "Sports.",
+        "statement": "Different Lanes. Same Vision.",
+        "text": "<p>Built for bigger moves. Australian born, global minded.</p>",
+        "button_1_label": "Shop",
+        "button_1_path": "/collections/all",
+        "button_2_label": "Collection 001",
+        "button_2_path": "/collections/collection-001",
         "side_list": "Street\nSports\nLifestyle\nProgress\nDaily",
         "overlay": 0,
-        "focal": "62% 30%",
-        "button_1_path": "/collections/all",
-        "button_2_path": "/collections/core-washed",
-        "alt": "Model photographed from behind in a night-time parking structure wearing the washed-black Lane Change Gothic Stack Tee."
+        "focal": "50% 40%",
+        "copy_position": "between",
+        "alt": "Model photographed from behind in a night-time parking structure wearing the washed black Lane Change Stacker Tee; a dark car sits in the shadows to the left."
       }
     },
-    "categories": {
-      "type": "category-strip",
-      "blocks": {
-        "tees": {
-          "type": "panel",
-          "settings": {
-            "title": "Tees",
-            "text": "Everyday essentials.\nBuilt different.",
-            "fallback": "category-tees",
-            "show_star": true,
-            "link_path": "/collections/tees"
-          }
-        },
-        "hoodies": {
-          "type": "panel",
-          "settings": {
-            "title": "Hoodies",
-            "text": "Bigger moves.\nColder days.",
-            "fallback": "category-hoodies",
-            "link_path": "/collections/hoodies"
-          }
-        },
-        "story": {
-          "type": "panel",
-          "settings": {
-            "title": "Our Story",
-            "text": "Australian born.\nGlobal minded.",
-            "fallback": "category-story",
-            "link_path": "/pages/about"
-          }
-        }
-      },
-      "block_order": [
-        "tees",
-        "hoodies",
-        "story"
-      ],
-      "settings": {
-        "label": "Shop by category"
-      }
-    },
-    "featured": {
+    "collection": {
       "type": "featured-collection",
       "settings": {
-        "heading": "Featured Collection",
+        "heading": "Collection 001",
         "limit": 5,
         "columns": 5,
         "show_more_tile": true,
-        "collection_handle": "core-washed",
+        "collection_handle": "collection-001",
         "background": "light"
+      }
+    },
+    "story": {
+      "type": "image-with-text",
+      "settings": {
+        "fallback": "category-story",
+        "eyebrow": "Our Story",
+        "heading": "Australian Born. Global Minded.",
+        "text": "<p>Lane Change started in the places everyone ends up — car parks after close, empty roads before sunrise, gyms at 5am. Different people, different disciplines, the same drive to get better every day.</p><p>We call it International Street Sports: heavyweight, garment-washed pieces with quiet fronts and loud backs, made to be worn into that life. Cars are part of the culture, not the whole story.</p>",
+        "button_label": "Our Story",
+        "button_path": "/pages/about"
       }
     },
     "statement": {
@@ -82,8 +54,8 @@
   },
   "order": [
     "hero",
-    "categories",
-    "featured",
+    "collection",
+    "story",
     "statement"
   ]
 }

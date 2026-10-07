@@ -1,4 +1,11 @@
-{%- assign menu = section.settings.menu -%}
+{%- liquid
+  assign menu = section.settings.menu
+  assign use_menu = false
+  if section.settings.nav_source == 'menu' and menu.links.size > 0
+    assign use_menu = true
+  endif
+  assign c001 = collections['collection-001']
+-%}
 <footer class="footer">
   <div class="wrap footer__grid">
     <div class="footer__brand reveal">
@@ -10,7 +17,15 @@
     <nav class="footer__col reveal" style="--d:.08s" aria-label="Footer">
       <p class="micro muted col-title">{{ section.settings.menu_title }}</p>
       <ul>
-        {%- for link in menu.links -%}<li><a class="u-link" href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}
+        {%- if use_menu -%}
+          {%- for link in menu.links -%}<li><a class="u-link" href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}
+        {%- else -%}
+          <li><a class="u-link" href="{{ routes.all_products_collection_url }}">Shop</a></li>
+          <li><a class="u-link" href="{% if c001.id != blank %}{{ c001.url }}{% else %}{{ routes.all_products_collection_url }}{% endif %}">Collection 001</a></li>
+          {%- if pages.about.id != blank -%}<li><a class="u-link" href="{{ pages.about.url }}">About</a></li>{%- endif -%}
+          {%- if blogs.journal.id != blank -%}<li><a class="u-link" href="{{ blogs.journal.url }}">Journal</a></li>{%- endif -%}
+          {%- if pages.contact.id != blank -%}<li><a class="u-link" href="{{ pages.contact.url }}">Contact</a></li>{%- endif -%}
+        {%- endif -%}
       </ul>
     </nav>
 
@@ -40,7 +55,14 @@
 
   <div class="wrap footer__base">
     <p class="micro">{{ section.settings.copyright }}</p>
-    <p class="micro muted only-wide">{{ section.settings.center_text }}</p>
+    <nav class="footer__legal micro" aria-label="Policies">
+      {%- if shop.shipping_policy -%}<a class="u-link" href="{{ shop.shipping_policy.url }}">Shipping</a>{%- endif -%}
+      {%- if shop.refund_policy -%}<a class="u-link" href="{{ shop.refund_policy.url }}">Returns</a>{%- endif -%}
+      {%- if shop.privacy_policy -%}<a class="u-link" href="{{ shop.privacy_policy.url }}">Privacy</a>{%- endif -%}
+      {%- if shop.terms_of_service -%}<a class="u-link" href="{{ shop.terms_of_service.url }}">Terms</a>{%- endif -%}
+      {%- if pages.contact.id != blank -%}<a class="u-link" href="{{ pages.contact.url }}">Contact</a>{%- endif -%}
+      {%- if settings.support_email != blank -%}<a class="u-link" href="mailto:{{ settings.support_email }}">{{ settings.support_email }}</a>{%- endif -%}
+    </nav>
     <p class="micro">{{ settings.brand_origin }}</p>
   </div>
 </footer>
@@ -49,15 +71,70 @@
 {
   "name": "Footer",
   "class": "section-footer",
-  "enabled_on": { "groups": ["footer"] },
+  "enabled_on": {
+    "groups": [
+      "footer"
+    ]
+  },
   "settings": [
-    { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" },
-    { "type": "text", "id": "menu_title", "label": "Menu heading", "default": "Navigate" },
-    { "type": "text", "id": "social_title", "label": "Social heading", "default": "Follow" },
-    { "type": "text", "id": "newsletter_heading", "label": "Newsletter heading", "default": "Join The Lane" },
-    { "type": "richtext", "id": "newsletter_text", "label": "Newsletter text", "default": "<p>Drops, campaign releases and events before anyone else. No spam — just new roads.</p>" },
-    { "type": "text", "id": "center_text", "label": "Bottom centre text", "default": "Designed to win" },
-    { "type": "text", "id": "copyright", "label": "Copyright line", "default": "© 2025 Lane Change" }
+    {
+      "type": "select",
+      "id": "nav_source",
+      "label": "Links",
+      "default": "brand",
+      "options": [
+        {
+          "value": "brand",
+          "label": "Brand links (Shop · Collection 001 · About · Journal · Contact)"
+        },
+        {
+          "value": "menu",
+          "label": "Menu chosen below"
+        }
+      ]
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "footer"
+    },
+    {
+      "type": "text",
+      "id": "menu_title",
+      "label": "Menu heading",
+      "default": "Navigate"
+    },
+    {
+      "type": "text",
+      "id": "social_title",
+      "label": "Social heading",
+      "default": "Follow"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Newsletter heading",
+      "default": "Join The Lane"
+    },
+    {
+      "type": "richtext",
+      "id": "newsletter_text",
+      "label": "Newsletter text",
+      "default": "<p>Drops, campaign releases and events before anyone else. No spam — just new roads.</p>"
+    },
+    {
+      "type": "text",
+      "id": "center_text",
+      "label": "Bottom centre text",
+      "default": "Designed to win"
+    },
+    {
+      "type": "text",
+      "id": "copyright",
+      "label": "Copyright line",
+      "default": "© 2025 Lane Change"
+    }
   ]
 }
 {% endschema %}

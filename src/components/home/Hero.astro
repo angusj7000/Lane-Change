@@ -21,7 +21,7 @@ const [dAvif, dWebp, mAvif, mWebp] = await Promise.all([
 const fallback = await getImage({ src: desktop, width: 1920, format: 'jpg', quality: 80 });
 const vertical = ['Street', 'Sports', 'Lifestyle', 'Progress', 'Daily'];
 ---
-<section class="hero" aria-labelledby="hero-title">
+<section class="hero hero--between" aria-labelledby="hero-title">
   <picture class="hero__media">
     <source media="(max-width: 700px) and (orientation: portrait)" type="image/avif" srcset={mAvif} sizes="100vw" />
     <source media="(max-width: 700px) and (orientation: portrait)" type="image/webp" srcset={mWebp} sizes="100vw" />
@@ -29,7 +29,7 @@ const vertical = ['Street', 'Sports', 'Lifestyle', 'Progress', 'Daily'];
     <source type="image/webp" srcset={dWebp} sizes="100vw" />
     <img
       src={fallback.src}
-      alt="Model photographed from behind in a night-time parking structure, wearing the washed-black Lane Change Gothic Stack Tee with its layered gothic LANE CHANGE back graphic; a dark performance car sits out of focus behind."
+      alt="Model photographed from behind in a night-time parking structure wearing the washed black Lane Change Stacker Tee; a dark car sits in the shadows to the left."
       width={desktop.width}
       height={desktop.height}
       fetchpriority="high"
@@ -39,18 +39,16 @@ const vertical = ['Street', 'Sports', 'Lifestyle', 'Progress', 'Daily'];
   <div class="hero__shade" aria-hidden="true"></div>
 
   <div class="hero__copy">
-    <p class="eyebrow eyebrow--wide hero__line">{site.line}</p>
+    <p class="eyebrow eyebrow--wide hero__line">Collection 001</p>
     <h1 id="hero-title" class="display hero__title">
-      <span class="ln"><span>Different Lanes.</span></span>
-      <span class="ln"><span>Same <em>Vision.</em></span></span>
+      <span class="ln"><span>International</span></span>
+      <span class="ln"><span>Street <em>Sports.</em></span></span>
     </h1>
-    <p class="hero__sub">
-      Built for bigger moves. Australian born.{' '}<br />
-      Global minded. Street sports culture, redefined.
-    </p>
+    <p class="hero__statement">Different Lanes. Same Vision.</p>
+    <p class="hero__sub">Built for bigger moves. Australian born, global minded.</p>
     <div class="hero__cta">
-      <a class="btn btn--solid" href="/shop">Shop Now <Icon name="arrow" /></a>
-      <a class="btn" href="/collections/core-washed">View Collection <Icon name="arrow" /></a>
+      <a class="btn btn--solid" href="/shop">Shop <Icon name="arrow" /></a>
+      <a class="btn" href="/collections/collection-001">Collection 001 <Icon name="arrow" /></a>
     </div>
   </div>
 
@@ -116,6 +114,27 @@ const vertical = ['Street', 'Sports', 'Lifestyle', 'Progress', 'Daily'];
     color: var(--bone);
     opacity: 0; animation: fade 1.2s var(--ease-out) 0.45s forwards;
   }
+  .hero__statement {
+    margin-top: clamp(14px, 1.6vw, 24px);
+    font-family: var(--font-serif); font-weight: 500;
+    font-size: clamp(15px, 1.45vw, 24px); letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--white);
+    opacity: 0; animation: fade 1.2s var(--ease-out) 0.35s forwards;
+  }
+  .hero__video, .hero__video :global(video) { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero__video :global(video) { object-fit: cover; }
+
+  /* copy sits in the gap between the car (left) and the model (right) */
+  @media (min-width: 1101px) {
+    .hero--between .hero__copy { left: 26.5%; max-width: 34vw; transform: translateY(-50%); }
+    .hero--between .hero__title { font-size: clamp(46px, 4.7vw, 84px); }
+    .hero--between .hero__shade {
+      background:
+        radial-gradient(ellipse 34% 46% at 40% 52%, rgba(8, 8, 8, 0.5), rgba(8, 8, 8, 0) 75%),
+        linear-gradient(0deg, rgba(8, 8, 8, 0.55) 0%, rgba(8, 8, 8, 0) 26%),
+        rgba(8, 8, 8, 0.08);
+    }
+  }
   .hero__cta {
     display: flex; flex-wrap: wrap; gap: 18px;
     margin-top: clamp(24px, 3vw, 38px);
@@ -151,7 +170,7 @@ const vertical = ['Street', 'Sports', 'Lifestyle', 'Progress', 'Daily'];
     .hero__media img { object-position: 50% 18%; }
     .hero__shade {
       background:
-        linear-gradient(0deg, rgba(8, 8, 8, 0.96) 0%, rgba(8, 8, 8, 0.86) 34%, rgba(8, 8, 8, 0.4) 52%, rgba(8, 8, 8, 0) 66%),
+        linear-gradient(0deg, rgba(8, 8, 8, 0.96) 0%, rgba(8, 8, 8, 0.9) 40%, rgba(8, 8, 8, 0.62) 55%, rgba(8, 8, 8, 0.12) 74%, rgba(8, 8, 8, 0) 84%),
         rgba(8, 8, 8, 0.1);
     }
     .hero__copy {

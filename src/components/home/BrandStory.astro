@@ -1,0 +1,33 @@
+---
+import Photo from '../Photo.astro';
+import Brand from '../Brand.astro';
+import Icon from '../Icon.astro';
+---
+<section class="story" aria-labelledby="story-title">
+  <div class="story__media media reveal-img">
+    <Photo src="category-story" alt="Curving concrete overpass above an empty road under a grey sky." sizes="(max-width: 900px) 100vw, 50vw" />
+  </div>
+  <div class="story__copy">
+    <Brand mark="monogram" class="story__mono" />
+    <p class="eyebrow eyebrow--wide reveal">Our Story</p>
+    <h2 id="story-title" class="serif-mark story__title reveal" style="--d:.08s">Australian Born. Global Minded.</h2>
+    <div class="story__text muted reveal" style="--d:.16s">
+      <p>Lane Change started in the places everyone ends up — car parks after close, empty roads before sunrise, gyms at 5am. Different people, different disciplines, the same drive to get better every day.</p>
+      <p>We call it International Street Sports: heavyweight, garment-washed pieces with quiet fronts and loud backs, made to be worn into that life. Cars are part of the culture, not the whole story.</p>
+    </div>
+    <a class="btn reveal" style="--d:.24s" href="/about">Our Story <Icon name="arrow" /></a>
+  </div>
+</section>
+
+<style>
+  .story { display: grid; grid-template-columns: 1fr 1fr; min-height: 80vh; border-top: 1px solid var(--line); }
+  .story__media { min-height: 520px; }
+  .story__copy { display: grid; align-content: center; justify-items: start; gap: 22px; padding: clamp(40px, 6vw, 100px); }
+  .story__copy :global(.story__mono) { width: 52px; color: var(--bone); }
+  .story__title { font-size: clamp(24px, 2.6vw, 40px); line-height: 1.25; letter-spacing: 0.32em; }
+  .story__text { display: grid; gap: 14px; max-width: 46ch; }
+  @media (max-width: 900px) {
+    .story { grid-template-columns: 1fr; }
+    .story__media { min-height: 360px; }
+  }
+</style>
