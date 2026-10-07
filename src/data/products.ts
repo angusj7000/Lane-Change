@@ -110,24 +110,24 @@ const modelAlts = (name: string, colour: string, back: string) => ({
 export const products: Product[] = [
   tee('gothic-stack-tee-washed-black', 'Stacker Tee', 'STK', { name: 'Washed Black', code: 'BLK', swatch: '#2b2c2c' }, {
     badge: 'Flagship',
-    blurb: 'Raised 3D embroidered LC emblem on the chest. Stacked LANE CHANGE wordmarks across the back.',
+    blurb: 'Raised 3D embroidered LC emblem on the chest. Stacked LANE CHANGE wordmarks embroidered across the back.',
     description: [
       'The Collection 001 flagship. 260 GSM heavyweight garment-washed cotton in washed black, cut oversized and boxy.',
       'Quiet front: the LC monogram and compass star in raised 3D embroidery, 10 cm wide on the left chest.',
-      'Loud back: International Street Sports over three stacked LANE CHANGE wordmarks, Designed To Win, the compass star and Est. 2025, AUS — Worldwide. 45 cm at its longest point.',
+      'Loud back: International Street Sports over three stacked LANE CHANGE wordmarks, Designed To Win, the compass star and Est. 2025, AUS — Worldwide — embroidered, 45 cm at its longest point.',
     ],
     fabric: [
       '260 GSM heavyweight garment-washed cotton.',
-      'Raised 3D embroidery.',
+      'Raised 3D embroidery front and back.',
       'Each piece is washed individually, so tone and texture vary slightly.',
       'Woven LC neck label.',
     ],
     seoDescription:
-      'Stacker Tee in washed black: 260 GSM heavyweight garment-washed cotton, raised 3D embroidered chest emblem and a 45 cm stacked LANE CHANGE back graphic.',
+      'Stacker Tee in washed black: 260 GSM heavyweight garment-washed cotton with raised 3D embroidery — LC chest emblem and a 45 cm stacked LANE CHANGE back.',
     alts: {
       ...modelAlts('Stacker Tee', 'Washed Black', 'three stacked LANE CHANGE wordmarks with International Street Sports and Designed To Win'),
       detail: 'Close-up of the raised 3D embroidered LC monogram and compass star on the chest of the washed black Stacker Tee.',
-      print: 'Close-up of the Stacker Tee back graphic: three stacked LANE CHANGE wordmarks, International Street Sports, Designed To Win, Est. 2025.',
+      print: 'Close-up of the Stacker Tee back embroidery: three stacked LANE CHANGE wordmarks, International Street Sports, Designed To Win, Est. 2025.',
     },
   }),
   tee('compass-tee-concrete-grey', 'Angel Tee', 'ANG', { name: 'Concrete Grey', code: 'GRY', swatch: '#8d8c8a' }, {

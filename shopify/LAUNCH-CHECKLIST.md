@@ -16,7 +16,7 @@ This is the audit, item by item. Each line says who does it:
 
 - [x] **DONE** Renamed: Stacker Tee, Angel Tee, Globe Tee, Checker Tee, Portrait Tee.
 - [x] **DONE** Handles kept, so product URLs don't change. (The Stacker Tee keeps `/products/gothic-stack-tee-washed-black`. That's harmless for SEO, and changing it would break any links already shared.)
-- [x] **DONE** Stacker Tee description: 260 GSM heavyweight garment-washed cotton, raised 3D embroidery, 10 cm chest emblem, 45 cm back graphic.
+- [x] **DONE** Stacker Tee description: 260 GSM heavyweight garment-washed cotton, raised 3D embroidery — 10 cm chest emblem, 45 cm embroidered back (per Brand HQ / Command Centre).
 - [ ] **YOU** Confirm each description matches the approved garment and artwork. The descriptions now describe only what's visible in the photos. GSM and embroidery are stated for the Stacker only; the other four say "heavyweight garment-washed cotton". Tell me their exact specs and I'll add them.
 - [ ] **YOU** Confirm every product photo shows the final production design (photos come from the approved lookbook sheets).
 - [x] **DONE** Sizes XS, S, M, L, XL and XXL on all five. **YOU:** confirm this is the real size run.
