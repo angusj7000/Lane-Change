@@ -254,3 +254,20 @@ select.field { background: var(--black); }
 .cform .lbl .muted { text-transform: none; letter-spacing: 0.04em; }
 .cinfo__links { display: grid; gap: 6px; }
 @media (max-width: 700px) { .cform__row { grid-template-columns: 1fr; } }
+
+/* menu button on every screen size; on desktop the menu is a left-hand panel */
+.site-header .menu-btn { display: inline-flex; margin-left: -10px; }
+.mobile-menu__panel { display: flex; flex-direction: column; min-height: 100%; }
+@media (min-width: 901px) {
+  .site-header .menu-btn { margin-right: clamp(14px, 1.6vw, 26px); }
+  .mobile-menu { padding: 0; background: rgba(0, 0, 0, 0.6); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+  .mobile-menu__panel {
+    width: min(460px, 100%); min-height: 100%;
+    padding: 0 40px 32px; background: var(--black); border-right: 1px solid var(--line);
+    animation: menu-panel-in 0.45s var(--ease-out);
+  }
+  .mobile-menu__top { margin-inline: -40px; padding-inline: 30px; }
+  .mobile-menu__nav .display { font-size: 44px; }
+  .mobile-menu a.display:hover, .mobile-menu a[aria-current='page'] { color: var(--smoke); }
+}
+@keyframes menu-panel-in { from { transform: translateX(-24px); opacity: 0; } to { transform: none; opacity: 1; } }

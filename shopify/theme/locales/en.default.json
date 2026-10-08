@@ -15,7 +15,10 @@
     "account": "Account",
     "wishlist": "Wishlist",
     "bag": "Bag",
-    "bag_count": "Shopping bag, {{ count }} items"
+    "bag_count": "Shopping bag, {{ count }} items",
+    "contact": "Contact",
+    "shipping": "Shipping",
+    "returns": "Returns"
   },
   "accessibility": {
     "skip_to_content": "Skip to content",

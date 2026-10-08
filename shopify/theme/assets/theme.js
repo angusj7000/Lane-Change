@@ -94,7 +94,7 @@
     menuBtn.addEventListener('click', open);
     $$('[data-menu-close]', menu).forEach((b) => b.addEventListener('click', close));
     document.addEventListener('keydown', (e) => e.key === 'Escape' && close());
-    window.matchMedia('(min-width: 901px)').addEventListener('change', (m) => m.matches && close());
+    menu.addEventListener('click', (e) => e.target === menu && close());
   }
 
   /* ---------------------------------------------------------------- reveals */
