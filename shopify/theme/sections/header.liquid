@@ -33,7 +33,7 @@
     assign overlay = true
   endif
 -%}
-{%- unless overlay -%}<style>#MainContent { padding-top: var(--header-h); }</style>{%- endunless -%}
+{%- unless overlay -%}<style>#MainContent { padding-top: var(--header-h); } .hero { height: calc(100vh - var(--header-h)); height: calc(100svh - var(--header-h)); }</style>{%- endunless -%}
 <header class="site-header" data-variant="{% if overlay %}overlay{% else %}solid{% endif %}" data-header>
   <div class="bar">
     <div class="bar__left">
@@ -184,13 +184,14 @@
       "type": "checkbox",
       "id": "transparent_home",
       "label": "Transparent over homepage hero",
-      "default": true
+      "info": "Off (recommended): a solid black bar, so the logo, menu and bag are always easy to find.",
+      "default": false
     },
     {
       "type": "checkbox",
       "id": "transparent_banners",
       "label": "Transparent over collection, article and About banners",
-      "default": true
+      "default": false
     }
   ]
 }

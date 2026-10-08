@@ -7,8 +7,8 @@
       "settings": {
         "menu": "main-menu",
         "region_text": "AUS — Worldwide",
-        "transparent_home": true,
-        "transparent_banners": true,
+        "transparent_home": false,
+        "transparent_banners": false,
         "nav_source": "brand"
       }
     }

@@ -21,6 +21,8 @@ Setup takes about 20 minutes. Do the steps in this order.
 2. Click **Add theme → Upload zip file** and choose `lane-change-theme.zip`.
 3. Leave it unpublished for now. You'll publish it at the end.
 
+> **Updating?** Upload the new zip the same way. It arrives as a new copy in your theme library. Then click **⋯ → Publish** on it. The theme marked **Current theme** is the one customers see, so an uploaded zip changes nothing until it's published.
+
 ## 2. Import the products
 
 > **Already imported these five tees?** Import again and tick **Overwrite products with matching handles**. Names, descriptions, SEO, categories, SKUs and photos update, and the product URLs stay the same. Any prices or stock you've changed in Shopify are overwritten by the file, so update the file first or re-enter them after.
@@ -90,6 +92,7 @@ Nothing to set up. The theme shows the brand navigation automatically: **SHOP ·
 
 - **About** and **Journal** appear as soon as the About page (step 4) and Journal blog (step 5) exist.
 - The footer shows the same links plus **Contact**, and a row with **Shipping · Returns · Privacy · Terms** from your store policies.
+- The header is a solid black bar on every page, so the logo, menu, search and bag are always visible. To float it over the homepage photo instead, tick **Customize → Header → Transparent over homepage hero**.
 - To use your own Shopify menu instead, open **Customize → Header → Navigation** and choose **Menu chosen below**.
 - Optional tidy-up: in **Online Store → Navigation**, the default "Main menu" (Home / Catalog / Contact) is no longer shown, so you can leave or delete it.
 
