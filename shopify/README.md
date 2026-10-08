@@ -25,7 +25,7 @@ Setup takes about 20 minutes. Do the steps in this order.
 
 ## 2. Import the products
 
-> **Already imported these five tees?** Import again and tick **Overwrite products with matching handles**. Names, descriptions, SEO, categories, SKUs and photos update, and the product URLs stay the same. Any prices or stock you've changed in Shopify are overwritten by the file, so update the file first or re-enter them after.
+> **Already imported the tees before (they show old names like "Gothic Stack Tee")?** Delete them first: **Products**, tick all of them, **More actions → Delete products**. The new file uses new product URLs that match the new names (e.g. `/products/stacker-tee-washed-black`), so importing on top of the old products would create duplicates.
 
 1. Go to **Products → Import**.
 2. Choose `products.csv` and click **Upload and preview**, then **Import products**.

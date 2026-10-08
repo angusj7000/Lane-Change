@@ -1,8 +1,8 @@
 // Collection 001 catalogue: the five launch tees. The shape mirrors what a
 // Shopify product maps to; `npm run shopify:csv` exports it as an import file.
 //
-// Handles (slugs) are the live product URLs — keep them stable. Names, copy,
-// SEO and SKUs can change freely.
+// Handles (slugs) are the live product URLs and match the product names; avoid
+// changing them once the store is open. Names, copy, SEO and SKUs can change freely.
 
 export type ViewKey = 'front' | 'back' | 'side' | 'fit' | 'detail' | 'print' | 'fabric' | 'label';
 
@@ -108,7 +108,7 @@ const modelAlts = (name: string, colour: string, back: string) => ({
 });
 
 export const products: Product[] = [
-  tee('gothic-stack-tee-washed-black', 'Stacker Tee', 'STK', { name: 'Washed Black', code: 'BLK', swatch: '#2b2c2c' }, {
+  tee('stacker-tee-washed-black', 'Stacker Tee', 'STK', { name: 'Washed Black', code: 'BLK', swatch: '#2b2c2c' }, {
     badge: 'Flagship',
     blurb: 'Raised 3D embroidered LC emblem on the chest. Stacked LANE CHANGE wordmarks embroidered across the back.',
     description: [
@@ -130,7 +130,7 @@ export const products: Product[] = [
       print: 'Close-up of the Stacker Tee back embroidery: three stacked LANE CHANGE wordmarks, International Street Sports, Designed To Win, Est. 2025.',
     },
   }),
-  tee('compass-tee-concrete-grey', 'Angel Tee', 'ANG', { name: 'Concrete Grey', code: 'GRY', swatch: '#8d8c8a' }, {
+  tee('angel-tee-concrete-grey', 'Angel Tee', 'ANG', { name: 'Concrete Grey', code: 'GRY', swatch: '#8d8c8a' }, {
     blurb: 'Arched Lane Change and compass emblem on the chest. LANE CHANGE over a classical angel statue on the back.',
     description: [
       'Heavyweight garment-washed cotton in concrete grey with washed black artwork, cut oversized and boxy.',
@@ -145,7 +145,7 @@ export const products: Product[] = [
       print: 'Close-up of the Angel Tee back graphic: LANE CHANGE over a winged angel statue with Same Roads, Different Lanes and More Than Cars, A Mindset.',
     },
   }),
-  tee('roads-tee-forest-green', 'Globe Tee', 'GLB', { name: 'Washed Forest Green', code: 'GRN', swatch: '#3c4338' }, {
+  tee('globe-tee-forest-green', 'Globe Tee', 'GLB', { name: 'Washed Forest Green', code: 'GRN', swatch: '#3c4338' }, {
     blurb: 'LC emblem on the chest. LANE CHANGE, the globe and compass star on the back.',
     description: [
       'Heavyweight garment-washed cotton in washed forest green, cut oversized and boxy.',
@@ -175,7 +175,7 @@ export const products: Product[] = [
       print: 'Close-up of the Checker Tee back graphic: LANE CHANGE over a distressed chequered flag with Drive Your Own Direction.',
     },
   }),
-  tee('beyond-limits-tee-dusty-pink', 'Portrait Tee', 'PRT', { name: 'Dusty Pink', code: 'PNK', swatch: '#b47a7c' }, {
+  tee('portrait-tee-dusty-pink', 'Portrait Tee', 'PRT', { name: 'Dusty Pink', code: 'PNK', swatch: '#b47a7c' }, {
     blurb: 'Black LC emblem on the chest. LANE CHANGE over a portrait print on the back.',
     description: [
       'Heavyweight garment-washed cotton in dusty pink with washed black artwork, cut oversized and boxy.',
