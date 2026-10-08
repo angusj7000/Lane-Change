@@ -140,3 +140,15 @@ npm run shopify:check   # run Shopify Theme Check (0 offenses at release)
 - The Liquid templates, sections and snippets in `theme/` are edited directly.
 - `theme/assets/theme.css` is generated. Edit `src/styles/global.css`, the `<style>` blocks in the Astro components, or `shopify/src/shopify.css`, then run `npm run shopify:build`.
 - If you use the Shopify CLI, `shopify theme dev --path shopify/theme` previews the theme against your store.
+
+## Order confirmation email
+
+`email/order-confirmation.liquid` is a branded order confirmation email: header artwork, Order Confirmed, an order number / date / delivery / shipping-to strip, the order summary with product photos, totals, delivery details, a View Your Order button and the night-road footer with social links.
+
+1. Go to **Settings → Notifications → Customer notifications → Order confirmation → Edit code**.
+2. Select everything in the **Email body (HTML)** box, delete it, and paste in the whole of `email/order-confirmation.liquid`.
+3. Click **Preview** to check it, then **Save**. **Send test email** shows it in your own inbox.
+
+- The header, footer and icons load from this GitHub repository. Before you make the repository private, upload the files in `email/images` to **Content → Files**, copy each file's link and paste it over the matching line at the top of the template.
+- Social links are set near the top of the template (`instagram_url`, `tiktok_url`, `youtube_url`). Leave one blank to hide its icon.
+- Product photos come from each product's featured image.

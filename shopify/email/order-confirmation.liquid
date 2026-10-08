@@ -1,0 +1,457 @@
+{%- comment -%}
+  LANE CHANGE — Order confirmation email
+  Paste into Shopify admin: Settings → Notifications → Customer notifications →
+  Order confirmation → Edit code. Replace everything in the "Email body (HTML)" box.
+
+  Images: the header, footer and icons are loaded from the URLs below. To host
+  them on Shopify instead, upload the files in shopify/email/images to
+  Content → Files, copy each file's URL and paste it over the matching line.
+{%- endcomment -%}
+{%- assign img_base = 'https://raw.githubusercontent.com/angusj7000/Lane-Change/claude/lane-change-ecommerce-vpotvs/shopify/email/images/' -%}
+{%- assign header_img = img_base | append: 'email-header.jpg' -%}
+{%- assign footer_img = img_base | append: 'email-footer.jpg' -%}
+{%- assign icon_order = img_base | append: 'icon-order.png' -%}
+{%- assign icon_date = img_base | append: 'icon-date.png' -%}
+{%- assign icon_delivery = img_base | append: 'icon-delivery.png' -%}
+{%- assign icon_location = img_base | append: 'icon-location.png' -%}
+{%- assign icon_instagram = img_base | append: 'icon-instagram.png' -%}
+{%- assign icon_tiktok = img_base | append: 'icon-tiktok.png' -%}
+{%- assign icon_youtube = img_base | append: 'icon-youtube.png' -%}
+
+{%- comment -%} Social links (leave one blank to hide its icon) {%- endcomment -%}
+{%- assign instagram_url = 'https://instagram.com/lanechange.aus' -%}
+{%- assign tiktok_url = 'https://tiktok.com/@lanechange.aus' -%}
+{%- assign youtube_url = 'https://youtube.com/@lanechange.aus' -%}
+
+{%- comment -%} Brand palette and fonts {%- endcomment -%}
+{%- assign c_bg = '#000000' -%}
+{%- assign c_panel = '#0b0b0b' -%}
+{%- assign c_line = '#3a3a3a' -%}
+{%- assign c_text = '#f2f0eb' -%}
+{%- assign c_muted = '#a9a7a2' -%}
+{%- capture f_display -%}'Barlow Condensed','Arial Narrow',Arial,sans-serif{%- endcapture -%}
+{%- capture f_body -%}'Jost','Helvetica Neue',Helvetica,Arial,sans-serif{%- endcapture -%}
+
+{%- comment -%} ---------- message ---------- {%- endcomment -%}
+{%- capture email_title -%}Order confirmed{%- endcapture -%}
+{%- capture email_body -%}
+  {%- if has_pending_payment -%}
+    {%- if buyer_action_required -%}
+      You'll get a confirmation email after completing your payment.
+    {%- else -%}
+      Your payment is being processed. You'll get an email when your order is confirmed.
+    {%- endif -%}
+  {%- elsif payment_charged_on_fulfillment -%}
+    We've received your order. Your payment method will be charged when your order is ready to be fulfilled.<br>We'll let you know when it's on its way.
+  {%- elsif requires_shipping and delivery_method == 'pick-up' -%}
+    Your order has been received and is now being processed.<br>We'll email you as soon as it's ready for pickup.
+  {%- elsif requires_shipping and delivery_method == 'local' -%}
+    Your order has been received and is now being processed.<br>We'll let you know when it's out for delivery.
+  {%- else -%}
+    Your order has been received and is now being processed.<br>We'll send you another email once it has been shipped.
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- comment -%} ---------- info strip values ---------- {%- endcomment -%}
+{%- assign order_date = created_at | date: '%b %d, %Y' | upcase -%}
+{%- assign est_delivery = consolidated_estimated_delivery_time -%}
+{%- if est_delivery == blank -%}
+  {%- if delivery_method == 'pick-up' -%}
+    {%- assign est_delivery = 'Pickup' -%}
+  {%- elsif shipping_method.title != blank -%}
+    {%- assign est_delivery = shipping_method.title -%}
+  {%- else -%}
+    {%- assign est_delivery = 'Processing' -%}
+  {%- endif -%}
+{%- endif -%}
+{%- if shipping_address -%}
+  {%- assign ship_to = shipping_address.city -%}
+  {%- if shipping_address.province_code != blank -%}
+    {%- assign ship_to = ship_to | append: ', ' | append: shipping_address.province_code -%}
+  {%- elsif shipping_address.country != blank -%}
+    {%- assign ship_to = ship_to | append: ', ' | append: shipping_address.country -%}
+  {%- endif -%}
+  {%- assign ship_label = 'Shipping to' -%}
+{%- elsif delivery_method == 'pick-up' -%}
+  {%- assign ship_to = 'In-store pickup' -%}
+  {%- assign ship_label = 'Delivery' -%}
+{%- else -%}
+  {%- assign ship_to = 'Digital delivery' -%}
+  {%- assign ship_label = 'Delivery' -%}
+{%- endif -%}
+
+{%- comment -%} ---------- totals ---------- {%- endcomment -%}
+{%- assign total_order_discount_amount = 0 -%}
+{%- assign has_shipping_discount = false -%}
+{%- for discount_application in discount_applications -%}
+  {%- if discount_application.target_selection == 'all' and discount_application.target_type == 'line_item' -%}
+    {%- assign total_order_discount_amount = total_order_discount_amount | plus: discount_application.total_allocated_amount -%}
+  {%- endif -%}
+  {%- if discount_application.target_type == 'shipping_line' -%}
+    {%- assign has_shipping_discount = true -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign display_subtotal = subtotal_price | plus: total_order_discount_amount -%}
+{%- assign shipping_total = 0 -%}
+{%- for method in shipping_methods -%}
+  {%- assign shipping_total = shipping_total | plus: method.price_with_discounts -%}
+{%- endfor -%}
+{%- if shipping_methods.size == 0 -%}{%- assign shipping_total = shipping_price -%}{%- endif -%}
+{%- assign shop_url = shop.url -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="supported-color-schemes" content="dark">
+  <title>{{ email_title }} — {{ shop.name }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse; }
+    img { border: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; display: block; }
+    a { color: {{ c_text }}; }
+    .lc-link { color: {{ c_text }} !important; text-decoration: none !important; }
+    @media only screen and (max-width: 620px) {
+      .lc-container { width: 100% !important; }
+      .lc-pad { padding-left: 20px !important; padding-right: 20px !important; }
+      .lc-h1 { font-size: 34px !important; }
+      .lc-nav a { margin: 0 8px !important; font-size: 10px !important; }
+      .lc-navline { display: none !important; }
+      .lc-info td.lc-info-cell { display: inline-block !important; width: 50% !important; box-sizing: border-box; padding: 12px 8px !important; }
+      .lc-info td.lc-info-div { display: none !important; }
+      .lc-thumb, .lc-thumb img { width: 84px !important; height: 84px !important; }
+      .lc-item-title { font-size: 13px !important; }
+      .lc-btn a { padding: 16px 36px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:{{ c_bg }};">
+  <div style="display:none; max-height:0; overflow:hidden; mso-hide:all;">Order {{ order_name }} confirmed. Thank you for your support.</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="{{ c_bg }}" style="background-color:{{ c_bg }};">
+    <tr>
+      <td align="center" style="padding:0;">
+        <table role="presentation" class="lc-container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:600px; background-color:{{ c_bg }};">
+
+          {%- comment -%} ---------- header artwork ---------- {%- endcomment -%}
+          <tr>
+            <td style="padding:0;">
+              {%- unless hide_online_store_links -%}<a href="{{ shop_url }}" target="_blank" style="text-decoration:none;">{%- endunless -%}
+                <img src="{{ header_img }}" width="600" alt="Lane Change — International Street Sports. Different Lanes. Same Vision." style="width:100%; max-width:600px; height:auto; color:{{ c_text }}; font-family:{{ f_display }}; font-size:28px;">
+              {%- unless hide_online_store_links -%}</a>{%- endunless -%}
+            </td>
+          </tr>
+
+          {%- comment -%} ---------- nav ---------- {%- endcomment -%}
+          {%- unless hide_online_store_links -%}
+          <tr>
+            <td style="padding:14px 24px 6px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td class="lc-navline" width="18%" style="border-bottom:1px solid {{ c_line }}; font-size:0; line-height:0;">&nbsp;</td>
+                  <td class="lc-nav" align="center" style="padding:0 6px; white-space:nowrap; font-family:{{ f_body }}; font-size:11px; font-weight:500; letter-spacing:3px; text-transform:uppercase;">
+                    <a class="lc-link" href="{{ shop_url }}/collections/all" style="color:{{ c_text }}; text-decoration:none; margin:0 12px;">Shop All</a>
+                    <a class="lc-link" href="{{ shop_url }}/collections/collection-001" style="color:{{ c_text }}; text-decoration:none; margin:0 12px;">Collection 001</a>
+                    <a class="lc-link" href="{{ shop_url }}/collections/tees" style="color:{{ c_text }}; text-decoration:none; margin:0 12px;">Tees</a>
+                  </td>
+                  <td class="lc-navline" width="18%" style="border-bottom:1px solid {{ c_line }}; font-size:0; line-height:0;">&nbsp;</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          {%- endunless -%}
+
+          {%- comment -%} ---------- title ---------- {%- endcomment -%}
+          <tr>
+            <td class="lc-pad" align="center" style="padding:30px 40px 0;">
+              <h1 class="lc-h1" style="margin:0; font-family:{{ f_display }}; font-size:44px; line-height:1; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:{{ c_text }};">{{ email_title }}</h1>
+              <p style="margin:12px 0 0; font-family:{{ f_body }}; font-size:13px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:{{ c_text }};">Thank you for your support.</p>
+              <p style="margin:18px 0 0; font-family:{{ f_body }}; font-size:14px; line-height:1.65; color:{{ c_text }};">{{ email_body }}</p>
+              {%- if delivery_instructions != blank -%}
+                <p style="margin:12px 0 0; font-family:{{ f_body }}; font-size:13px; line-height:1.6; color:{{ c_muted }};"><strong style="color:{{ c_text }};">Delivery information:</strong> {{ delivery_instructions }}</p>
+              {%- endif -%}
+              {%- assign gift_card_line_items = line_items | where: 'gift_card' -%}
+              {%- assign found_gift_card_with_recipient_email = false -%}
+              {%- for line_item in gift_card_line_items -%}
+                {%- if line_item.properties['__shopify_send_gift_card_to_recipient'] and line_item.properties['Recipient email'] -%}
+                  {%- assign found_gift_card_with_recipient_email = true -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+              {%- if found_gift_card_with_recipient_email -%}
+                <p style="margin:12px 0 0; font-family:{{ f_body }}; font-size:13px; color:{{ c_muted }};">Your gift card recipient will receive an email with their gift card code.</p>
+              {%- elsif gift_card_line_items.first -%}
+                <p style="margin:12px 0 0; font-family:{{ f_body }}; font-size:13px; color:{{ c_muted }};">You'll receive separate emails for any gift cards.</p>
+              {%- endif -%}
+            </td>
+          </tr>
+
+          {%- comment -%} ---------- pending payment instructions (bank transfer etc.) ---------- {%- endcomment -%}
+          {%- for transaction in transactions -%}
+            {%- if transaction.show_buyer_pending_payment_instructions? -%}
+            <tr>
+              <td class="lc-pad" style="padding:18px 24px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid {{ c_line }}; background-color:{{ c_panel }};">
+                  <tr><td colspan="2" style="padding:16px 20px 6px; font-family:{{ f_body }}; font-size:13px; line-height:1.6; color:{{ c_text }};">{{ transaction.buyer_pending_payment_notice }}</td></tr>
+                  {%- for instruction in transaction.buyer_pending_payment_instructions -%}
+                  <tr>
+                    <td style="padding:4px 20px; font-family:{{ f_body }}; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:{{ c_muted }};">{{ instruction.header }}</td>
+                    <td align="right" style="padding:4px 20px; font-family:{{ f_body }}; font-size:13px; font-weight:600; color:{{ c_text }};">{{ instruction.value }}</td>
+                  </tr>
+                  {%- endfor -%}
+                  <tr>
+                    <td style="padding:4px 20px 16px; font-family:{{ f_body }}; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:{{ c_muted }};">Amount</td>
+                    <td align="right" style="padding:4px 20px 16px; font-family:{{ f_body }}; font-size:13px; font-weight:600; color:{{ c_text }};">{{ transaction.amount | money }}</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- comment -%} ---------- info strip ---------- {%- endcomment -%}
+          <tr>
+            <td style="padding:28px 24px 0;">
+              <table role="presentation" class="lc-info" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid {{ c_line }}; background-color:{{ c_panel }};">
+                <tr>
+                  {%- capture info_cells -%}
+                    order|Order number|{{ order_name }}^date|Order date|{{ order_date }}^delivery|Est. delivery|{{ est_delivery }}^location|{{ ship_label }}|{{ ship_to }}
+                  {%- endcapture -%}
+                  {%- assign cells = info_cells | strip | split: '^' -%}
+                  {%- for cell in cells -%}
+                    {%- assign parts = cell | split: '|' -%}
+                    {%- case parts[0] -%}
+                      {%- when 'order' -%}{%- assign icon = icon_order -%}
+                      {%- when 'date' -%}{%- assign icon = icon_date -%}
+                      {%- when 'delivery' -%}{%- assign icon = icon_delivery -%}
+                      {%- else -%}{%- assign icon = icon_location -%}
+                    {%- endcase -%}
+                    <td class="lc-info-cell" width="25%" valign="middle" style="padding:18px 4px 18px 12px;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td valign="middle" style="padding-right:9px;"><img src="{{ icon }}" width="24" height="24" alt="" style="width:24px; height:24px;"></td>
+                          <td valign="middle" style="font-family:{{ f_body }};">
+                            <div style="font-size:9px; letter-spacing:1px; text-transform:uppercase; color:{{ c_muted }}; line-height:1.4; white-space:nowrap;">{{ parts[1] }}</div>
+                            <div style="font-size:11px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase; color:{{ c_text }}; line-height:1.5; margin-top:3px;">{{ parts[2] }}</div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    {%- unless forloop.last -%}
+                    <td class="lc-info-div" width="1" style="padding:16px 0;"><div style="width:1px; height:40px; background-color:{{ c_line }};"></div></td>
+                    {%- endunless -%}
+                  {%- endfor -%}
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          {%- comment -%} ---------- order summary ---------- {%- endcomment -%}
+          <tr>
+            <td style="padding:16px 24px 0;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid {{ c_line }}; background-color:{{ c_panel }};">
+                <tr>
+                  <td class="lc-pad" style="padding:24px 24px 8px; font-family:{{ f_body }}; font-size:14px; font-weight:600; letter-spacing:5px; text-transform:uppercase; color:{{ c_text }};">Order summary</td>
+                </tr>
+                {%- for line in subtotal_line_items -%}
+                  {%- unless line.nested_line_child? -%}
+                  {%- assign line_title = line.product.title | default: line.presentment_title | default: line.title -%}
+                  {%- assign variant_parts = line.variant.title | split: ' / ' -%}
+                  <tr>
+                    <td class="lc-pad" style="padding:0 24px;">
+                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="{% unless forloop.first %}border-top:1px solid {{ c_line }};{% endunless %}">
+                        <tr>
+                          <td class="lc-thumb" width="120" valign="top" style="padding:16px 0; width:120px;">
+                            {%- if line.image -%}
+                              <img src="{{ line | img_url: '240x240', crop: 'center' }}" width="120" height="120" alt="{{ line_title | escape }}" style="width:120px; height:120px; object-fit:cover; background-color:#e9e8e6;">
+                            {%- else -%}
+                              <div style="width:120px; height:120px; background-color:#161616;"></div>
+                            {%- endif -%}
+                          </td>
+                          <td valign="top" style="padding:20px 0 16px 20px; font-family:{{ f_body }};">
+                            <div class="lc-item-title" style="font-size:15px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:{{ c_text }}; line-height:1.3;">{{ line_title }}</div>
+                            {%- if line.variant.title != blank and line.variant.title != 'Default Title' -%}
+                              {%- if variant_parts.size == 2 -%}
+                                <div style="margin-top:6px; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:{{ c_muted }}; line-height:1.8;">{{ variant_parts[1] }}<br>Size: {{ variant_parts[0] }}</div>
+                              {%- else -%}
+                                <div style="margin-top:6px; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:{{ c_muted }}; line-height:1.8;">{{ line.variant.title }}</div>
+                              {%- endif -%}
+                            {%- endif -%}
+                            <div style="font-size:11px; letter-spacing:2px; text-transform:uppercase; color:{{ c_muted }}; line-height:1.8;">Qty: {{ line.quantity }}</div>
+                            {%- if line.selling_plan_allocation -%}
+                              <div style="font-size:11px; color:{{ c_muted }}; line-height:1.8;">{{ line.selling_plan_allocation.selling_plan.name }}</div>
+                            {%- endif -%}
+                            {%- for discount_allocation in line.discount_allocations -%}
+                              {%- if discount_allocation.discount_application.target_selection != 'all' -%}
+                                <div style="font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:{{ c_muted }}; line-height:1.8;">{{ discount_allocation.discount_application.title }} (−{{ discount_allocation.amount | money }})</div>
+                              {%- endif -%}
+                            {%- endfor -%}
+                            {%- if line.refunded_quantity > 0 -%}
+                              <div style="font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:{{ c_muted }}; line-height:1.8;">Refunded</div>
+                            {%- endif -%}
+                          </td>
+                          <td valign="top" align="right" style="padding:20px 0 16px 10px; font-family:{{ f_body }}; white-space:nowrap;">
+                            {%- if line.original_line_price != line.final_line_price -%}
+                              <div style="font-size:12px; color:{{ c_muted }}; text-decoration:line-through;">{{ line.original_line_price | money }}</div>
+                            {%- endif -%}
+                            <div style="font-size:15px; font-weight:600; color:{{ c_text }};">{% if line.final_line_price > 0 %}{{ line.final_line_price | money }}{% else %}Free{% endif %}</div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  {%- endunless -%}
+                {%- endfor -%}
+
+                {%- comment -%} totals {%- endcomment -%}
+                <tr>
+                  <td class="lc-pad" style="padding:0 24px 22px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid {{ c_line }};">
+                      <tr>
+                        <td width="45%" style="font-size:0; line-height:0;">&nbsp;</td>
+                        <td style="padding-top:14px;">
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:{{ f_body }}; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:{{ c_text }};">
+                            <tr><td style="padding:4px 0;">Subtotal</td><td align="right" style="padding:4px 0; letter-spacing:0.5px;">{{ display_subtotal | money }}</td></tr>
+                            {%- if total_order_discount_amount > 0 -%}
+                              <tr><td style="padding:4px 0;">Discount</td><td align="right" style="padding:4px 0; letter-spacing:0.5px;">−{{ total_order_discount_amount | money }}</td></tr>
+                            {%- endif -%}
+                            {%- unless retail_delivery_only -%}
+                              {%- if requires_shipping -%}
+                                <tr><td style="padding:4px 0;">{% if delivery_method == 'pick-up' %}Pickup{% else %}Shipping{% endif %}</td><td align="right" style="padding:4px 0; letter-spacing:0.5px;">{% if shipping_total == 0 %}Free{% else %}{{ shipping_total | money }}{% endif %}</td></tr>
+                              {%- endif -%}
+                            {%- endunless -%}
+                            {%- if total_duties -%}
+                              <tr><td style="padding:4px 0;">Duties</td><td align="right" style="padding:4px 0; letter-spacing:0.5px;">{{ total_duties | money }}</td></tr>
+                            {%- endif -%}
+                            {%- if tax_price > 0 -%}
+                              <tr><td style="padding:4px 0; color:{{ c_muted }};">Taxes</td><td align="right" style="padding:4px 0; letter-spacing:0.5px; color:{{ c_muted }};">{{ tax_price | money }}</td></tr>
+                            {%- endif -%}
+                            {%- if total_tip and total_tip > 0 -%}
+                              <tr><td style="padding:4px 0;">Tip</td><td align="right" style="padding:4px 0; letter-spacing:0.5px;">{{ total_tip | money }}</td></tr>
+                            {%- endif -%}
+                            <tr><td colspan="2" style="padding-top:10px; border-bottom:1px solid {{ c_line }}; font-size:0; line-height:0;">&nbsp;</td></tr>
+                            <tr>
+                              <td style="padding:12px 0 0; font-weight:600;">Total ({{ currency }})</td>
+                              <td align="right" style="padding:12px 0 0; font-size:20px; font-weight:600; letter-spacing:0.5px;">{{ total_price | money }}</td>
+                            </tr>
+                            {%- if total_discounts > 0 -%}
+                              <tr><td colspan="2" align="right" style="padding:6px 0 0; font-size:10px; color:{{ c_muted }};">You saved {{ total_discounts | money }}</td></tr>
+                            {%- endif -%}
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          {%- comment -%} ---------- delivery details ---------- {%- endcomment -%}
+          {%- if shipping_address or billing_address -%}
+          <tr>
+            <td style="padding:16px 24px 0;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid {{ c_line }}; background-color:{{ c_panel }};">
+                <tr>
+                  {%- if requires_shipping and shipping_address -%}
+                  <td width="50%" valign="top" class="lc-pad" style="padding:20px 24px; font-family:{{ f_body }}; font-size:12px; line-height:1.7; color:{{ c_muted }};">
+                    <div style="font-size:10px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:{{ c_text }}; margin-bottom:6px;">Shipping address</div>
+                    {{ shipping_address | format_address }}
+                  </td>
+                  {%- endif -%}
+                  <td width="50%" valign="top" class="lc-pad" style="padding:20px 24px; font-family:{{ f_body }}; font-size:12px; line-height:1.7; color:{{ c_muted }};">
+                    {%- if requires_shipping and shipping_method -%}
+                      <div style="font-size:10px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:{{ c_text }}; margin-bottom:6px;">Shipping method</div>
+                      {{ delivery_promise_branded_shipping_line | default: shipping_method.title }}<br><br>
+                    {%- endif -%}
+                    {%- assign paid_with = '' -%}
+                    {%- for transaction in transactions -%}
+                      {%- if transaction.status == 'success' and transaction.kind == 'sale' or transaction.status == 'success' and transaction.kind == 'capture' or transaction.status == 'success' and transaction.kind == 'authorization' -%}
+                        {%- if transaction.payment_details.credit_card_company and transaction.payment_details.credit_card_last_four_digits -%}
+                          {%- capture paid_with -%}{{ transaction.payment_details.credit_card_company }} ending in {{ transaction.payment_details.credit_card_last_four_digits }}{%- endcapture -%}
+                        {%- elsif transaction.gateway_display_name != blank -%}
+                          {%- assign paid_with = transaction.gateway_display_name -%}
+                        {%- endif -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                    {%- if paid_with != blank -%}
+                      <div style="font-size:10px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:{{ c_text }}; margin-bottom:6px;">Payment</div>
+                      {{ paid_with }}
+                    {%- endif -%}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          {%- endif -%}
+
+          {%- comment -%} ---------- button ---------- {%- endcomment -%}
+          <tr>
+            <td align="center" style="padding:28px 24px 0;">
+              {%- if order_status_url -%}
+                {%- assign button_url = order_status_url -%}{%- assign button_label = 'View your order' -%}
+              {%- else -%}
+                {%- assign button_url = shop_url -%}{%- assign button_label = 'Visit our store' -%}
+              {%- endif -%}
+              <table role="presentation" class="lc-btn" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" bgcolor="{{ c_text }}" style="background-color:{{ c_text }};">
+                    <a href="{{ button_url }}" target="_blank" style="display:inline-block; padding:17px 86px; font-family:{{ f_body }}; font-size:13px; font-weight:600; letter-spacing:5px; text-transform:uppercase; color:#0a0a0a; text-decoration:none;">{{ button_label }}</a>
+                  </td>
+                </tr>
+              </table>
+              {%- if shop_app_tracking_url -%}
+                <p style="margin:12px 0 0; font-family:{{ f_body }}; font-size:11px; letter-spacing:1px; color:{{ c_muted }};">or <a href="{{ shop_app_tracking_url }}" style="color:{{ c_text }};">track your order with Shop</a></p>
+              {%- endif -%}
+            </td>
+          </tr>
+
+          {%- comment -%} ---------- footer artwork ---------- {%- endcomment -%}
+          <tr>
+            <td background="{{ footer_img }}" bgcolor="{{ c_bg }}" valign="bottom" style="background-color:{{ c_bg }}; background-image:url('{{ footer_img }}'); background-size:cover; background-position:center bottom; background-repeat:no-repeat; padding:96px 24px 34px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" style="font-family:{{ f_body }}; font-size:11px; font-weight:500; letter-spacing:4px; text-transform:uppercase; color:{{ c_text }}; padding-bottom:16px;">Different Lanes. Same Vision.</td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td width="22%" valign="middle" style="font-size:0; line-height:0;"><div style="height:1px; line-height:1px; font-size:1px; background-color:{{ c_muted }};">&nbsp;</div></td>
+                        <td align="center" style="padding:0 14px; white-space:nowrap;">
+                          {%- if instagram_url != blank -%}<a href="{{ instagram_url }}" target="_blank" style="display:inline-block; margin:0 9px;"><img src="{{ icon_instagram }}" width="26" height="26" alt="Instagram" style="display:inline-block; width:26px; height:26px;"></a>{%- endif -%}
+                          {%- if tiktok_url != blank -%}<a href="{{ tiktok_url }}" target="_blank" style="display:inline-block; margin:0 9px;"><img src="{{ icon_tiktok }}" width="26" height="26" alt="TikTok" style="display:inline-block; width:26px; height:26px;"></a>{%- endif -%}
+                          {%- if youtube_url != blank -%}<a href="{{ youtube_url }}" target="_blank" style="display:inline-block; margin:0 9px;"><img src="{{ icon_youtube }}" width="26" height="26" alt="YouTube" style="display:inline-block; width:26px; height:26px;"></a>{%- endif -%}
+                        </td>
+                        <td width="22%" valign="middle" style="font-size:0; line-height:0;"><div style="height:1px; line-height:1px; font-size:1px; background-color:{{ c_muted }};">&nbsp;</div></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td class="lc-pad" align="center" style="padding:20px 40px 36px; font-family:{{ f_body }}; font-size:11px; line-height:1.7; color:{{ c_muted }};">
+              Questions about your order? Reply to this email or contact us at <a href="mailto:{{ shop.email }}" style="color:{{ c_text }};">{{ shop.email }}</a>.<br>
+              {{ shop.name }} · International Street Sports · AUS — Worldwide<!-- shopify-shop-marketplace-footer -->
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+  <img src="{{ 'notifications/spacer.png' | shopify_asset_url }}" height="1" width="1" alt="" style="display:block;">
+</body>
+</html>
+
+{%- if billing_address.country_code == 'DE' or billing_address.country_code == 'DK' -%}
+  {%- if shop.terms_of_service.body != blank -%}
+    {{ shop.terms_of_service | attach_as_pdf: "Terms of service" }}
+  {%- endif -%}
+  {%- if shop.refund_policy.body != blank -%}
+    {{ shop.refund_policy | attach_as_pdf: "Refund policy" }}
+  {%- endif -%}
+{%- endif -%}
