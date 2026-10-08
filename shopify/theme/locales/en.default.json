@@ -111,7 +111,10 @@
     "topic": "Topic",
     "message": "Message",
     "send": "Send Message",
-    "success": "Message received. We will be in touch."
+    "success": "Thanks for getting in touch. We'll reply to your email as soon as we can.",
+    "order_number": "Order number",
+    "optional": "(optional)",
+    "success_title": "Message sent"
   },
   "customer": {
     "login": "Sign In",

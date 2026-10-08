@@ -1,4 +1,4 @@
-{% render 'page-head', eyebrow: section.settings.eyebrow, title: page.title %}
+{% render 'page-head', eyebrow: section.settings.eyebrow, title: page.title, lede: section.settings.lede %}
 {%- if page.content != blank -%}
   <section class="wrap section">
     <div class="rte page-body">{{ page.content }}</div>
@@ -10,7 +10,8 @@
   "name": "Page",
   "tag": "div",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "International Street Sports" }
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "International Street Sports" },
+    { "type": "richtext", "id": "lede", "label": "Intro text", "info": "Optional. Shown under the page title." }
   ]
 }
 {% endschema %}

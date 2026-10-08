@@ -245,3 +245,12 @@ select.field { background: var(--black); }
 .ship-note { display: grid; gap: 6px; line-height: 1.8; }
 .ship-links { display: flex; flex-wrap: wrap; gap: 6px 18px; }
 .ship-links a { color: var(--bone); }
+
+/* contact page */
+.contact .cform { max-width: 720px; }
+.cform__row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; width: 100%; }
+.cform__notice { width: 100%; padding: 18px 20px; border: 1px solid var(--line-strong); }
+.cform__notice .eyebrow { margin-bottom: 8px; }
+.cform .lbl .muted { text-transform: none; letter-spacing: 0.04em; }
+.cinfo__links { display: grid; gap: 6px; }
+@media (max-width: 700px) { .cform__row { grid-template-columns: 1fr; } }
