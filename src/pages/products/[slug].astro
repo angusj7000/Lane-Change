@@ -17,6 +17,10 @@ export function getStaticPaths() {
 
 interface Props { product: Product }
 const { product: p } = Astro.props;
+const chartSrc = img('size-chart');
+const chart = await getImage({ src: chartSrc, width: 1200, format: 'webp', quality: 82 });
+const chartFull = await getImage({ src: chartSrc, width: chartSrc.width, format: 'jpg', quality: 90 });
+const chartAlt = 'Lane Change oversized tee size chart, garment measurements in cm. S: length 70, chest 58, shoulders 56, bottom 58, sleeve 21.5. M: 72, 60, 58, 60, 22.5. L: 74, 62, 60, 62, 23. XL: 76, 64, 62, 64, 23.5. XXL: 78, 66, 64, 66, 24.';
 
 const views = viewOrder
   .filter((v) => v in p.gallery)
@@ -172,6 +176,17 @@ const jsonLd = {
               <summary class="eyebrow">Care <Icon name="plus" size={14} /></summary>
               <ul class="acc__body">{p.care.map((d) => <li>{d}</li>)}</ul>
             </details>
+            {p.category === 'tees' && (
+              <details data-size-acc>
+                <summary class="eyebrow">Size Guide <Icon name="plus" size={14} /></summary>
+                <div class="acc__body">
+                  <a class="size-chart" href={chartFull.src} target="_blank" rel="noopener">
+                    <img src={chart.src} alt={chartAlt} width={chartSrc.width} height={chartSrc.height} loading="lazy" decoding="async" />
+                  </a>
+                  <p class="micro muted size-chart__note">Garment measurements in cm. Tap the chart to enlarge.</p>
+                </div>
+              </details>
+            )}
           </div>
 
           <p class="micro muted ship-note">
@@ -200,21 +215,6 @@ const jsonLd = {
     </section>
   </div>
 
-  <dialog class="guide" data-guide aria-labelledby="guide-title">
-    <div class="guide__head">
-      <h2 id="guide-title" class="eyebrow">Size Guide — {p.category === 'tees' ? 'Oversized Tee' : 'Hoodie'}</h2>
-      <button type="button" aria-label="Close size guide" data-guide-close><Icon name="close" /></button>
-    </div>
-    <p class="muted micro">Garment measurements in cm, laid flat. Boxy fit — size down for a closer drape.</p>
-    <table class="micro">
-      <thead><tr><th>Size</th><th>Chest</th><th>Length</th><th>Shoulder</th><th>Sleeve</th></tr></thead>
-      <tbody>
-        {[['XS', 58, 68, 56, 22], ['S', 60, 70, 58, 23], ['M', 62, 72, 60, 24], ['L', 64, 74, 62, 25], ['XL', 66, 76, 64, 26], ['XXL', 68, 78, 66, 27]].map((r) => (
-          <tr>{r.map((c) => <td>{c}</td>)}</tr>
-        ))}
-      </tbody>
-    </table>
-  </dialog>
 </Base>
 
 <script>
@@ -257,11 +257,13 @@ const jsonLd = {
     }, { passive: true });
   }
 
-  // size guide
-  const guide = document.querySelector<HTMLDialogElement>('[data-guide]');
-  document.querySelector('[data-size-guide]')?.addEventListener('click', () => guide?.showModal());
-  guide?.querySelector('[data-guide-close]')?.addEventListener('click', () => guide.close());
-  guide?.addEventListener('click', (e) => e.target === guide && guide.close());
+  // size guide: open the Size Guide dropdown and bring it into view
+  const sizeAcc = document.querySelector<HTMLDetailsElement>('[data-size-acc]');
+  document.querySelector('[data-size-guide]')?.addEventListener('click', () => {
+    if (!sizeAcc) return;
+    sizeAcc.open = true;
+    sizeAcc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 </script>
 
 <style>
@@ -372,16 +374,10 @@ const jsonLd = {
 
   .related { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(14px, 2vw, 28px); }
 
-  .guide {
-    width: min(620px, calc(100% - 32px)); padding: 28px;
-    background: var(--ink); color: var(--bone); border: 1px solid var(--line-strong);
-  }
-  .guide::backdrop { background: rgba(0, 0, 0, 0.7); }
-  .guide__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .guide__head button { width: 44px; height: 44px; display: grid; place-items: center; margin-right: -12px; }
-  .guide table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-  .guide th, .guide td { text-align: left; padding: 12px 8px; border-bottom: 1px solid var(--line); }
-  .guide th { color: var(--smoke); font-weight: 400; }
+  .size-chart { display: block; border: 1px solid var(--line); }
+  .size-chart img { display: block; width: 100%; height: auto; }
+  .size-chart__note { margin-top: 10px; }
+  [data-size-acc] { scroll-margin-top: calc(var(--header-h) + 16px); }
 
   .only-mobile { display: none; }
 

@@ -97,6 +97,7 @@ const images = [
   ['brand-statement', 2000],
   ['coming-soon', 1920],
   ['coming-soon-mobile', 900],
+  ['size-chart', 1536],
 ];
 for (const [name, width] of images) {
   await sharp(join(ROOT, 'src/assets/images', `${name}.jpg`))

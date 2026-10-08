@@ -80,7 +80,7 @@ Go to **Online Store → Pages → Add page**. In the right-hand panel, pick the
 | About | `about` | `about` | Leave blank. The template already contains the Lane Change story. Edit it in the theme editor. |
 | Contact | `contact` | `contact` | Optional intro text. The form is built in. |
 | Wishlist | `wishlist` | `wishlist` | Leave blank. |
-| Size Guide *(optional)* | default | `size-guide` | Your size table. Select it under Product → Size guide page in the theme editor. |
+| Size Guide text *(optional)* | default | `size-guide` | Extra sizing notes. The size chart image is already built in (Size Guide dropdown on every product page). To show extra text under it, select this page under Customize → Product → Extra size guide text. To swap the chart, upload a new one under Customize → Product → Size chart image. |
 
 ## 5. Create the Journal (optional)
 

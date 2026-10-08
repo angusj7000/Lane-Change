@@ -21,12 +21,17 @@
   assign features = features | split: ','
 
   assign colour_option = nil
+  assign has_size_option = false
   for option in product.options_with_values
     assign oname = option.name | downcase
     if oname == 'color' or oname == 'colour'
       assign colour_option = option
     endif
+    if oname == 'size' and option.values.size > 1
+      assign has_size_option = true
+    endif
   endfor
+  assign chart_alt = 'Lane Change oversized tee size chart, garment measurements in cm. S: length 70, chest 58, shoulders 56, bottom 58, sleeve 21.5. M: 72, 60, 58, 60, 22.5. L: 74, 62, 60, 62, 23. XL: 76, 64, 62, 64, 23.5. XXL: 78, 66, 64, 66, 24.'
 
   assign desc_parts = product.description | split: '<h6>'
   assign view_names = 'Front,Back,Fit,Side,Chest detail,Back print,Fabric,Label' | split: ','
@@ -213,6 +218,27 @@
               </details>
             {%- endfor -%}
           {%- endif -%}
+          {%- if has_size_option -%}
+            <details data-size-acc>
+              <summary class="eyebrow">{{ 'products.product.size_guide' | t }} {% render 'icon', name: 'plus', px: 14 %}</summary>
+              <div class="acc__body">
+                {%- if section.settings.size_chart != blank -%}
+                  {%- assign chart_full = section.settings.size_chart | image_url: width: 2400 -%}
+                  <a class="size-chart" href="{{ chart_full }}" target="_blank" rel="noopener">
+                    {{ section.settings.size_chart | image_url: width: 1600 | image_tag: widths: '600, 900, 1200, 1600', sizes: '(max-width: 900px) 100vw, 40vw', loading: 'lazy', alt: section.settings.size_chart.alt | default: chart_alt }}
+                  </a>
+                {%- else -%}
+                  <a class="size-chart" href="{{ 'size-chart.jpg' | asset_url }}" target="_blank" rel="noopener">
+                    <img src="{{ 'size-chart.jpg' | asset_url }}" alt="{{ chart_alt | escape }}" width="1536" height="1024" loading="lazy" decoding="async">
+                  </a>
+                {%- endif -%}
+                <p class="micro muted size-chart__note">{{ section.settings.size_chart_note }}</p>
+                {%- if section.settings.size_guide_page != blank -%}
+                  <div class="rte">{{ section.settings.size_guide_page.content }}</div>
+                {%- endif -%}
+              </div>
+            </details>
+          {%- endif -%}
         </div>
 
         <div class="micro muted ship-note">
@@ -232,30 +258,6 @@
     </div>
   </section>
 
-  <dialog class="guide" data-guide aria-labelledby="guide-title-{{ section.id }}">
-    <div class="guide__head">
-      <h2 id="guide-title-{{ section.id }}" class="eyebrow">{{ 'products.product.size_guide' | t }} — {{ product.type }}</h2>
-      <button type="button" aria-label="{{ 'general.close' | t }}" data-guide-close>{% render 'icon', name: 'close' %}</button>
-    </div>
-    <div class="guide__body rte micro">
-      {%- if section.settings.size_guide_page != blank -%}
-        {{ section.settings.size_guide_page.content }}
-      {%- else -%}
-        <p class="muted">Garment measurements in cm, laid flat. Boxy fit — size down for a closer drape.</p>
-        <table>
-          <thead><tr><th>Size</th><th>Chest</th><th>Length</th><th>Shoulder</th><th>Sleeve</th></tr></thead>
-          <tbody>
-            <tr><td>XS</td><td>58</td><td>68</td><td>56</td><td>22</td></tr>
-            <tr><td>S</td><td>60</td><td>70</td><td>58</td><td>23</td></tr>
-            <tr><td>M</td><td>62</td><td>72</td><td>60</td><td>24</td></tr>
-            <tr><td>L</td><td>64</td><td>74</td><td>62</td><td>25</td></tr>
-            <tr><td>XL</td><td>66</td><td>76</td><td>64</td><td>26</td></tr>
-            <tr><td>XXL</td><td>68</td><td>78</td><td>66</td><td>27</td></tr>
-          </tbody>
-        </table>
-      {%- endif -%}
-    </div>
-  </dialog>
 
   <script type="application/json" data-product-json>{{ product | json }}</script>
   <script type="application/ld+json">{{ product | structured_data }}</script>
@@ -274,10 +276,22 @@
       "info": "Feature text is set per product type in Theme settings → Products."
     },
     {
+      "type": "image_picker",
+      "id": "size_chart",
+      "label": "Size chart image",
+      "info": "Shown in the Size Guide dropdown on every product with sizes. Leave empty to use the Lane Change oversized tee chart."
+    },
+    {
+      "type": "text",
+      "id": "size_chart_note",
+      "label": "Size chart note",
+      "default": "Garment measurements in cm. Tap the chart to enlarge."
+    },
+    {
       "type": "page",
       "id": "size_guide_page",
-      "label": "Size guide page",
-      "info": "Optional. Leave empty to use the built-in oversized tee chart."
+      "label": "Extra size guide text",
+      "info": "Optional. A page whose text appears under the chart."
     },
     {
       "type": "range",

@@ -1064,16 +1064,10 @@ body .on-paper .btn:hover { --btn-bg: var(--paper-ink); --btn-fg: var(--paper); 
 
   .related { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(14px, 2vw, 28px); }
 
-  .guide {
-    width: min(620px, calc(100% - 32px)); padding: 28px;
-    background: var(--ink); color: var(--bone); border: 1px solid var(--line-strong);
-  }
-  .guide::backdrop { background: rgba(0, 0, 0, 0.7); }
-  .guide__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .guide__head button { width: 44px; height: 44px; display: grid; place-items: center; margin-right: -12px; }
-  .guide table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-  .guide th, .guide td { text-align: left; padding: 12px 8px; border-bottom: 1px solid var(--line); }
-  .guide th { color: var(--smoke); font-weight: 400; }
+  .size-chart { display: block; border: 1px solid var(--line); }
+  .size-chart img { display: block; width: 100%; height: auto; }
+  .size-chart__note { margin-top: 10px; }
+  [data-size-acc] { scroll-margin-top: calc(var(--header-h) + 16px); }
 
   .only-mobile { display: none; }
 

@@ -337,11 +337,13 @@
       }, { passive: true });
     }
 
-    // size guide
-    const guide = section.parentElement.querySelector('[data-guide]');
-    $('[data-size-guide]', section)?.addEventListener('click', () => guide?.showModal());
-    guide?.querySelector('[data-guide-close]')?.addEventListener('click', () => guide.close());
-    guide?.addEventListener('click', (e) => e.target === guide && guide.close());
+    // size guide: open the Size Guide dropdown and bring it into view
+    const sizeAcc = $('[data-size-acc]', section);
+    $('[data-size-guide]', section)?.addEventListener('click', () => {
+      if (!sizeAcc) return;
+      sizeAcc.open = true;
+      sizeAcc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   });
 
   /* recommendations are rendered by Shopify's section API */
