@@ -1,7 +1,14 @@
+{%- comment -%}
+  Site header. Rendered from layout/theme.liquid (not a section) so it can never be
+  hidden or removed in the theme editor. Options: Theme settings → Header.
+{%- endcomment -%}
 {%- liquid
-  assign menu = section.settings.menu
+  assign menu = settings.header_menu
+  unless menu.links.size > 0
+    assign menu = linklists[settings.header_menu]
+  endunless
   assign use_brand_nav = true
-  if section.settings.nav_source == 'menu' and menu.links.size > 0
+  if settings.header_nav_source == 'menu' and menu.links.size > 0
     assign use_brand_nav = false
   endif
 
@@ -23,13 +30,13 @@
   endif
   assign brand_nav = brand_nav | split: '^'
   assign overlay = false
-  if section.settings.transparent_home and template.name == 'index'
+  if settings.header_transparent_home and template.name == 'index'
     assign overlay = true
-  elsif section.settings.transparent_banners and template.name == 'collection'
+  elsif settings.header_transparent_banners and template.name == 'collection'
     assign overlay = true
-  elsif section.settings.transparent_banners and template.name == 'article'
+  elsif settings.header_transparent_banners and template.name == 'article'
     assign overlay = true
-  elsif section.settings.transparent_banners and template.suffix == 'about'
+  elsif settings.header_transparent_banners and template.suffix == 'about'
     assign overlay = true
   endif
 -%}
@@ -78,15 +85,15 @@
     </div>
 
     <a class="bar__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
-      {%- if section.settings.logo -%}
-        {{ section.settings.logo | image_url: width: 400 | image_tag: widths: '200, 300, 400', sizes: '160px', alt: shop.name }}
+      {%- if settings.header_logo -%}
+        {{ settings.header_logo | image_url: width: 400 | image_tag: widths: '200, 300, 400', sizes: '160px', alt: shop.name }}
       {%- else -%}
         {% render 'logo-wordmark' %}
       {%- endif -%}
     </a>
 
     <div class="bar__right">
-      {%- if section.settings.region_text != blank -%}<span class="micro region only-desktop">{{ section.settings.region_text }}</span>{%- endif -%}
+      {%- if settings.header_region_text != blank -%}<span class="micro region only-desktop">{{ settings.header_region_text }}</span>{%- endif -%}
       <a class="icon-btn" href="{{ routes.search_url }}" aria-label="{{ 'general.search' | t }}" data-search-open>{% render 'icon', name: 'search' %}</a>
       {%- if shop.customer_accounts_enabled -%}
         <a class="icon-btn only-desktop" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" aria-label="{{ 'general.account' | t }}">{% render 'icon', name: 'account' %}</a>
@@ -130,69 +137,6 @@
     <a class="micro" href="{{ routes.search_url }}">{{ 'general.search' | t }}</a>
     {%- if shop.customer_accounts_enabled -%}<a class="micro" href="{{ routes.account_url }}">{{ 'general.account' | t }}</a>{%- endif -%}
     {%- if settings.wishlist_enabled -%}<a class="micro" href="{{ routes.root_url }}pages/wishlist">{{ 'general.wishlist' | t }}</a>{%- endif -%}
-    <span class="micro muted">{{ section.settings.region_text }}</span>
+    <span class="micro muted">{{ settings.header_region_text }}</span>
   </div>
 </div>
-
-{% schema %}
-{
-  "name": "Header",
-  "class": "section-header",
-  "enabled_on": {
-    "groups": [
-      "header"
-    ]
-  },
-  "settings": [
-    {
-      "type": "select",
-      "id": "nav_source",
-      "label": "Navigation",
-      "default": "brand",
-      "options": [
-        {
-          "value": "brand",
-          "label": "Brand navigation (Shop · Collection 001 · About · Journal)"
-        },
-        {
-          "value": "menu",
-          "label": "Menu chosen below"
-        }
-      ],
-      "info": "Brand navigation updates itself as you create the Collection 001 collection, About page and Journal blog."
-    },
-    {
-      "type": "link_list",
-      "id": "menu",
-      "label": "Menu",
-      "default": "main-menu",
-      "info": "Used when Navigation is set to “Menu chosen below”. Nested links show as dropdowns."
-    },
-    {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Logo image",
-      "info": "Optional. Leave empty to use the Lane Change wordmark."
-    },
-    {
-      "type": "text",
-      "id": "region_text",
-      "label": "Region text",
-      "default": "AUS — Worldwide"
-    },
-    {
-      "type": "checkbox",
-      "id": "transparent_home",
-      "label": "Transparent over homepage hero",
-      "info": "Off (recommended): a solid black bar, so the logo, menu and bag are always easy to find.",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "transparent_banners",
-      "label": "Transparent over collection, article and About banners",
-      "default": false
-    }
-  ]
-}
-{% endschema %}

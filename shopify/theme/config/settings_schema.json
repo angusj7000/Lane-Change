@@ -62,6 +62,60 @@
     ]
   },
   {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "select",
+        "id": "header_nav_source",
+        "label": "Navigation",
+        "default": "brand",
+        "options": [
+          {
+            "value": "brand",
+            "label": "Brand navigation (Shop · Collection 001 · About · Journal)"
+          },
+          {
+            "value": "menu",
+            "label": "Menu chosen below"
+          }
+        ],
+        "info": "Brand navigation updates itself as you create the Collection 001 collection, About page and Journal blog."
+      },
+      {
+        "type": "link_list",
+        "id": "header_menu",
+        "label": "Menu",
+        "default": "main-menu",
+        "info": "Used when Navigation is set to “Menu chosen below”. Nested links show as dropdowns."
+      },
+      {
+        "type": "image_picker",
+        "id": "header_logo",
+        "label": "Logo image",
+        "info": "Optional. Leave empty to use the Lane Change wordmark."
+      },
+      {
+        "type": "text",
+        "id": "header_region_text",
+        "label": "Region text",
+        "default": "AUS — Worldwide"
+      },
+      {
+        "type": "checkbox",
+        "id": "header_transparent_home",
+        "label": "Transparent over homepage hero",
+        "info": "Off (recommended): a solid black bar, so the logo, menu and bag are always easy to find.",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "header_transparent_banners",
+        "label": "Transparent over collection, article and About banners",
+        "default": false
+      }
+    ]
+  },
+  {
     "name": "Cart & currency",
     "settings": [
       {

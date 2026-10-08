@@ -74,6 +74,7 @@
   <body class="template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}">
     <a class="skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
 
+    {% render 'site-header' %}
     {% sections 'header-group' %}
 
     <main id="MainContent" role="main" tabindex="-1">

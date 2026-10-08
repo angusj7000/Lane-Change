@@ -92,8 +92,8 @@ Nothing to set up. The theme shows the brand navigation automatically: **SHOP ·
 
 - **About** and **Journal** appear as soon as the About page (step 4) and Journal blog (step 5) exist.
 - The footer shows the same links plus **Contact**, and a row with **Shipping · Returns · Privacy · Terms** from your store policies.
-- The header is a solid black bar on every page, so the logo, menu, search and bag are always visible. To float it over the homepage photo instead, tick **Customize → Header → Transparent over homepage hero**.
-- To use your own Shopify menu instead, open **Customize → Header → Navigation** and choose **Menu chosen below**.
+- The header is a solid black bar on every page, so the logo, menu, search and bag are always visible. To float it over the homepage photo instead, tick **Customize → Theme settings (gear icon) → Header → Transparent over homepage hero**. The header is built into every page, so it can't be hidden or deleted by accident in the editor.
+- To use your own Shopify menu instead, open **Customize → Theme settings → Header → Navigation** and choose **Menu chosen below**.
 - Optional tidy-up: in **Online Store → Navigation**, the default "Main menu" (Home / Catalog / Contact) is no longer shown, so you can leave or delete it.
 
 ## 7. Customise and publish

@@ -1,19 +1,6 @@
 {
   "type": "header",
   "name": "Header group",
-  "sections": {
-    "header": {
-      "type": "header",
-      "settings": {
-        "menu": "main-menu",
-        "region_text": "AUS — Worldwide",
-        "transparent_home": false,
-        "transparent_banners": false,
-        "nav_source": "brand"
-      }
-    }
-  },
-  "order": [
-    "header"
-  ]
+  "sections": {},
+  "order": []
 }
