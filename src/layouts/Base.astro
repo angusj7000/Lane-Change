@@ -66,7 +66,7 @@ const catalog = await clientCatalog();
     </script>
     <style is:global>
       .toast {
-        position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); z-index: 160;
+        position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); z-index: 99999;
         transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
         padding: 14px 20px; background: var(--bone); color: var(--black);
         transition: opacity 0.35s var(--ease), transform 0.45s var(--ease-out);

@@ -32,13 +32,13 @@ import { site } from '../config/site';
 
 <style>
   .drawer-scrim {
-    position: fixed; inset: 0; z-index: 110;
+    position: fixed; inset: 0; z-index: 99997;
     background: rgba(0, 0, 0, 0.6);
     opacity: 0; transition: opacity 0.4s var(--ease);
   }
   .drawer-scrim.is-open { opacity: 1; }
   .drawer {
-    position: fixed; top: 0; right: 0; bottom: 0; z-index: 111;
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 99998;
     width: min(460px, 100%);
     display: flex; flex-direction: column;
     background: var(--ink);
